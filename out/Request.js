@@ -5,8 +5,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *
  */
 var Request = /** @class */ (function () {
-    function Request(id, body, method) {
+    function Request(id, name, body, method) {
+        /**
+         * The event id
+         */
         this.id = id;
+        /**
+         * The name of the event
+         */
+        this.name = name;
         // set the body 
         this.body = body;
         // set the method

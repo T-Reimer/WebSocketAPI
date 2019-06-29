@@ -1,21 +1,38 @@
 import { Application } from "express";
-import { Server } from "ws";
-import {Request} from "./Request";
+import WebSocket from "ws";
 
-import { getEvent } from "./events/index";
+import { Request } from "./Request";
+import { getEvent, postEvent, putEvent, delEvent } from "./events/index";
+
+interface Settings {
+    maxLength?: number, // the max upload length to automatically parse
+    on: {
+        error: Function
+    }
+}
+
+/**
+ * the default settings object
+ */
+const Settings = {
+    maxLength: 10000,
+    on: {}
+}
 
 /**
  * Register the default route with express
  * 
  * @param app Express app
- * @param socket the websocket connection
+ * @param wss the webwss connection
  * @param route the default route
  */
-export default function register(app : Application, socket : Server, route : string){
+export default function register(app: Application, wss: WebSocket.Server, route: string, options: Settings) {
 
-    registerExpress(app, route);
+    let settings = Object.assign({}, Settings, options);
 
-    registerWS(socket);
+    registerExpress(app, route, settings);
+
+    registerWS(wss, settings);
 
 }
 
@@ -24,35 +41,101 @@ export default function register(app : Application, socket : Server, route : str
  * 
  * @param app The express app
  */
-function registerExpress(app : Application, route : string){
-    const url = `/${route.replace(/^\/|\/$/g, "")}/:api`;
+function registerExpress(app: Application, route: string, settings: Settings) {
+    const url = `/${route.replace(/^\/|\/$/g, "")}/:api/:id`;
 
     app.get(url, (request, response) => {
-        let event = createExpressRequest(request, response);
+        console.log(request);
+        let event = createExpressRequest(request, response, "get", settings);
 
         getEvent.triggerEvent(event);
     });
 
     app.post(url, (request, response) => {
+        console.log(request);
+        let event = createExpressRequest(request, response, "post", settings);
 
+        postEvent.triggerEvent(event);
     });
 
     app.put(url, (request, response) => {
+        console.log(request);
+        let event = createExpressRequest(request, response, "put", settings);
 
-    });
-
-    app.post(url, (request, response) => {
-
+        putEvent.triggerEvent(event);
     });
 
     app.delete(url, (request, response) => {
+        console.log(request);
+        let event = createExpressRequest(request, response, "delete", settings);
 
+        delEvent.triggerEvent(event);
     });
 }
 
-function createExpressRequest(req: { body: { id: string; content: object; }; }, res: { status: (arg0: number) => { send: (arg0: any) => void; }; }){
 
-    let newRequest = new Request(req.body.id, "", req.body.content, "get");
+/**
+ * Register the web wss server to use as api
+ * 
+ * @param wss The ws server object
+ */
+function registerWS(wss: WebSocket.Server, settings: Settings) {
+    // on connection
+    wss.on('connection', function connection(ws: WebSocket) {
+
+        // on message
+        ws.on('message', function incoming(message: string) {
+            console.log('received: %s', message);
+
+            try {
+                if (settings.maxLength && message.length <= settings.maxLength) {
+
+                    let data = JSON.parse(message);
+                    let event = createWSRequest(ws, data.id, data.name, data.body, data.method, settings);
+
+                    switch (data.method) {
+                        case "GET":
+                            getEvent.triggerEvent(event);
+                            break;
+
+                        case "POST":
+                            postEvent.triggerEvent(event);
+                            break;
+
+                        case "PUT":
+                            putEvent.triggerEvent(event);
+                            break;
+
+                        case "DELETE":
+                            delEvent.triggerEvent(event);
+                            break;
+                    }
+
+                    console.log(data);
+                }
+            } catch (err) {
+                if (settings.on.error) {
+                    settings.on.error(err, message);
+                }
+            }
+
+        });
+
+        ws.send('Connection');
+        console.log("New Connection");
+    });
+}
+
+
+/**
+ * 
+ * @param req the request
+ * @param res the response
+ * @param settings the settings
+ */
+function createExpressRequest(req: { params: { api: string, id: string }, body: object }, res: { status: Function }, method: string, settings: Settings) {
+
+    let newRequest = new Request(req.params.id, req.params.api, req.body, "get");
 
     newRequest._send = (value) => {
         res.status(newRequest._status).send(value);
@@ -61,11 +144,23 @@ function createExpressRequest(req: { body: { id: string; content: object; }; }, 
     return newRequest;
 }
 
-/**
- * Register the web socket server to use as api
- * 
- * @param socket The ws server object
- */
-function registerWS(socket : Server){
 
+/**
+ * Create the event for the web socket connection
+ */
+function createWSRequest(ws: WebSocket, id: string, name: string, body: any, method: string, settings: Settings) {
+    let newRequest = new Request(id, name, body, method);
+
+    newRequest._send = (value) => {
+        // send the data to the client via ws
+        ws.send(JSON.stringify({
+            id: id,
+            name: name,
+            method: method,
+            status: newRequest._status,
+            body: body
+        }));
+    };
+
+    return newRequest;
 }

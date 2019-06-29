@@ -13,7 +13,7 @@ window.addEventListener("load", function() {
             const p = document.getElementById("socketMessages");
             p.innerHTML = `<pre style="text-align: left; background-color: #BDBDBD;">${event.target.value}</pre>` + p.innerHTML;
 
-            ws.send(event.target.value);
+            ws.send(event.target.value.replace(/\n$/, ""));
             event.target.value = "";
         }
     });

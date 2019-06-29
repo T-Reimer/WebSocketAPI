@@ -7,10 +7,11 @@ var Events = /** @class */ (function () {
          */
         this.events = {};
     }
-    Events.prototype.triggerEvent = function (name, arg) {
+    Events.prototype.triggerEvent = function (event) {
         var _this = this;
         // the caller index
         var index = 0;
+        var name = event.name;
         /**
          * Call this function to run the next function
          */
@@ -18,7 +19,7 @@ var Events = /** @class */ (function () {
             // check if the callback exists
             if (_this.events[name][index]) {
                 // run the callback
-                _this.events[name][index](arg, function () {
+                _this.events[name][index](event, function () {
                     index++;
                     callEvent();
                 });

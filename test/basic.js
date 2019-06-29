@@ -11,17 +11,10 @@ const port = 3000;
 
 app.use("/", express.static(path.join(__dirname, "./basic/")));
 
-app.listen(port, () => console.log(`Express Listening on port > ${port}`));
-
 // create the websocket server
 const wss = new WebSocket.Server({ port: 8080 });
 
-wss.on('connection', function connection(ws) {
+// register the api
+api.default(app, wss, "api");
 
-    ws.on('message', function incoming(message) {
-        console.log('received: %s', message);
-    });
-
-    ws.send('Connection');
-    console.log("New Connection");
-});
+app.listen(port, () => console.log(`Express Listening on port > ${port}`));
