@@ -17,4 +17,10 @@ const wss = new WebSocket.Server({ port: 8080 });
 // register the api
 api.default(app, wss, "api");
 
+console.log("Register Event");
+api.on("test", (event) => {
+    console.log(event);
+    event.send(1);
+});
+
 app.listen(port, () => console.log(`Express Listening on port > ${port}`));

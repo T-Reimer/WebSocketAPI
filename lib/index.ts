@@ -3,6 +3,7 @@ import WebSocket from "ws";
 
 import { Request } from "./Request";
 import { getEvent, postEvent, putEvent, delEvent } from "./events/index";
+console.log(getEvent, postEvent, putEvent, delEvent);
 
 interface Settings {
     maxLength?: number, // the max upload length to automatically parse
@@ -34,6 +35,47 @@ export default function register(app: Application, wss: WebSocket.Server, route:
 
     registerWS(wss, settings);
 
+}
+
+/**
+ * Register a event listener for the name
+ * 
+ * @param name the event name
+ * @param callback the callback to run
+ */
+export function on(name: string, callback: Function) {
+
+    getEvent.on(name, callback);
+    postEvent.on(name, callback);
+    putEvent.on(name, callback);
+    delEvent.on(name, callback);
+
+    let obj = {
+        get: (callback: Function) => {
+            getEvent.on(name, callback);
+
+            return obj;
+        },
+        post: (callback: Function) => {
+
+            postEvent.on(name, callback);
+
+            return obj;
+        },
+        put: (callback: Function) => {
+
+            putEvent.on(name, callback);
+
+            return obj;
+        },
+        delete: (callback: Function) => {
+
+            delEvent.on(name, callback);
+
+            return obj;
+        }
+    }
+    return obj;
 }
 
 /**
@@ -135,7 +177,7 @@ function registerWS(wss: WebSocket.Server, settings: Settings) {
  */
 function createExpressRequest(req: { params: { api: string, id: string }, body: object }, res: { status: Function }, method: string, settings: Settings) {
 
-    let newRequest = new Request(req.params.id, req.params.api, req.body, "get");
+    let newRequest = new Request(req.params.id, req.params.api, req.body, method);
 
     newRequest._send = (value) => {
         res.status(newRequest._status).send(value);
@@ -153,13 +195,7 @@ function createWSRequest(ws: WebSocket, id: string, name: string, body: any, met
 
     newRequest._send = (value) => {
         // send the data to the client via ws
-        ws.send(JSON.stringify({
-            id: id,
-            name: name,
-            method: method,
-            status: newRequest._status,
-            body: body
-        }));
+        ws.send(JSON.stringify(value));
     };
 
     return newRequest;

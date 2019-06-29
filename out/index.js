@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Request_1 = require("./Request");
 var index_1 = require("./events/index");
+console.log(index_1.getEvent, index_1.postEvent, index_1.putEvent, index_1.delEvent);
 /**
  * the default settings object
  */
@@ -22,6 +23,38 @@ function register(app, wss, route, options) {
     registerWS(wss, settings);
 }
 exports.default = register;
+/**
+ * Register a event listener for the name
+ *
+ * @param name the event name
+ * @param callback the callback to run
+ */
+function on(name, callback) {
+    index_1.getEvent.on(name, callback);
+    index_1.postEvent.on(name, callback);
+    index_1.putEvent.on(name, callback);
+    index_1.delEvent.on(name, callback);
+    var obj = {
+        get: function (callback) {
+            index_1.getEvent.on(name, callback);
+            return obj;
+        },
+        post: function (callback) {
+            index_1.postEvent.on(name, callback);
+            return obj;
+        },
+        put: function (callback) {
+            index_1.putEvent.on(name, callback);
+            return obj;
+        },
+        delete: function (callback) {
+            index_1.delEvent.on(name, callback);
+            return obj;
+        }
+    };
+    return obj;
+}
+exports.on = on;
 /**
  * Register the get and post requests from express
  *
@@ -99,7 +132,7 @@ function registerWS(wss, settings) {
  * @param settings the settings
  */
 function createExpressRequest(req, res, method, settings) {
-    var newRequest = new Request_1.Request(req.params.id, req.params.api, req.body, "get");
+    var newRequest = new Request_1.Request(req.params.id, req.params.api, req.body, method);
     newRequest._send = function (value) {
         res.status(newRequest._status).send(value);
     };
@@ -112,13 +145,7 @@ function createWSRequest(ws, id, name, body, method, settings) {
     var newRequest = new Request_1.Request(id, name, body, method);
     newRequest._send = function (value) {
         // send the data to the client via ws
-        ws.send(JSON.stringify({
-            id: id,
-            name: name,
-            method: method,
-            status: newRequest._status,
-            body: body
-        }));
+        ws.send(JSON.stringify(value));
     };
     return newRequest;
 }

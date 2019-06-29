@@ -23,6 +23,14 @@ var Request = /** @class */ (function () {
          */
         this._status = 200;
         this._send = function (value) { };
+        /**
+         * the express request for the api request
+         */
+        this.request = null;
+        /**
+         * the web socket request for the api request
+         */
+        this.WebSocket = null;
     }
     /**
      * Set the request status code

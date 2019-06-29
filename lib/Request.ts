@@ -10,8 +10,10 @@ export class Request {
     method: string;
     _status: number;
     _send: (value: any) => void;
+    request: null;
+    WebSocket: null;
 
-    constructor(id: string, name: string, body : object, method: string){
+    constructor(id: string, name: string, body: object, method: string) {
         /**
          * The event id
          */
@@ -22,6 +24,7 @@ export class Request {
         this.name = name;
         // set the body 
         this.body = body;
+
         // set the method
         this.method = method.toUpperCase();
 
@@ -30,7 +33,17 @@ export class Request {
          */
         this._status = 200;
 
-        this._send = (value: any) => {};
+        this._send = (value: any) => { };
+
+        /**
+         * the express request for the api request
+         */
+        this.request = null;
+
+        /**
+         * the web socket request for the api request
+         */
+        this.WebSocket = null;
     }
 
     /**
@@ -38,7 +51,7 @@ export class Request {
      * 
      * @param code The status code
      */
-    status(code : number){
+    status(code: number) {
         this._status = code;
         return this;
     }
@@ -48,9 +61,9 @@ export class Request {
      * 
      * @param value The value to send to client
      */
-    send(value : any){
+    send(value: any) {
 
-        if(value instanceof Error){
+        if (value instanceof Error) {
             this._send({
                 id: this.id,
                 status: this._status === 200 ? 500 : this._status,
@@ -60,7 +73,7 @@ export class Request {
                     message: value.message
                 }
             });
-        } else{
+        } else {
             this._send({
                 id: this.id,
                 status: this._status,
