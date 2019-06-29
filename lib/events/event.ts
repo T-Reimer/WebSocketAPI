@@ -1,3 +1,5 @@
+import { Request } from "../Request";
+
 
 export class Events{
     events: { [key: string]: Function[]};
@@ -11,9 +13,10 @@ export class Events{
     }
 
 
-    triggerEvent(name : string, args : any[]){
+    triggerEvent(event: Request){
         // the caller index
         let index = 0;
+        const {name} = event;
 
         /**
          * Call this function to run the next function
@@ -22,7 +25,7 @@ export class Events{
             // check if the callback exists
             if(this.events[name][index]){
                 // run the callback
-                this.events[name][index](...args, () => {
+                this.events[name][index](event, () => {
                     index++;
                     callEvent();
                 });
