@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./events/index");
 var registerExpress_1 = require("./registerExpress");
 var registerWS_1 = require("./registerWS");
-console.log(index_1.getEvent, index_1.postEvent, index_1.putEvent, index_1.delEvent);
 /**
  * the default settings object
  */
@@ -23,7 +22,7 @@ function register(app, wss, route, options) {
     registerExpress_1.registerExpress(app, route, settings);
     registerWS_1.registerWS(wss, settings);
 }
-exports.default = register;
+exports.register = register;
 /**
  * Register a event listener for the name
  *

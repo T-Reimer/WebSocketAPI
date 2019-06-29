@@ -4,7 +4,6 @@ import WebSocket from "ws";
 import { getEvent, postEvent, putEvent, delEvent } from "./events/index";
 import { registerExpress } from "./registerExpress";
 import { registerWS } from "./registerWS";
-console.log(getEvent, postEvent, putEvent, delEvent);
 
 export interface SettingsInterface {
     maxLength?: number, // the max upload length to automatically parse
@@ -28,7 +27,7 @@ export const Settings = {
  * @param wss the webwss connection
  * @param route the default route
  */
-export default function register(app: Application, wss: WebSocket.Server, route: string, options: SettingsInterface) {
+export function register(app: Application, wss: WebSocket.Server, route: string, options: SettingsInterface) {
 
     let settings = Object.assign({}, Settings, options);
 

@@ -15,7 +15,7 @@ app.use("/", express.static(path.join(__dirname, "./basic/")));
 const wss = new WebSocket.Server({ port: 8080 });
 
 // register the api
-api.default(app, wss, "api");
+api.register(app, wss, "api");
 
 console.log("Register Event");
 api.on("test", (event) => {
