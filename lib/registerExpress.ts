@@ -8,7 +8,7 @@ import { createExpressRequest } from "./createExpressRequest";
  * @param app The express app
  */
 export function registerExpress(app: Application, route: string, settings: SettingsInterface) {
-    const url = `/${route.replace(/^\/|\/$/g, "")}/:api/:id`;
+    const url = `/${route.replace(/^\/|\/$/g, "")}/:id/:api`;
     app.get(url, (request, response) => {
         console.log(request);
         let event = createExpressRequest(request, response, "get", settings);

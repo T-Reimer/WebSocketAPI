@@ -20,7 +20,7 @@ api.register(app, wss, "api");
 console.log("Register Event");
 api.on("test", (event) => {
     console.log(event);
-    event.send(1);
+    event.send(`Random Number: ${Math.floor(Math.random() * 1000)}`);
 });
 
 app.listen(port, () => console.log(`Express Listening on port > ${port}`));

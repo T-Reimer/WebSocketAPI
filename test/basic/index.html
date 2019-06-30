@@ -12,10 +12,23 @@
 <body>
     <div>
         <h5>WebSocket Messages</h5>
-        <p id="socketMessages" style="width: 400px; max-height: 600px; overflow-y: scroll;">
+        <div>
+            <p id="socketMessages" style="width: 100%; max-width: 500px; max-height: 600px; overflow-y: scroll; display: inline-block;">
 
-        </p>
-        <textarea id="sendMessage"></textarea>
+            </p>
+            <p id="fetchMessages" style="width: 100%; max-width: 500px; max-height: 600px; overflow-y: scroll; display: inline-block;">
+
+            </p>
+        </div>
+        <div>
+            <label for="sendAPI">Name</label>
+            <input id="sendAPI" type="text">
+        </div>
+        <div>
+            <label for="sendAPI"></label>
+            <textarea id="sendMessage" cols="50" rows="4"></textarea>
+        </div>
+        <button id="submitButton">Send</button>
     </div>
 </body>
 

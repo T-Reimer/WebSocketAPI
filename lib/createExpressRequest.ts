@@ -15,6 +15,7 @@ export function createExpressRequest(req: {
 }, res: {
     status: Function;
 }, method: string, settings: SettingsInterface) {
+
     let newRequest = new Request(req.params.id, req.params.api, req.body, method);
     newRequest._send = (value) => {
         res.status(newRequest._status).send(value);

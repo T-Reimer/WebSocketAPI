@@ -8,7 +8,7 @@ var createExpressRequest_1 = require("./createExpressRequest");
  * @param app The express app
  */
 function registerExpress(app, route, settings) {
-    var url = "/" + route.replace(/^\/|\/$/g, "") + "/:api/:id";
+    var url = "/" + route.replace(/^\/|\/$/g, "") + "/:id/:api";
     app.get(url, function (request, response) {
         console.log(request);
         var event = createExpressRequest_1.createExpressRequest(request, response, "get", settings);
