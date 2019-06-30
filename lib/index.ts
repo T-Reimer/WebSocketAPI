@@ -37,20 +37,30 @@ export function register(app: Application, wss: WebSocket.Server, route: string,
 
 }
 
+interface eventObject {
+    get: Function;
+    post: Function;
+    put: Function;
+    delete: Function;
+}
+
+
 /**
  * Register a event listener for the name
  * 
  * @param name the event name
  * @param callback the callback to run
  */
-export function on(name: string, callback: Function) {
+export function on(name: string, callback?: Function) {
 
-    getEvent.on(name, callback);
-    postEvent.on(name, callback);
-    putEvent.on(name, callback);
-    delEvent.on(name, callback);
+    if (callback) {
+        getEvent.on(name, callback);
+        postEvent.on(name, callback);
+        putEvent.on(name, callback);
+        delEvent.on(name, callback);
+    }
 
-    let obj = {
+    let obj: eventObject = {
         get: (callback: Function) => {
             getEvent.on(name, callback);
 

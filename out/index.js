@@ -30,10 +30,12 @@ exports.register = register;
  * @param callback the callback to run
  */
 function on(name, callback) {
-    index_1.getEvent.on(name, callback);
-    index_1.postEvent.on(name, callback);
-    index_1.putEvent.on(name, callback);
-    index_1.delEvent.on(name, callback);
+    if (callback) {
+        index_1.getEvent.on(name, callback);
+        index_1.postEvent.on(name, callback);
+        index_1.putEvent.on(name, callback);
+        index_1.delEvent.on(name, callback);
+    }
     var obj = {
         get: function (callback) {
             index_1.getEvent.on(name, callback);

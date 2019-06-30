@@ -8,7 +8,7 @@ var Request_1 = require("./Request");
  * @param settings the settings
  */
 function createExpressRequest(req, res, method, settings) {
-    var newRequest = new Request_1.Request(req.params.id, req.params.api, req.body, method);
+    var newRequest = new Request_1.Request(req.params.id, req.params.name, req.body, method);
     newRequest._send = function (value) {
         res.status(newRequest._status).send(value);
     };

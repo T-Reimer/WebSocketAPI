@@ -8,24 +8,20 @@ var createExpressRequest_1 = require("./createExpressRequest");
  * @param app The express app
  */
 function registerExpress(app, route, settings) {
-    var url = "/" + route.replace(/^\/|\/$/g, "") + "/:id/:api";
+    var url = "/" + route.replace(/^\/|\/$/g, "") + "/:id/:name";
     app.get(url, function (request, response) {
-        console.log(request);
         var event = createExpressRequest_1.createExpressRequest(request, response, "get", settings);
         index_1.getEvent.triggerEvent(event);
     });
     app.post(url, function (request, response) {
-        console.log(request);
         var event = createExpressRequest_1.createExpressRequest(request, response, "post", settings);
         index_1.postEvent.triggerEvent(event);
     });
     app.put(url, function (request, response) {
-        console.log(request);
         var event = createExpressRequest_1.createExpressRequest(request, response, "put", settings);
         index_1.putEvent.triggerEvent(event);
     });
     app.delete(url, function (request, response) {
-        console.log(request);
         var event = createExpressRequest_1.createExpressRequest(request, response, "delete", settings);
         index_1.delEvent.triggerEvent(event);
     });

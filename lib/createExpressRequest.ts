@@ -8,7 +8,7 @@ import { SettingsInterface } from "./index";
  */
 export function createExpressRequest(req: {
     params: {
-        api: string;
+        name: string;
         id: string;
     };
     body: object;
@@ -16,7 +16,7 @@ export function createExpressRequest(req: {
     status: Function;
 }, method: string, settings: SettingsInterface) {
 
-    let newRequest = new Request(req.params.id, req.params.api, req.body, method);
+    let newRequest = new Request(req.params.id, req.params.name, req.body, method);
     newRequest._send = (value) => {
         res.status(newRequest._status).send(value);
     };

@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const WebSocket = require("ws");
 const path = require("path");
 
@@ -10,6 +11,7 @@ const app = express();
 const port = 3000;
 
 app.use("/", express.static(path.join(__dirname, "./basic/")));
+app.use(bodyParser.json());
 
 // create the websocket server
 const wss = new WebSocket.Server({ port: 8080 });
@@ -17,10 +19,15 @@ const wss = new WebSocket.Server({ port: 8080 });
 // register the api
 api.register(app, wss, "api");
 
-console.log("Register Event");
-api.on("test", (event) => {
-    console.log(event);
-    event.send(`Random Number: ${Math.floor(Math.random() * 1000)}`);
-});
+api.on("test", (event, next) => {
+        console.log(event);
+        next();
+    })
+    .get((event) => {
+        event.send(`Get: ${Math.floor(Math.random() * 1000)}`);
+    })
+    .post((event) => {
+        event.send(`Post: ${Math.floor(Math.random() * 1000)}`);
+    });
 
 app.listen(port, () => console.log(`Express Listening on port > ${port}`));
