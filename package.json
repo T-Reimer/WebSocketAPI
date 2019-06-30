@@ -1,23 +1,28 @@
 {
-  "name": "websocketapi",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "Websocket",
-    "api"
-  ],
-  "author": "Trevor Reimer",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.17.1",
-    "ws": "^7.0.1"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.0",
-    "@types/ws": "^6.0.1"
-  }
+    "name": "websocketapi",
+    "version": "1.0.1",
+    "description": "",
+    "main": "index.js",
+    "homepage": "https://bitbucket.org/t-reimer/websocketapi/src/master/",
+    "repository": {
+        "type": "git",
+        "url": "https://bitbucket.org/t-reimer/websocketapi/src/master/"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "Websocket",
+        "api"
+    ],
+    "author": "Trevor Reimer",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.1",
+        "ws": "^7.0.1"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.0",
+        "@types/ws": "^6.0.1"
+    }
 }
