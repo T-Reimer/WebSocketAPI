@@ -1,5 +1,9 @@
 {
     "atlascode.jira.workingSite": {
         "baseUrlSuffix": "atlassian.net"
-    }
+    },
+    "cSpell.words": [
+        "Reimer",
+        "uglifyjs"
+    ]
 }

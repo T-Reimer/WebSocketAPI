@@ -11,6 +11,7 @@ const app = express();
 const port = 3000;
 
 app.use("/", express.static(path.join(__dirname, "./basic/")));
+app.use("/static", express.static(path.join(__dirname, "./../static")));
 app.use(bodyParser.json());
 
 // create the websocket server
