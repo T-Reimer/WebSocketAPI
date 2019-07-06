@@ -82,14 +82,14 @@ function createNewConnection() {
  * @param body the body to send to the server
  * @param options options for the request
  */
-export function fetch(id: number, api: string, body?: any, options?: requestOptions) {
+export function fetch(id: number, api: string, body?: any, options?: requestOptions): Promise<RequestData> {
     return new Promise((resolve, reject) => {
         try {
             let data: RequestData = {
                 id,
                 name: api,
                 body: body,
-                method: "GET"
+                method: options && options.method ? options.method : "GET"
             };
 
             send(data);

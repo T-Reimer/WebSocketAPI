@@ -72,6 +72,31 @@ function setup(options) {
     socket_1.setup();
 }
 exports.setup = setup;
+function api(api) {
+    return {
+        get: function (body, options) {
+            options = options ? options : {};
+            options.method = "GET";
+            return fetch(api, body, options);
+        },
+        post: function (body, options) {
+            options = options ? options : {};
+            options.method = "POST";
+            return fetch(api, body, options);
+        },
+        put: function (body, options) {
+            options = options ? options : {};
+            options.method = "PUT";
+            return fetch(api, body, options);
+        },
+        delete: function (body, options) {
+            options = options ? options : {};
+            options.method = "DELETE";
+            return fetch(api, body, options);
+        }
+    };
+}
+exports.api = api;
 /**
  * Make a new api request
  *
@@ -86,46 +111,94 @@ function fetch(api, body, options) {
             id = ++increment;
             method = options && options.method ? options.method : "GET";
             switch (method) {
-                case "GET":
-                    return [2 /*return*/, get(id, api, body, options)];
                 case "POST":
-                    break;
+                    return [2 /*return*/, sendData({ id: id, api: api, body: body, options: options })];
                 case "PUT":
-                    break;
+                    return [2 /*return*/, sendData({ id: id, api: api, body: body, options: options })];
                 case "DELETE":
-                    break;
+                    return [2 /*return*/, getData({ id: id, api: api, body: body, options: options })];
+                case "GET":
+                default:
+                    return [2 /*return*/, getData({ id: id, api: api, body: body, options: options })];
             }
             return [2 /*return*/];
         });
     });
 }
 exports.fetch = fetch;
-function get(id, api, body, options) {
+/**
+ * Request a get or delete
+ *
+ */
+function getData(_a) {
+    var id = _a.id, api = _a.api, body = _a.body, options = _a.options;
     return __awaiter(this, void 0, void 0, function () {
-        var url, search, bodyString;
-        return __generator(this, function (_a) {
-            if ((options && options.use === "http") || !socket_1.ready) {
-                url = new URL(exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api));
-                search = url.search;
-                if (search) {
-                    // append the body to the url
-                    search += "&";
-                }
-                bodyString = encodeURIComponent(JSON.stringify(body));
-                if (bodyString.length + url.href.length > 2048) {
-                    throw new Error("Body length to long. Please specify to use ws 'options.use = ws' or use a lesser body length. The max url length is 2048 characters.");
-                }
-                search += "body=" + bodyString;
-                url.search = search;
-                fetch(url.href, {
-                    method: "GET"
-                });
+        var url, search, bodyString, request, data, data;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
+                    url = new URL(exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api));
+                    search = url.search;
+                    if (search) {
+                        // append the body to the url
+                        search += "&";
+                    }
+                    bodyString = encodeURIComponent(JSON.stringify(body));
+                    if (bodyString.length + url.href.length > 2048) {
+                        throw new Error("Body length to long. Please specify to use ws 'options.use = ws' or use a lesser body length. The max url length is 2048 characters.");
+                    }
+                    search += "body=" + bodyString;
+                    url.search = search;
+                    return [4 /*yield*/, fetch(url.href, {
+                            method: options && options.method ? options.method : "GET"
+                        })];
+                case 1:
+                    request = _b.sent();
+                    return [4 /*yield*/, request.json()];
+                case 2:
+                    data = _b.sent();
+                    return [2 /*return*/, data.body];
+                case 3: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
+                case 4:
+                    data = _b.sent();
+                    return [2 /*return*/, data.body];
             }
-            else {
-            }
-            return [2 /*return*/];
         });
     });
 }
-exports.get = get;
+/**
+ * Send any post or put data
+ *
+ */
+function sendData(_a) {
+    var id = _a.id, api = _a.api, body = _a.body, options = _a.options;
+    return __awaiter(this, void 0, void 0, function () {
+        var url, request, data, data;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
+                    url = exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api);
+                    return [4 /*yield*/, fetch(url, {
+                            method: options && options.method ? options.method : "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: body
+                        })];
+                case 1:
+                    request = _b.sent();
+                    return [4 /*yield*/, request.json()];
+                case 2:
+                    data = _b.sent();
+                    return [2 /*return*/, data.body];
+                case 3: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
+                case 4:
+                    data = _b.sent();
+                    return [2 /*return*/, data.body];
+            }
+        });
+    });
+}
 //# sourceMappingURL=index.js.map

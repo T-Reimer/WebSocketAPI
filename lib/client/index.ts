@@ -1,4 +1,5 @@
-import { setup as socketSetup, ready as socketReady } from "./socket";
+import { setup as socketSetup, ready as socketReady, fetch as socketFetch, socket, send } from "./socket";
+import RequestData from "./../RequestData";
 
 interface Options {
     fetchUrl: string,
@@ -55,6 +56,35 @@ export interface requestOptions {
     use?: "ws" | "http"
 }
 
+export function api(api: string) {
+    return {
+        get: (body: any, options?: requestOptions) => {
+            options = options ? options : {};
+            options.method = "GET";
+
+            return fetch(api, body, options);
+        },
+        post: (body: any, options?: requestOptions) => {
+            options = options ? options : {};
+            options.method = "POST";
+
+            return fetch(api, body, options);
+        },
+        put: (body: any, options?: requestOptions) => {
+            options = options ? options : {};
+            options.method = "PUT";
+
+            return fetch(api, body, options);
+        },
+        delete: (body: any, options?: requestOptions) => {
+            options = options ? options : {};
+            options.method = "DELETE";
+
+            return fetch(api, body, options);
+        }
+    }
+}
+
 /**
  * Make a new api request
  * 
@@ -68,27 +98,27 @@ export async function fetch(api: string, body?: any, options?: requestOptions) {
 
     switch (method) {
 
-        case "GET":
-            return get(id, api, body, options);
-
         case "POST":
-
-            break;
+            return sendData({ id, api, body, options });
 
         case "PUT":
-
-            break;
+            return sendData({ id, api, body, options });
 
         case "DELETE":
+            return getData({ id, api, body, options });
 
-            break;
-
+        case "GET":
+        default:
+            return getData({ id, api, body, options });
     }
 
 }
 
-
-export async function get(id: number, api: string, body?: any, options?: requestOptions) {
+/**
+ * Request a get or delete
+ * 
+ */
+async function getData({ id, api, body, options }: { id: number; api: string; body?: any; options?: requestOptions; }) {
 
     if ((options && options.use === "http") || !socketReady) {
         let url = new URL(`${setOptions.fetchUrl}/${encodeURIComponent(id)}/${encodeURIComponent(api)}`);
@@ -103,15 +133,48 @@ export async function get(id: number, api: string, body?: any, options?: request
             throw new Error("Body length to long. Please specify to use ws 'options.use = ws' or use a lesser body length. The max url length is 2048 characters.");
         }
         search += `body=${bodyString}`;
-
         url.search = search;
 
-        fetch(url.href, {
-            method: "GET"
-        })
+        // send the request to the server
+        let request = await fetch(url.href, {
+            method: options && options.method ? options.method : "GET"
+        });
+
+        let data: RequestData = await request.json();
+        return data.body;
     } else {
 
-
+        // get from web socket
+        let data: RequestData = await socketFetch(id, api, body, options);
+        return data.body;
     }
 
+}
+
+/**
+ * Send any post or put data
+ * 
+ */
+async function sendData({ id, api, body, options }: { id: number; api: string; body?: any; options?: requestOptions; }) {
+
+    if ((options && options.use === "http") || !socketReady) {
+        // use the http request instead of web socket
+        const url = `${setOptions.fetchUrl}/${encodeURIComponent(id)}/${encodeURIComponent(api)}`;
+
+        let request = await fetch(url, {
+            method: options && options.method ? options.method : "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: body
+        });
+
+        let data: RequestData = await request.json();
+        return data.body;
+    } else {
+
+        // get from web socket
+        let data: RequestData = await socketFetch(id, api, body, options);
+        return data.body;
+    }
 }

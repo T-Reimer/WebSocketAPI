@@ -10,7 +10,7 @@
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "compile-client": "watchify out/client/index.js -o static/bundle.js",
+        "compile-client": "watchify out/client/index.js -o static/bundle.js -s WebSocketAPI",
         "uglify": "uglifyjs static/bundle.js -o static/bundle.min.js"
     },
     "keywords": [

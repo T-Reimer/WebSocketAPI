@@ -75,7 +75,7 @@ function fetch(id, api, body, options) {
                 id: id,
                 name: api,
                 body: body,
-                method: "GET"
+                method: options && options.method ? options.method : "GET"
             };
             send(data);
             // register the event listener for the fetch return value
