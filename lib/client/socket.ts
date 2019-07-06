@@ -42,7 +42,7 @@ function createNewConnection() {
                                 error.name = data.error.name;
                                 event.reject(error);
                             } else {
-                                event.resolve(data.body);
+                                event.resolve(data);
                             }
 
                             // remove the event from list of waiting

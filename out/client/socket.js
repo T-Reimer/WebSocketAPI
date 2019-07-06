@@ -31,7 +31,7 @@ function createNewConnection() {
                                 event_1.reject(error);
                             }
                             else {
-                                event_1.resolve(data.body);
+                                event_1.resolve(data);
                             }
                             // remove the event from list of waiting
                             events.splice(i, 1);

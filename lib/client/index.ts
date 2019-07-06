@@ -58,29 +58,29 @@ export interface requestOptions {
 
 export function api(api: string) {
     return {
-        get: (body: any, options?: requestOptions) => {
+        get: async (body: any, options?: requestOptions) => {
             options = options ? options : {};
             options.method = "GET";
 
-            return fetch(api, body, options);
+            return await fetch(api, body, options);
         },
-        post: (body: any, options?: requestOptions) => {
+        post: async (body: any, options?: requestOptions) => {
             options = options ? options : {};
             options.method = "POST";
 
-            return fetch(api, body, options);
+            return await fetch(api, body, options);
         },
-        put: (body: any, options?: requestOptions) => {
+        put: async (body: any, options?: requestOptions) => {
             options = options ? options : {};
             options.method = "PUT";
 
-            return fetch(api, body, options);
+            return await fetch(api, body, options);
         },
-        delete: (body: any, options?: requestOptions) => {
+        delete: async (body: any, options?: requestOptions) => {
             options = options ? options : {};
             options.method = "DELETE";
 
-            return fetch(api, body, options);
+            return await fetch(api, body, options);
         }
     }
 }
@@ -92,24 +92,24 @@ export function api(api: string) {
  * @param body the data to include in the fetch call
  * @param options any options for the request
  */
-export async function fetch(api: string, body?: any, options?: requestOptions) {
+export async function fetch(api: string, body?: any, options?: requestOptions): Promise<any> {
     let id = ++increment;
     let method = options && options.method ? options.method : "GET";
 
     switch (method) {
 
         case "POST":
-            return sendData({ id, api, body, options });
+            return await sendData({ id, api, body, options });
 
         case "PUT":
-            return sendData({ id, api, body, options });
+            return await sendData({ id, api, body, options });
 
         case "DELETE":
-            return getData({ id, api, body, options });
+            return await getData({ id, api, body, options });
 
         case "GET":
         default:
-            return getData({ id, api, body, options });
+            return await getData({ id, api, body, options });
     }
 
 }
@@ -118,7 +118,7 @@ export async function fetch(api: string, body?: any, options?: requestOptions) {
  * Request a get or delete
  * 
  */
-async function getData({ id, api, body, options }: { id: number; api: string; body?: any; options?: requestOptions; }) {
+async function getData({ id, api, body, options }: { id: number; api: string; body?: any; options?: requestOptions; }): Promise<any> {
 
     if ((options && options.use === "http") || !socketReady) {
         let url = new URL(`${setOptions.fetchUrl}/${encodeURIComponent(id)}/${encodeURIComponent(api)}`);
@@ -155,7 +155,7 @@ async function getData({ id, api, body, options }: { id: number; api: string; bo
  * Send any post or put data
  * 
  */
-async function sendData({ id, api, body, options }: { id: number; api: string; body?: any; options?: requestOptions; }) {
+async function sendData({ id, api, body, options }: { id: number; api: string; body?: any; options?: requestOptions; }): Promise<any> {
 
     if ((options && options.use === "http") || !socketReady) {
         // use the http request instead of web socket

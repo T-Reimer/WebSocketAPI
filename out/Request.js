@@ -42,7 +42,7 @@ var Request = /** @class */ (function () {
         return this;
     };
     /**
-     * Send a repsonse to the client
+     * Send a response to the client
      *
      * @param value The value to send to client
      */
@@ -51,7 +51,7 @@ var Request = /** @class */ (function () {
             this._send({
                 id: this.id,
                 status: this._status === 200 ? 500 : this._status,
-                content: null,
+                body: null,
                 error: {
                     name: value.name,
                     message: value.message
@@ -62,7 +62,7 @@ var Request = /** @class */ (function () {
             this._send({
                 id: this.id,
                 status: this._status,
-                content: value,
+                body: value,
                 error: false
             });
         }

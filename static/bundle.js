@@ -74,27 +74,52 @@ function setup(options) {
 }
 exports.setup = setup;
 function api(api) {
+    var _this = this;
     return {
-        get: function (body, options) {
-            options = options ? options : {};
-            options.method = "GET";
-            return fetch(api, body, options);
-        },
-        post: function (body, options) {
-            options = options ? options : {};
-            options.method = "POST";
-            return fetch(api, body, options);
-        },
-        put: function (body, options) {
-            options = options ? options : {};
-            options.method = "PUT";
-            return fetch(api, body, options);
-        },
-        delete: function (body, options) {
-            options = options ? options : {};
-            options.method = "DELETE";
-            return fetch(api, body, options);
-        }
+        get: function (body, options) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        options = options ? options : {};
+                        options.method = "GET";
+                        return [4 /*yield*/, fetch(api, body, options)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        }); },
+        post: function (body, options) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        options = options ? options : {};
+                        options.method = "POST";
+                        return [4 /*yield*/, fetch(api, body, options)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        }); },
+        put: function (body, options) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        options = options ? options : {};
+                        options.method = "PUT";
+                        return [4 /*yield*/, fetch(api, body, options)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        }); },
+        delete: function (body, options) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        options = options ? options : {};
+                        options.method = "DELETE";
+                        return [4 /*yield*/, fetch(api, body, options)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        }); }
     };
 }
 exports.api = api;
@@ -107,22 +132,29 @@ exports.api = api;
  */
 function fetch(api, body, options) {
     return __awaiter(this, void 0, void 0, function () {
-        var id, method;
-        return __generator(this, function (_a) {
-            id = ++increment;
-            method = options && options.method ? options.method : "GET";
-            switch (method) {
-                case "POST":
-                    return [2 /*return*/, sendData({ id: id, api: api, body: body, options: options })];
-                case "PUT":
-                    return [2 /*return*/, sendData({ id: id, api: api, body: body, options: options })];
-                case "DELETE":
-                    return [2 /*return*/, getData({ id: id, api: api, body: body, options: options })];
-                case "GET":
-                default:
-                    return [2 /*return*/, getData({ id: id, api: api, body: body, options: options })];
+        var id, method, _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    id = ++increment;
+                    method = options && options.method ? options.method : "GET";
+                    _a = method;
+                    switch (_a) {
+                        case "POST": return [3 /*break*/, 1];
+                        case "PUT": return [3 /*break*/, 3];
+                        case "DELETE": return [3 /*break*/, 5];
+                        case "GET": return [3 /*break*/, 7];
+                    }
+                    return [3 /*break*/, 7];
+                case 1: return [4 /*yield*/, sendData({ id: id, api: api, body: body, options: options })];
+                case 2: return [2 /*return*/, _b.sent()];
+                case 3: return [4 /*yield*/, sendData({ id: id, api: api, body: body, options: options })];
+                case 4: return [2 /*return*/, _b.sent()];
+                case 5: return [4 /*yield*/, getData({ id: id, api: api, body: body, options: options })];
+                case 6: return [2 /*return*/, _b.sent()];
+                case 7: return [4 /*yield*/, getData({ id: id, api: api, body: body, options: options })];
+                case 8: return [2 /*return*/, _b.sent()];
             }
-            return [2 /*return*/];
         });
     });
 }
@@ -237,7 +269,7 @@ function createNewConnection() {
                                 event_1.reject(error);
                             }
                             else {
-                                event_1.resolve(data.body);
+                                event_1.resolve(data);
                             }
                             // remove the event from list of waiting
                             events.splice(i, 1);
