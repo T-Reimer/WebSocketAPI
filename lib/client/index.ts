@@ -1,3 +1,5 @@
+const globalFetch = window.fetch;
+
 import { setup as socketSetup, ready as socketReady, fetch as socketFetch, socket, send } from "./socket";
 import RequestData from "./../RequestData";
 
@@ -126,7 +128,7 @@ async function getData(id: number, api: string, body?: any, options?: requestOpt
 
     console.log("id", id);
     console.log("api", api);
-    console.log("body", body);
+    console.log("body", id);
 
     if ((options && options.use === "http") || !socketReady) {
         let url = new URL(`${setOptions.fetchUrl}/${encodeURIComponent(id)}/${encodeURIComponent(api)}`);
@@ -145,7 +147,7 @@ async function getData(id: number, api: string, body?: any, options?: requestOpt
         url.search = search;
 
         // send the request to the server
-        let request = await fetch(url.href, {
+        let request = await globalFetch(url.href, {
             method: options && options.method ? options.method : "GET"
         });
 
@@ -170,7 +172,7 @@ async function sendData(id: number, api: string, body?: any, options?: requestOp
         // use the http request instead of web socket
         const url = `${setOptions.fetchUrl}/${encodeURIComponent(id)}/${encodeURIComponent(api)}`;
 
-        let request = await fetch(url, {
+        let request = await globalFetch(url, {
             method: options && options.method ? options.method : "POST",
             headers: {
                 "Content-Type": "application/json"

@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var globalFetch = window.fetch;
 var socket_1 = require("./socket");
 var increment = 0;
 exports.setOptions = {
@@ -173,7 +174,7 @@ function getData(id, api, body, options) {
                 case 0:
                     console.log("id", id);
                     console.log("api", api);
-                    console.log("body", body);
+                    console.log("body", id);
                     if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
                     url = new URL(exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api));
                     search = url.search;
@@ -188,7 +189,7 @@ function getData(id, api, body, options) {
                     }
                     search += "body=" + bodyString;
                     url.search = search;
-                    return [4 /*yield*/, fetch(url.href, {
+                    return [4 /*yield*/, globalFetch(url.href, {
                             method: options && options.method ? options.method : "GET"
                         })];
                 case 1:
@@ -217,7 +218,7 @@ function sendData(id, api, body, options) {
                 case 0:
                     if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
                     url = exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api);
-                    return [4 /*yield*/, fetch(url, {
+                    return [4 /*yield*/, globalFetch(url, {
                             method: options && options.method ? options.method : "POST",
                             headers: {
                                 "Content-Type": "application/json"
