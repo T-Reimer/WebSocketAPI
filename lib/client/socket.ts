@@ -17,6 +17,8 @@ export function setup() {
 }
 
 function createNewConnection() {
+    // set ready state to false
+    ready = false;
     if (socket && socket.readyState === socket.OPEN) {
         socket.close();
     }
@@ -24,38 +26,69 @@ function createNewConnection() {
 
     socket.addEventListener("open", () => {
         if (socket) {
-            ready = true;
+            /**
+             * Tell if the events are registered or not
+             */
+            let registered = false;
             socket.addEventListener("message", (event) => {
 
-                try {
-                    let data: RequestData = JSON.parse(event.data);
+                // listen for the main start message
+                if (!registered) {
+                    try {
+                        let data: { event: string } = JSON.parse(event.data);
 
-                    if (!data.id) {
-                        throw new Error("Event id not found");
-                    }
+                        if (data && data.event && data.event === "connection") {
+                            // if the connection signal is received then send the data
+                            registered = true;
+                            // ready = true;
+                        } else {
+                            // if the data wasn't the correct format then patch to the event
+                            setOptions.websocketOnMessage(event.data);
 
-                    for (let i = 0; i < events.length; i++) {
-                        let event = events[i];
-                        if (event.id === data.id) {
-                            if (data.error) {
-                                let error = new Error(data.error.message);
-                                error.name = data.error.name;
-                                event.reject(error);
-                            } else {
-                                event.resolve(data);
-                            }
-
-                            // remove the event from list of waiting
-                            events.splice(i, 1);
-
-                            return;
                         }
+
+                    } catch (err) {
+                        // send the data to the before register event that was set in the options
+                        setOptions.websocketOnMessage(event.data);
                     }
-                } catch (err) {
-                    if (setOptions.unHandledWebSocketMessage) {
-                        setOptions.unHandledWebSocketMessage(err, event.data);
+
+                } else {
+
+                    //parse the message and trigger the events
+                    try {
+                        let data: RequestData = JSON.parse(event.data);
+
+                        if (!data.id) {
+                            throw new Error("Event id not found");
+                        }
+
+                        for (let i = 0; i < events.length; i++) {
+                            let event = events[i];
+                            if (event.id === data.id) {
+                                if (data.error) {
+                                    let error = new Error(data.error.message);
+                                    error.name = data.error.name;
+                                    event.reject(error);
+                                } else {
+                                    event.resolve(data);
+                                }
+
+                                // remove the event from list of waiting
+                                events.splice(i, 1);
+
+                                return;
+                            }
+                        }
+
+                        // set the socket as ready
+                        ready = true;
+
+                    } catch (err) {
+                        if (setOptions.unHandledWebSocketMessage) {
+                            setOptions.unHandledWebSocketMessage(err, event.data);
+                        }
+                        throw err;
                     }
-                    throw err;
                 }
             });
 
@@ -66,7 +99,11 @@ function createNewConnection() {
 
             socket.addEventListener("close", () => {
                 ready = false;
-                createNewConnection();
+                const timeout: number = typeof setOptions.reconnectTimeOut === "function" ? setOptions.reconnectTimeOut() : setOptions.reconnectTimeOut;
+
+                // wait for a little before reconnecting
+                // TODO: Set this time in the options
+                setTimeout(createNewConnection, timeout);
             });
         } else {
             createNewConnection();

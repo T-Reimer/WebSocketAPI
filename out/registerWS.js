@@ -10,7 +10,11 @@ var createWSRequest_1 = require("./createWSRequest");
 function registerWS(wss, settings) {
     // on connection
     wss.on('connection', function connection(ws) {
-        // on message
+        console.log("New Connection");
+        // TODO: Register a event that can be run to authenticate the user before allowing any other communication
+        // send a Open connection event to tell the api on client side to start listening
+        ws.send(JSON.stringify({ event: "connection" }));
+        // register the on message event once the authentication is complete
         ws.on('message', function incoming(message) {
             console.log('received: %s', message);
             try {
@@ -40,8 +44,6 @@ function registerWS(wss, settings) {
                 }
             }
         });
-        ws.send('Connection');
-        console.log("New Connection");
     });
 }
 exports.registerWS = registerWS;

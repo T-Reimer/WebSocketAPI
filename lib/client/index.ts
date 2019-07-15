@@ -4,9 +4,11 @@ import RequestData from "./../RequestData";
 interface Options {
     fetchUrl: string,
     websocketUrl: string,
+    websocketOnMessage: Function,
     reconnect: boolean | null | Function,
     url: object,
     maxSocketLength: number, // the max length that the request is sent over websocket vs fetch request
+    reconnectTimeOut: number | Function, // set the function to only return a number
     unHandledWebSocketMessage?: Function
 }
 
@@ -14,9 +16,11 @@ let increment = 0;
 export const setOptions: Options = {
     fetchUrl: "/api",
     websocketUrl: "/api",
+    websocketOnMessage: (message: string) => { console.group("Unregistered Event"); console.log(message); console.groupEnd(); },
     reconnect: true,
     url: {},
     maxSocketLength: 10000,
+    reconnectTimeOut: 500,
     unHandledWebSocketMessage: (err: Error, message: string) => {
         console.group("Web Socket unhandled message");
         console.error(err);
@@ -99,17 +103,17 @@ export async function fetch(api: string, body?: any, options?: requestOptions): 
     switch (method) {
 
         case "POST":
-            return await sendData({ id, api, body, options });
+            return await sendData(id, api, body, options);
 
         case "PUT":
-            return await sendData({ id, api, body, options });
+            return await sendData(id, api, body, options);
 
         case "DELETE":
-            return await getData({ id, api, body, options });
+            return await getData(id, api, body, options);
 
         case "GET":
         default:
-            return await getData({ id, api, body, options });
+            return await getData(id, api, body, options);
     }
 
 }
@@ -118,7 +122,11 @@ export async function fetch(api: string, body?: any, options?: requestOptions): 
  * Request a get or delete
  * 
  */
-async function getData({ id, api, body, options }: { id: number; api: string; body?: any; options?: requestOptions; }): Promise<any> {
+async function getData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
+
+    console.log("id", id);
+    console.log("api", api);
+    console.log("body", body);
 
     if ((options && options.use === "http") || !socketReady) {
         let url = new URL(`${setOptions.fetchUrl}/${encodeURIComponent(id)}/${encodeURIComponent(api)}`);
@@ -130,6 +138,7 @@ async function getData({ id, api, body, options }: { id: number; api: string; bo
         }
         let bodyString = encodeURIComponent(JSON.stringify(body));
         if (bodyString.length + url.href.length > 2048) {
+            console.log(bodyString, url.href);
             throw new Error("Body length to long. Please specify to use ws 'options.use = ws' or use a lesser body length. The max url length is 2048 characters.");
         }
         search += `body=${bodyString}`;
@@ -155,7 +164,7 @@ async function getData({ id, api, body, options }: { id: number; api: string; bo
  * Send any post or put data
  * 
  */
-async function sendData({ id, api, body, options }: { id: number; api: string; body?: any; options?: requestOptions; }): Promise<any> {
+async function sendData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
 
     if ((options && options.use === "http") || !socketReady) {
         // use the http request instead of web socket

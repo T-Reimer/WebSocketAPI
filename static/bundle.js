@@ -41,9 +41,11 @@ var increment = 0;
 exports.setOptions = {
     fetchUrl: "/api",
     websocketUrl: "/api",
+    websocketOnMessage: function (message) { console.group("Unregistered Event"); console.log(message); console.groupEnd(); },
     reconnect: true,
     url: {},
     maxSocketLength: 10000,
+    reconnectTimeOut: 500,
     unHandledWebSocketMessage: function (err, message) {
         console.group("Web Socket unhandled message");
         console.error(err);
@@ -146,13 +148,13 @@ function fetch(api, body, options) {
                         case "GET": return [3 /*break*/, 7];
                     }
                     return [3 /*break*/, 7];
-                case 1: return [4 /*yield*/, sendData({ id: id, api: api, body: body, options: options })];
+                case 1: return [4 /*yield*/, sendData(id, api, body, options)];
                 case 2: return [2 /*return*/, _b.sent()];
-                case 3: return [4 /*yield*/, sendData({ id: id, api: api, body: body, options: options })];
+                case 3: return [4 /*yield*/, sendData(id, api, body, options)];
                 case 4: return [2 /*return*/, _b.sent()];
-                case 5: return [4 /*yield*/, getData({ id: id, api: api, body: body, options: options })];
+                case 5: return [4 /*yield*/, getData(id, api, body, options)];
                 case 6: return [2 /*return*/, _b.sent()];
-                case 7: return [4 /*yield*/, getData({ id: id, api: api, body: body, options: options })];
+                case 7: return [4 /*yield*/, getData(id, api, body, options)];
                 case 8: return [2 /*return*/, _b.sent()];
             }
         });
@@ -163,13 +165,15 @@ exports.fetch = fetch;
  * Request a get or delete
  *
  */
-function getData(_a) {
-    var id = _a.id, api = _a.api, body = _a.body, options = _a.options;
+function getData(id, api, body, options) {
     return __awaiter(this, void 0, void 0, function () {
         var url, search, bodyString, request, data, data;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
+                    console.log("id", id);
+                    console.log("api", api);
+                    console.log("body", body);
                     if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
                     url = new URL(exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api));
                     search = url.search;
@@ -179,6 +183,7 @@ function getData(_a) {
                     }
                     bodyString = encodeURIComponent(JSON.stringify(body));
                     if (bodyString.length + url.href.length > 2048) {
+                        console.log(bodyString, url.href);
                         throw new Error("Body length to long. Please specify to use ws 'options.use = ws' or use a lesser body length. The max url length is 2048 characters.");
                     }
                     search += "body=" + bodyString;
@@ -187,14 +192,14 @@ function getData(_a) {
                             method: options && options.method ? options.method : "GET"
                         })];
                 case 1:
-                    request = _b.sent();
+                    request = _a.sent();
                     return [4 /*yield*/, request.json()];
                 case 2:
-                    data = _b.sent();
+                    data = _a.sent();
                     return [2 /*return*/, data.body];
                 case 3: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
                 case 4:
-                    data = _b.sent();
+                    data = _a.sent();
                     return [2 /*return*/, data.body];
             }
         });
@@ -204,12 +209,11 @@ function getData(_a) {
  * Send any post or put data
  *
  */
-function sendData(_a) {
-    var id = _a.id, api = _a.api, body = _a.body, options = _a.options;
+function sendData(id, api, body, options) {
     return __awaiter(this, void 0, void 0, function () {
         var url, request, data, data;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
                     url = exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api);
@@ -221,14 +225,14 @@ function sendData(_a) {
                             body: body
                         })];
                 case 1:
-                    request = _b.sent();
+                    request = _a.sent();
                     return [4 /*yield*/, request.json()];
                 case 2:
-                    data = _b.sent();
+                    data = _a.sent();
                     return [2 /*return*/, data.body];
                 case 3: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
                 case 4:
-                    data = _b.sent();
+                    data = _a.sent();
                     return [2 /*return*/, data.body];
             }
         });
@@ -247,41 +251,70 @@ function setup() {
 }
 exports.setup = setup;
 function createNewConnection() {
+    // set ready state to false
+    exports.ready = false;
     if (exports.socket && exports.socket.readyState === exports.socket.OPEN) {
         exports.socket.close();
     }
     exports.socket = new WebSocket(index_1.setOptions.websocketUrl);
     exports.socket.addEventListener("open", function () {
         if (exports.socket) {
-            exports.ready = true;
+            /**
+             * Tell if the events are registered or not
+             */
+            var registered_1 = false;
             exports.socket.addEventListener("message", function (event) {
-                try {
-                    var data = JSON.parse(event.data);
-                    if (!data.id) {
-                        throw new Error("Event id not found");
-                    }
-                    for (var i = 0; i < events.length; i++) {
-                        var event_1 = events[i];
-                        if (event_1.id === data.id) {
-                            if (data.error) {
-                                var error = new Error(data.error.message);
-                                error.name = data.error.name;
-                                event_1.reject(error);
-                            }
-                            else {
-                                event_1.resolve(data);
-                            }
-                            // remove the event from list of waiting
-                            events.splice(i, 1);
-                            return;
+                // listen for the main start message
+                if (!registered_1) {
+                    try {
+                        var data = JSON.parse(event.data);
+                        if (data && data.event && data.event === "connection") {
+                            // if the connection signal is received then send the data
+                            registered_1 = true;
+                            // ready = true;
+                        }
+                        else {
+                            // if the data wasn't the correct format then patch to the event
+                            index_1.setOptions.websocketOnMessage(event.data);
                         }
                     }
-                }
-                catch (err) {
-                    if (index_1.setOptions.unHandledWebSocketMessage) {
-                        index_1.setOptions.unHandledWebSocketMessage(err, event.data);
+                    catch (err) {
+                        // send the data to the before register event that was set in the options
+                        index_1.setOptions.websocketOnMessage(event.data);
                     }
-                    throw err;
+                }
+                else {
+                    //parse the message and trigger the events
+                    try {
+                        var data = JSON.parse(event.data);
+                        if (!data.id) {
+                            throw new Error("Event id not found");
+                        }
+                        for (var i = 0; i < events.length; i++) {
+                            var event_1 = events[i];
+                            if (event_1.id === data.id) {
+                                if (data.error) {
+                                    var error = new Error(data.error.message);
+                                    error.name = data.error.name;
+                                    event_1.reject(error);
+                                }
+                                else {
+                                    event_1.resolve(data);
+                                }
+                                // remove the event from list of waiting
+                                events.splice(i, 1);
+                                return;
+                            }
+                        }
+                        // set the socket as ready
+                        exports.ready = true;
+                    }
+                    catch (err) {
+                        if (index_1.setOptions.unHandledWebSocketMessage) {
+                            index_1.setOptions.unHandledWebSocketMessage(err, event.data);
+                        }
+                        throw err;
+                    }
                 }
             });
             exports.socket.addEventListener("error", function (error) {
@@ -290,7 +323,10 @@ function createNewConnection() {
             });
             exports.socket.addEventListener("close", function () {
                 exports.ready = false;
-                createNewConnection();
+                var timeout = typeof index_1.setOptions.reconnectTimeOut === "function" ? index_1.setOptions.reconnectTimeOut() : index_1.setOptions.reconnectTimeOut;
+                // wait for a little before reconnecting
+                // TODO: Set this time in the options
+                setTimeout(createNewConnection, timeout);
             });
         }
         else {
