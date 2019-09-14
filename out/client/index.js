@@ -222,7 +222,7 @@ function sendData(id, api, body, options) {
                             headers: {
                                 "Content-Type": "application/json"
                             },
-                            body: body
+                            body: JSON.stringify(body) // stringify the content
                         })];
                 case 1:
                     request = _a.sent();

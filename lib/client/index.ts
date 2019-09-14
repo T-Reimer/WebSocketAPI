@@ -177,7 +177,7 @@ async function sendData(id: number, api: string, body?: any, options?: requestOp
             headers: {
                 "Content-Type": "application/json"
             },
-            body: body
+            body: JSON.stringify(body) // stringify the content
         });
 
         let data: RequestData = await request.json();

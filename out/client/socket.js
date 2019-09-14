@@ -111,6 +111,7 @@ function fetch(id, api, body, options) {
                 body: body,
                 method: options && options.method ? options.method : "GET"
             };
+            // send the data to server
             send(data);
             // register the event listener for the fetch return value
             events.push({

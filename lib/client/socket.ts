@@ -131,6 +131,7 @@ export function fetch(id: number, api: string, body?: any, options?: requestOpti
                 method: options && options.method ? options.method : "GET"
             };
 
+            // send the data to server
             send(data);
 
             // register the event listener for the fetch return value
