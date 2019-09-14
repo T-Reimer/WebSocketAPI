@@ -11,8 +11,6 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
     // on connection
     wss.on('connection', function connection(ws: WebSocket) {
 
-        console.log("New Connection");
-
         // TODO: Register a event that can be run to authenticate the user before allowing any other communication
         // send a Open connection event to tell the api on client side to start listening
         ws.send(JSON.stringify({ event: "connection" }));

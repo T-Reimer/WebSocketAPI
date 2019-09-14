@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var InvalidRequest_1 = require("./../errors/InvalidRequest");
 var Events = /** @class */ (function () {
     function Events() {
         /**
@@ -27,6 +28,13 @@ var Events = /** @class */ (function () {
         };
         if (this.events[name]) {
             callEvent();
+        }
+        else {
+            // the event is not registered and send a error back to client so the request can be closed
+            var error = new InvalidRequest_1.InvalidRequest("Unknown api request. Please register the endpoint before using it.");
+            error.name = "Invalid Request";
+            error.status = 404;
+            throw error;
         }
     };
     /**
