@@ -14,7 +14,7 @@ exports.Settings = {
  * Register the default route with express
  *
  * @param app Express app
- * @param wss the webwss connection
+ * @param wss the web-wss connection
  * @param route the default route
  */
 function register(app, wss, route, options) {
@@ -24,18 +24,24 @@ function register(app, wss, route, options) {
 }
 exports.register = register;
 /**
- * Register a event listener for the name
+ * Register a event listener for the name.
+ *
+ * Events are called when a event gets dispatched with that same name
  *
  * @param name the event name
  * @param callback the callback to run
+ *
+ * @example on("test", () => {\/*Always run *\/}).get(() => {\/** Get request *\/}).post(() => {\/** post request *\/})
  */
 function on(name, callback) {
+    // if a callback function is given register it for each of the categories
     if (callback) {
         index_1.getEvent.on(name, callback);
         index_1.postEvent.on(name, callback);
         index_1.putEvent.on(name, callback);
         index_1.delEvent.on(name, callback);
     }
+    // return a object to register listeners for specific event types
     var obj = {
         get: function (callback) {
             index_1.getEvent.on(name, callback);

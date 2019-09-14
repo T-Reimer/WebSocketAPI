@@ -24,7 +24,7 @@ export const Settings = {
  * Register the default route with express
  * 
  * @param app Express app
- * @param wss the webwss connection
+ * @param wss the web-wss connection
  * @param route the default route
  */
 export function register(app: Application, wss: WebSocket.Server, route: string, options: SettingsInterface) {
@@ -46,13 +46,18 @@ interface eventObject {
 
 
 /**
- * Register a event listener for the name
+ * Register a event listener for the name.
+ * 
+ * Events are called when a event gets dispatched with that same name
  * 
  * @param name the event name
  * @param callback the callback to run
+ * 
+ * @example on("test", () => {\/*Always run *\/}).get(() => {\/** Get request *\/}).post(() => {\/** post request *\/})
  */
 export function on(name: string, callback?: Function) {
 
+    // if a callback function is given register it for each of the categories
     if (callback) {
         getEvent.on(name, callback);
         postEvent.on(name, callback);
@@ -60,6 +65,7 @@ export function on(name: string, callback?: Function) {
         delEvent.on(name, callback);
     }
 
+    // return a object to register listeners for specific event types
     let obj: eventObject = {
         get: (callback: Function) => {
             getEvent.on(name, callback);

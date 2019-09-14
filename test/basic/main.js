@@ -33,6 +33,6 @@ window.addEventListener("load", () => {
  */
 function sendData(name, value) {
 
-    WebSocketAPI.fetch("test", 152);
+    console.log(WebSocketAPI.fetch("test", 152));
 
 }

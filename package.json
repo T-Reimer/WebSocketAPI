@@ -9,7 +9,7 @@
         "url": "https://bitbucket.org/t-reimer/websocketapi/src/master/"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "cd test && node test.js",
         "compile-client": "watchify out/client/index.js -o static/bundle.js -s WebSocketAPI",
         "uglify": "uglifyjs static/bundle.js -o static/bundle.min.js"
     },

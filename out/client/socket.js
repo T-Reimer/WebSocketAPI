@@ -28,8 +28,10 @@ function createNewConnection() {
                         var data = JSON.parse(event.data);
                         if (data && data.event && data.event === "connection") {
                             // if the connection signal is received then send the data
+                            // set the registered flag
                             registered_1 = true;
-                            // ready = true;
+                            // set the ready flag. After this is set then the websocket will be used for message events
+                            exports.ready = true;
                         }
                         else {
                             // if the data wasn't the correct format then patch to the event
