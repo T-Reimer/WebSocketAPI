@@ -111,10 +111,6 @@ export function api(api: string) {
  */
 export async function getData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
 
-    console.log("id", id);
-    console.log("api", api);
-    console.log("body", id);
-
     if ((options && options.use === "http") || !socketReady) {
         let url = new URL(`${setOptions.fetchUrl}/${encodeURIComponent(id)}/${encodeURIComponent(api)}`);
         let search = url.search;
@@ -125,7 +121,6 @@ export async function getData(id: number, api: string, body?: any, options?: req
         }
         let bodyString = encodeURIComponent(JSON.stringify(body));
         if (bodyString.length + url.href.length > 2048) {
-            console.log(bodyString, url.href);
             throw new Error("Body length to long. Please specify to use ws 'options.use = ws' or use a lesser body length. The max url length is 2048 characters.");
         }
         search += `body=${bodyString}`;

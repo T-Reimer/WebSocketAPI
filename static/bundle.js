@@ -148,9 +148,6 @@ function getData(id, api, body, options) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log("id", id);
-                    console.log("api", api);
-                    console.log("body", id);
                     if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 6];
                     url = new URL(exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api));
                     search = url.search;
@@ -160,7 +157,6 @@ function getData(id, api, body, options) {
                     }
                     bodyString = encodeURIComponent(JSON.stringify(body));
                     if (bodyString.length + url.href.length > 2048) {
-                        console.log(bodyString, url.href);
                         throw new Error("Body length to long. Please specify to use ws 'options.use = ws' or use a lesser body length. The max url length is 2048 characters.");
                     }
                     search += "body=" + bodyString;
