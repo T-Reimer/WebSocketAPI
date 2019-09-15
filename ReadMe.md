@@ -1,13 +1,12 @@
+# Web Socket Api
+
+Web Socket API is a new way to interact with data from an Express JS web server to the client built on top of [Express](https://www.npmjs.com/package/express) and [WS](https://www.npmjs.com/package/ws). Register for both endpoints with a single event listener and effortlessly pick your preferred protocol on request. 
 
 ## This Package is Still in dev stage
 
-I am working on this project in my spare time. So if you'd like to contribute then check me out on bitbucket.
+I am working on this project in my spare time. So if you'd like to contribute then check it out on [bitbucket](https://bitbucket.org/t-reimer/websocketapi/src/master/).
 
 https://bitbucket.org/t-reimer/websocketapi/src/master/
-
-
-# Web Socket Api
-Web Socket API is a new way to interact with data from an Express JS web server to the client built on top of [Express](https://www.npmjs.com/package/express) and [WS](https://www.npmjs.com/package/ws). Register for both endpoints with a single event listener and effortlessly pick your preferred protocol on request. 
 
 ## Register Server
 To get started you need to register both Express and WS with the api. 
@@ -26,9 +25,9 @@ To register an api endpoint call the on event register function. The event is th
 You can also listen for specific types of requests.
 
     api.on(Event)
-      .get((event, next) => {}) // the method was set to get on client side
-      .post((event, next) => {}) // method was set to post
-      .put((event, next) => {}) // method was set to put
+      .get((event, next) => {})     // the method was set to get on client side
+      .post((event, next) => {})    // method was set to post
+      .put((event, next) => {})     // method was set to put
       .delete((event, next) => {}); // method was set to delete
 
 ## Server Setup Code
@@ -83,11 +82,68 @@ You can also listen for specific types of requests.
 # Client Setup
 
 ## Setup
+To load the API on the browser you can load `static/bundle.min.js` or if using a compiler you can `require('websocketapi/out/client')`. For typescript you can import `'websocketapi/lib/client'`
+
+To setup the client call the `WebSocketAPI.setup` function. Set the fetchUrl to the same endpoint that is used in the express route. The websocketUrl should point the the WS server that was previously setup.
+
+    WebSocketAPI.setup({
+	    fetchUrl:  "/api", // the api endpoint registered in express
+	    websocketUrl:  "ws://localhost:8080/"
+    });
 
 ## Options
 
+    {
+		fetchUrl:  string,
+		websocketUrl:  string,
+		websocketOnMessage:  Function,
+		reconnect:  boolean  |  null  |  Function,
+		url:  object,
+		maxSocketLength:  number, // the max length that the request is sent over websocket vs fetch request
+		reconnectTimeOut:  number  |  Function, // set the function to only return a number
+		unHandledWebSocketMessage?:  Function
+	}
+
+ - **fetchUrl** Set the fetchUrl to the same endpoint that is used in the express route
+ 
+ - **websocketUrl** The websocketUrl should point the the WS server that was previously setup.
+ 
+ - **websocketOnMessage** This is a function that will on when a new websocket message comes in. This can be used to intercept other traffic then for the WebSocketAPI.
+ 
+ - **reconnect** tell if the api should attempt to reconnect Web socket on failure or not
+ 
+ - **maxSocketLength** The max length of a payload to send via websockets. Above this limit then a http request will be made. *Please note that setting this will still put a 2048 url length cap on get requests.*
+ 
+ - **reconnectTimeout** The amount of time to wait to reconnect. This can be a function to calculate a timeout period instead of a fixed number.
+ 
+ - **unHandledWebSocketMessage** This will get called if there is a unhandled event or web socket message from the server. Use this if you are making calls over the websocket outside of this api.
+
 ## Make a request
+Make a request to the server with the fetch function. Input the event name, payload and optional options and wait for the Promise to complete.
+
+    WebSocketAPI.fetch("test", 150, Options)
+	    .then(data => console.log("Response", data))
+	    .catch(err => console.error(err));
+
+An alternative way exists as well to make requests.
+
+	WebSocketAPI.api("test").get(callback);
+	WebSocketAPI.api("test").post(callback);
+	WebSocketAPI.api("test").put(callback);
+	WebSocketAPI.api("test").delete(callback);
+
+**Request Options**
+
+ - **method** the method to use to transfer the payload or make the request. 
+ `"GET"  |  "POST"  |  "PUT"  |  "DELETE"`
+ 
+ - **use** the mode to use to send the data.
+ `"ws"  |  "http"`
+ 
+ - **timeout** The amount of ms to wait for a response. **TODO**
 
 ## Listen for a Server Event
+
+**Docs coming soon.**
 
 *Contrary to a lot of other WS packages this package does not support or use http polling. If that is what you are looking for then this is not the package for you.*

@@ -73,7 +73,8 @@ export function setup(options: Options) {
 
 export interface requestOptions {
     method?: "GET" | "POST" | "PUT" | "DELETE",
-    use?: "ws" | "http"
+    use?: "ws" | "http",
+    timeout?: number
 }
 
 export function api(api: string) {
@@ -157,8 +158,11 @@ export async function getData(id: number, api: string, body?: any, options?: req
 /**
  * Send any post or put data
  * 
+ * @todo Add the timeout error
  */
 export async function sendData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
+
+    // TODO: Add the timeout error here
 
     if ((options && options.use === "http") || !socketReady) {
         // use the http request instead of web socket

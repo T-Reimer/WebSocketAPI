@@ -191,6 +191,7 @@ exports.getData = getData;
 /**
  * Send any post or put data
  *
+ * @todo Add the timeout error
  */
 function sendData(id, api, body, options) {
     return __awaiter(this, void 0, void 0, function () {
