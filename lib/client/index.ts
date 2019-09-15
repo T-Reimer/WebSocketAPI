@@ -14,7 +14,18 @@ interface Options {
     unHandledWebSocketMessage?: Function
 }
 
+/**
+ * The incremental id used when fetching requests
+ */
 let increment = 0;
+
+export function newIndex() {
+    return ++increment;
+}
+
+/**
+ * The currently using options object
+ */
 export const setOptions: Options = {
     fetchUrl: "/api",
     websocketUrl: "/api",
@@ -38,8 +49,11 @@ export const setOptions: Options = {
  * @param options the options for the client side application
  */
 export function setup(options: Options) {
+
+    // merge the new options with the defaults
     Object.assign(setOptions, options);
 
+    // create the url objects
     const fetchUrl = new URL(setOptions.fetchUrl, location.href);
     const websocketUrl = new URL(setOptions.websocketUrl, location.href);
 
@@ -92,39 +106,10 @@ export function api(api: string) {
 }
 
 /**
- * Make a new api request
- * 
- * @param api the api endpoint to call
- * @param body the data to include in the fetch call
- * @param options any options for the request
- */
-export async function fetch(api: string, body?: any, options?: requestOptions): Promise<any> {
-    let id = ++increment;
-    let method = options && options.method ? options.method : "GET";
-
-    switch (method) {
-
-        case "POST":
-            return await sendData(id, api, body, options);
-
-        case "PUT":
-            return await sendData(id, api, body, options);
-
-        case "DELETE":
-            return await getData(id, api, body, options);
-
-        case "GET":
-        default:
-            return await getData(id, api, body, options);
-    }
-
-}
-
-/**
  * Request a get or delete
  * 
  */
-async function getData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
+export async function getData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
 
     console.log("id", id);
     console.log("api", api);
@@ -151,8 +136,20 @@ async function getData(id: number, api: string, body?: any, options?: requestOpt
             method: options && options.method ? options.method : "GET"
         });
 
-        let data: RequestData = await request.json();
-        return data.body;
+        // if the request was successful
+        if (request.status == 200) {
+            let data: RequestData = await request.json();
+            return data.body;
+        } else {
+            // parse the error data
+            let data: { message: string, name: string } = await request.json();
+
+            // compile an error based on the data and throw it
+            const error: Error = new Error(data.message);
+            error.name = data.name;
+
+            throw error;
+        }
     } else {
 
         // get from web socket
@@ -166,7 +163,7 @@ async function getData(id: number, api: string, body?: any, options?: requestOpt
  * Send any post or put data
  * 
  */
-async function sendData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
+export async function sendData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
 
     if ((options && options.use === "http") || !socketReady) {
         // use the http request instead of web socket
@@ -180,12 +177,51 @@ async function sendData(id: number, api: string, body?: any, options?: requestOp
             body: JSON.stringify(body) // stringify the content
         });
 
-        let data: RequestData = await request.json();
-        return data.body;
+        // if the request was successful
+        if (request.status == 200) {
+            let data: RequestData = await request.json();
+            return data.body;
+        } else {
+            // parse the error data
+            let data: { message: string, name: string } = await request.json();
+
+            // compile an error based on the data and throw it
+            const error: Error = new Error(data.message);
+            error.name = data.name;
+
+            throw error;
+        }
     } else {
 
         // get from web socket
         let data: RequestData = await socketFetch(id, api, body, options);
         return data.body;
+    }
+}
+
+/**
+ * Make a new api request
+ *
+ * @param api the api endpoint to call
+ * @param body the data to include in the fetch call
+ * @param options any options for the request
+ */
+export async function fetch(api: string, body?: any, options?: requestOptions): Promise<any> {
+    /**
+     * The new index id to use for the transaction
+     */
+    let id = newIndex();
+
+    let method = options && options.method ? options.method : "GET";
+    switch (method) {
+        case "POST":
+            return await sendData(id, api, body, options);
+        case "PUT":
+            return await sendData(id, api, body, options);
+        case "DELETE":
+            return await getData(id, api, body, options);
+        case "GET":
+        default:
+            return await getData(id, api, body, options);
     }
 }
