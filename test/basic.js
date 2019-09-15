@@ -34,6 +34,10 @@ api.on("test", (event, next) => {
 api.on("ping", (event, next) => {
     console.log(event);
     event.send("pong");
+
+    setTimeout(() => {
+        event.client.fetch("ping").then(console.log).catch(console.warn);
+    }, 2000);
 });
 
 app.listen(port, () => console.log(`Express Listening on port > ${port}`));

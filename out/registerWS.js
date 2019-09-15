@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./events/index");
 var createWSRequest_1 = require("./createWSRequest");
+var wsClient_1 = require("./ws/wsClient");
 /**
  * Register the web wss server to use as api
  *
@@ -9,8 +10,9 @@ var createWSRequest_1 = require("./createWSRequest");
  */
 function registerWS(wss, settings) {
     // on connection
-    wss.on('connection', function connection(ws) {
-        // TODO: Register a event that can be run to authenticate the user before allowing any other communication
+    wss.on('connection', function connection(ws, req, cl) {
+        // create a new client
+        var client = new wsClient_1.wsClient(ws, req, cl);
         // send a Open connection event to tell the api on client side to start listening
         ws.send(JSON.stringify({ event: "connection" }));
         // register the on message event once the authentication is complete
@@ -18,8 +20,10 @@ function registerWS(wss, settings) {
             console.log('received: %s', message);
             try {
                 if (settings.maxLength && message.length <= settings.maxLength) {
+                    // parse the message to create a event
                     var data = JSON.parse(message);
-                    var event_1 = createWSRequest_1.createWSRequest(ws, data.id, data.name, data.body, data.method, settings);
+                    // create a event to dispatch
+                    var event_1 = createWSRequest_1.createWSRequest(client, data.id, data.name, data.body, data.method, settings);
                     switch (data.method) {
                         case "GET":
                             index_1.getEvent.triggerEvent(event_1);

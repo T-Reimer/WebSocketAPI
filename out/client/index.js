@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var globalFetch = window.fetch;
 var socket_1 = require("./socket");
+var registerEvent_1 = require("./registerEvent");
 /**
  * The incremental id used when fetching requests
  */
@@ -267,4 +268,14 @@ function fetch(api, body, options) {
     });
 }
 exports.fetch = fetch;
+/**
+ * Register a event listener for events sent from the server
+ *
+ * @param api The api name
+ * @param callback the callback function
+ */
+function on(api, callback) {
+    return registerEvent_1.registerEvent(api, callback);
+}
+exports.on = on;
 //# sourceMappingURL=index.js.map

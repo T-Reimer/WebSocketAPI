@@ -13,7 +13,11 @@ export class Events {
 
     }
 
-
+    /**
+     * Trigger a event
+     * 
+     * @param event 
+     */
     triggerEvent(event: Request) {
         // the caller index
         let index = 0;

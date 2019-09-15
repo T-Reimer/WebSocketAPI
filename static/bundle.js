@@ -1,5 +1,91 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WebSocketAPI = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * A simple api request
+ *
+ */
+var Request = /** @class */ (function () {
+    function Request(id, name, body, method) {
+        /**
+         * The event id
+         */
+        this.id = id;
+        /**
+         * The name of the event
+         */
+        this.name = name;
+        /**
+         * The main body for the request
+         */
+        this.body = body;
+        /**
+         * Set the request method
+         */
+        this.method = method.toUpperCase();
+        /**
+         * the main status for the request
+         */
+        this._status = 200;
+        this._send = function (value) { };
+    }
+    /**
+     * Set the request status code
+     *
+     * @param code The status code
+     */
+    Request.prototype.status = function (code) {
+        this._status = code;
+        return this;
+    };
+    /**
+     * Send a response to the client
+     *
+     * @param value The value to send to client
+     */
+    Request.prototype.send = function (value) {
+        if (value instanceof Error) {
+            this._send({
+                id: this.id,
+                status: this._status === 200 ? 500 : this._status,
+                body: null,
+                error: {
+                    name: value.name,
+                    message: value.message
+                }
+            });
+        }
+        else {
+            this._send({
+                id: this.id,
+                status: this._status,
+                body: value,
+                error: false
+            });
+        }
+        return this;
+    };
+    return Request;
+}());
+exports.Request = Request;
+
+},{}],2:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Request_1 = require("./../Request");
+var socket_1 = require("./socket");
+function createRequest(data) {
+    var id = data.id, name = data.name, body = data.body, method = data.method;
+    var req = new Request_1.Request(id, name, body, method);
+    req._send = function (value) {
+        return socket_1.send(value);
+    };
+    return req;
+}
+exports.createRequest = createRequest;
+
+},{"./../Request":1,"./socket":5}],3:[function(require,module,exports){
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -38,6 +124,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var globalFetch = window.fetch;
 var socket_1 = require("./socket");
+var registerEvent_1 = require("./registerEvent");
 /**
  * The incremental id used when fetching requests
  */
@@ -268,11 +355,64 @@ function fetch(api, body, options) {
     });
 }
 exports.fetch = fetch;
+/**
+ * Register a event listener for events sent from the server
+ *
+ * @param api The api name
+ * @param callback the callback function
+ */
+function on(api, callback) {
+    return registerEvent_1.registerEvent(api, callback);
+}
+exports.on = on;
 
-},{"./socket":2}],2:[function(require,module,exports){
+},{"./registerEvent":4,"./socket":5}],4:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = require("./../events/index");
+/**
+ * Register a event listener for events sent from the server
+ *
+ * @param name The api name
+ * @param callback the callback function
+ */
+function registerEvent(name, callback) {
+    // if a callback function is given register it for each of the categories
+    if (callback) {
+        index_1.getEvent.on(name, callback);
+        index_1.postEvent.on(name, callback);
+        index_1.putEvent.on(name, callback);
+        index_1.delEvent.on(name, callback);
+    }
+    // return a object to register listeners for specific event types
+    var obj = {
+        get: function (callback) {
+            index_1.getEvent.on(name, callback);
+            return obj;
+        },
+        post: function (callback) {
+            index_1.postEvent.on(name, callback);
+            return obj;
+        },
+        put: function (callback) {
+            index_1.putEvent.on(name, callback);
+            return obj;
+        },
+        delete: function (callback) {
+            index_1.delEvent.on(name, callback);
+            return obj;
+        }
+    };
+    return obj;
+}
+exports.registerEvent = registerEvent;
+
+},{"./../events/index":8}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./index");
+var createRequest_1 = require("./createRequest");
+var index_2 = require("./../events/index");
 var events = [];
 exports.socket = null;
 exports.ready = false;
@@ -322,20 +462,43 @@ function createNewConnection() {
                         if (!data.id) {
                             throw new Error("Event id not found");
                         }
-                        for (var i = 0; i < events.length; i++) {
-                            var event_1 = events[i];
-                            if (event_1.id === data.id) {
-                                if (data.error) {
-                                    var error = new Error(data.error.message);
-                                    error.name = data.error.name;
-                                    event_1.reject(error);
+                        if (data.method) {
+                            console.log(data);
+                            // if a method was received with the request then its a server side request
+                            // create a event to dispatch
+                            var event_1 = createRequest_1.createRequest(data);
+                            console.log(event_1);
+                            switch (data.method) {
+                                case "GET":
+                                    index_2.getEvent.triggerEvent(event_1);
+                                    break;
+                                case "POST":
+                                    index_2.postEvent.triggerEvent(event_1);
+                                    break;
+                                case "PUT":
+                                    index_2.putEvent.triggerEvent(event_1);
+                                    break;
+                                case "DELETE":
+                                    index_2.delEvent.triggerEvent(event_1);
+                                    break;
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < events.length; i++) {
+                                var event_2 = events[i];
+                                if (event_2.id === data.id) {
+                                    if (data.error) {
+                                        var error = new Error(data.error.message);
+                                        error.name = data.error.name;
+                                        event_2.reject(error);
+                                    }
+                                    else {
+                                        event_2.resolve(data);
+                                    }
+                                    // remove the event from list of waiting
+                                    events.splice(i, 1);
+                                    return;
                                 }
-                                else {
-                                    event_1.resolve(data);
-                                }
-                                // remove the event from list of waiting
-                                events.splice(i, 1);
-                                return;
                             }
                         }
                         // set the socket as ready
@@ -413,5 +576,126 @@ function send(body) {
 }
 exports.send = send;
 
-},{"./index":1}]},{},[1])(1)
+},{"./../events/index":8,"./createRequest":2,"./index":3}],6:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Create a new Invalid Request Error
+ */
+var InvalidRequest = /** @class */ (function (_super) {
+    __extends(InvalidRequest, _super);
+    function InvalidRequest(message) {
+        var _this = _super.call(this, message) || this;
+        _this.name = "Invalid Request";
+        _this.status = 500;
+        return _this;
+    }
+    return InvalidRequest;
+}(Error));
+exports.InvalidRequest = InvalidRequest;
+
+},{}],7:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var InvalidRequest_1 = require("./../errors/InvalidRequest");
+var Events = /** @class */ (function () {
+    function Events() {
+        /**
+         * The registered events
+         */
+        this.events = {};
+    }
+    /**
+     * Trigger a event
+     *
+     * @param event
+     */
+    Events.prototype.triggerEvent = function (event) {
+        var _this = this;
+        // the caller index
+        var index = 0;
+        var name = event.name;
+        /**
+         * Call this function to run the next function
+         */
+        var callEvent = function () {
+            // check if the callback exists
+            if (_this.events[name][index]) {
+                // run the callback
+                _this.events[name][index](event, function () {
+                    index++;
+                    callEvent();
+                });
+            }
+        };
+        if (this.events[name]) {
+            callEvent();
+        }
+        else {
+            // the event is not registered and send a error back to client so the request can be closed
+            var error = new InvalidRequest_1.InvalidRequest("Unknown api request. Please register the endpoint before using it.");
+            error.name = "Invalid Request";
+            error.status = 404;
+            throw error;
+        }
+    };
+    /**
+     * Add a Event listener to the event name
+     *
+     * @param name The event name
+     * @param callback The callback function.
+     */
+    Events.prototype.on = function (name, callback) {
+        if (!this.events[name]) {
+            this.events[name] = [];
+        }
+        // add the callback to the event listeners
+        this.events[name].push(callback);
+    };
+    /**
+     * Remove the event from the list
+     *
+     * @param name The event name
+     * @param callback the callback to remove
+     */
+    Events.prototype.remove = function (name, callback) {
+        // check if the list exists
+        if (this.events[name]) {
+            // look for the function in the list
+            for (var i = this.events[name].length - 1; i >= 0; i--) {
+                // match the callback function
+                if (this.events[name][i] === callback) {
+                    // remove the function from the list
+                    this.events[name].splice(i, 1);
+                }
+            }
+        }
+    };
+    return Events;
+}());
+exports.Events = Events;
+
+},{"./../errors/InvalidRequest":6}],8:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var event_1 = require("./event");
+exports.getEvent = new event_1.Events();
+exports.postEvent = new event_1.Events();
+exports.putEvent = new event_1.Events();
+exports.delEvent = new event_1.Events();
+
+},{"./event":7}]},{},[3])(3)
 });

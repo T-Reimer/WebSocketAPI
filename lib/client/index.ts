@@ -2,6 +2,9 @@ const globalFetch = window.fetch;
 
 import { setup as socketSetup, ready as socketReady, fetch as socketFetch, socket, send } from "./socket";
 import RequestData from "./../RequestData";
+import { Request } from "./../Request";
+
+import { registerEvent } from "./registerEvent";
 
 interface Options {
     fetchUrl: string,
@@ -223,4 +226,14 @@ export async function fetch(api: string, body?: any, options?: requestOptions): 
         default:
             return await getData(id, api, body, options);
     }
+}
+
+/**
+ * Register a event listener for events sent from the server
+ * 
+ * @param api The api name
+ * @param callback the callback function
+ */
+export function on(api: string, callback: (event: Request) => {}) {
+    return registerEvent(api, callback);
 }

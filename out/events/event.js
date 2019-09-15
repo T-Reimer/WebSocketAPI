@@ -8,6 +8,11 @@ var Events = /** @class */ (function () {
          */
         this.events = {};
     }
+    /**
+     * Trigger a event
+     *
+     * @param event
+     */
     Events.prototype.triggerEvent = function (event) {
         var _this = this;
         // the caller index

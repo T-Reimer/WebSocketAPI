@@ -14,23 +14,19 @@ var Request = /** @class */ (function () {
          * The name of the event
          */
         this.name = name;
-        // set the body 
+        /**
+         * The main body for the request
+         */
         this.body = body;
-        // set the method
+        /**
+         * Set the request method
+         */
         this.method = method.toUpperCase();
         /**
          * the main status for the request
          */
         this._status = 200;
         this._send = function (value) { };
-        /**
-         * the express request for the api request
-         */
-        this.request = null;
-        /**
-         * the web socket request for the api request
-         */
-        this.WebSocket = null;
     }
     /**
      * Set the request status code

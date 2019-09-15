@@ -1,31 +1,35 @@
-
 /**
  * A simple api request
  * 
  */
 export class Request {
-    id: string;
+    id: number;
     name: string;
     body: object;
     method: string;
     _status: number;
     _send: (value: any) => void;
-    request: null;
-    WebSocket: null;
 
-    constructor(id: string, name: string, body: object, method: string) {
+    constructor(id: number, name: string, body: object, method: string) {
+
         /**
          * The event id
          */
         this.id = id;
+
         /**
          * The name of the event
          */
         this.name = name;
-        // set the body 
+
+        /**
+         * The main body for the request
+         */
         this.body = body;
 
-        // set the method
+        /**
+         * Set the request method
+         */
         this.method = method.toUpperCase();
 
         /**
@@ -35,15 +39,6 @@ export class Request {
 
         this._send = (value: any) => { };
 
-        /**
-         * the express request for the api request
-         */
-        this.request = null;
-
-        /**
-         * the web socket request for the api request
-         */
-        this.WebSocket = null;
     }
 
     /**

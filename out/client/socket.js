@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./index");
+var createRequest_1 = require("./createRequest");
+var index_2 = require("./../events/index");
 var events = [];
 exports.socket = null;
 exports.ready = false;
@@ -50,20 +52,43 @@ function createNewConnection() {
                         if (!data.id) {
                             throw new Error("Event id not found");
                         }
-                        for (var i = 0; i < events.length; i++) {
-                            var event_1 = events[i];
-                            if (event_1.id === data.id) {
-                                if (data.error) {
-                                    var error = new Error(data.error.message);
-                                    error.name = data.error.name;
-                                    event_1.reject(error);
+                        if (data.method) {
+                            console.log(data);
+                            // if a method was received with the request then its a server side request
+                            // create a event to dispatch
+                            var event_1 = createRequest_1.createRequest(data);
+                            console.log(event_1);
+                            switch (data.method) {
+                                case "GET":
+                                    index_2.getEvent.triggerEvent(event_1);
+                                    break;
+                                case "POST":
+                                    index_2.postEvent.triggerEvent(event_1);
+                                    break;
+                                case "PUT":
+                                    index_2.putEvent.triggerEvent(event_1);
+                                    break;
+                                case "DELETE":
+                                    index_2.delEvent.triggerEvent(event_1);
+                                    break;
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < events.length; i++) {
+                                var event_2 = events[i];
+                                if (event_2.id === data.id) {
+                                    if (data.error) {
+                                        var error = new Error(data.error.message);
+                                        error.name = data.error.name;
+                                        event_2.reject(error);
+                                    }
+                                    else {
+                                        event_2.resolve(data);
+                                    }
+                                    // remove the event from list of waiting
+                                    events.splice(i, 1);
+                                    return;
                                 }
-                                else {
-                                    event_1.resolve(data);
-                                }
-                                // remove the event from list of waiting
-                                events.splice(i, 1);
-                                return;
                             }
                         }
                         // set the socket as ready

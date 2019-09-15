@@ -2,6 +2,8 @@ import WebSocket from "ws";
 import { getEvent, postEvent, putEvent, delEvent } from "./events/index";
 import { createWSRequest } from "./createWSRequest";
 import { SettingsInterface } from "./index";
+import { wsClient } from "./ws/wsClient";
+
 /**
  * Register the web wss server to use as api
  *
@@ -9,9 +11,11 @@ import { SettingsInterface } from "./index";
  */
 export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
     // on connection
-    wss.on('connection', function connection(ws: WebSocket) {
+    wss.on('connection', function connection(ws: WebSocket, req?: any, cl?: any) {
 
-        // TODO: Register a event that can be run to authenticate the user before allowing any other communication
+        // create a new client
+        const client = new wsClient(ws, req, cl);
+
         // send a Open connection event to tell the api on client side to start listening
         ws.send(JSON.stringify({ event: "connection" }));
 
@@ -20,8 +24,13 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
             console.log('received: %s', message);
             try {
                 if (settings.maxLength && message.length <= settings.maxLength) {
+
+                    // parse the message to create a event
                     let data = JSON.parse(message);
-                    let event = createWSRequest(ws, data.id, data.name, data.body, data.method, settings);
+
+                    // create a event to dispatch
+                    let event = createWSRequest(client, data.id, data.name, data.body, data.method, settings);
+
                     switch (data.method) {
                         case "GET":
                             getEvent.triggerEvent(event);

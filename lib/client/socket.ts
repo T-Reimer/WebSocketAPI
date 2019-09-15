@@ -1,5 +1,7 @@
 import { setOptions, requestOptions } from "./index";
 import RequestData from "./../RequestData";
+import { createRequest } from "./createRequest";
+import { getEvent, postEvent, putEvent, delEvent } from "./../events/index";
 
 interface FetchEvent {
     id: number,
@@ -64,21 +66,47 @@ function createNewConnection() {
                             throw new Error("Event id not found");
                         }
 
-                        for (let i = 0; i < events.length; i++) {
-                            let event = events[i];
-                            if (event.id === data.id) {
-                                if (data.error) {
-                                    let error = new Error(data.error.message);
-                                    error.name = data.error.name;
-                                    event.reject(error);
-                                } else {
-                                    event.resolve(data);
+                        if (data.method) {
+                            console.log(data);
+
+                            // if a method was received with the request then its a server side request
+                            // create a event to dispatch
+                            let event = createRequest(data);
+
+                            console.log(event);
+
+                            switch (data.method) {
+                                case "GET":
+                                    getEvent.triggerEvent(event);
+                                    break;
+                                case "POST":
+                                    postEvent.triggerEvent(event);
+                                    break;
+                                case "PUT":
+                                    putEvent.triggerEvent(event);
+                                    break;
+                                case "DELETE":
+                                    delEvent.triggerEvent(event);
+                                    break;
+                            }
+
+                        } else {
+                            for (let i = 0; i < events.length; i++) {
+                                let event = events[i];
+                                if (event.id === data.id) {
+                                    if (data.error) {
+                                        let error = new Error(data.error.message);
+                                        error.name = data.error.name;
+                                        event.reject(error);
+                                    } else {
+                                        event.resolve(data);
+                                    }
+
+                                    // remove the event from list of waiting
+                                    events.splice(i, 1);
+
+                                    return;
                                 }
-
-                                // remove the event from list of waiting
-                                events.splice(i, 1);
-
-                                return;
                             }
                         }
 
