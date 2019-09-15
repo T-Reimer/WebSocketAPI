@@ -21,6 +21,11 @@ window.addEventListener("load", () => {
         fetchUrl: "/api",
         websocketUrl: "ws://localhost:8080/"
     });
+
+    WebSocketAPI.on("ping", (event) => {
+        event.send("pong");
+        console.log("Ping");
+    });
 });
 
 

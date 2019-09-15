@@ -32,11 +32,16 @@ api.on("test", (event, next) => {
     });
 
 api.on("ping", (event, next) => {
-    console.log(event);
+    console.log("Received Ping");
     event.send("pong");
 
     setTimeout(() => {
-        event.client.fetch("ping").then(console.log).catch(console.warn);
+        console.log("Sending Ping");
+        event.client.fetch("ping")
+            .then(data => {
+                console.log("Ping Response", data);
+            })
+            .catch(console.warn);
     }, 2000);
 });
 

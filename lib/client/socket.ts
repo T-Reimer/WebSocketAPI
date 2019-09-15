@@ -73,8 +73,6 @@ function createNewConnection() {
                             // create a event to dispatch
                             let event = createRequest(data);
 
-                            console.log(event);
-
                             switch (data.method) {
                                 case "GET":
                                     getEvent.triggerEvent(event);

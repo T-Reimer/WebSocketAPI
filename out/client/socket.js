@@ -57,7 +57,6 @@ function createNewConnection() {
                             // if a method was received with the request then its a server side request
                             // create a event to dispatch
                             var event_1 = createRequest_1.createRequest(data);
-                            console.log(event_1);
                             switch (data.method) {
                                 case "GET":
                                     index_2.getEvent.triggerEvent(event_1);

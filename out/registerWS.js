@@ -22,23 +22,48 @@ function registerWS(wss, settings) {
                 if (settings.maxLength && message.length <= settings.maxLength) {
                     // parse the message to create a event
                     var data = JSON.parse(message);
-                    // create a event to dispatch
-                    var event_1 = createWSRequest_1.createWSRequest(client, data.id, data.name, data.body, data.method, settings);
-                    switch (data.method) {
-                        case "GET":
-                            index_1.getEvent.triggerEvent(event_1);
-                            break;
-                        case "POST":
-                            index_1.postEvent.triggerEvent(event_1);
-                            break;
-                        case "PUT":
-                            index_1.putEvent.triggerEvent(event_1);
-                            break;
-                        case "DELETE":
-                            index_1.delEvent.triggerEvent(event_1);
-                            break;
+                    if (data.method) {
+                        // create a event to dispatch
+                        var event_1 = createWSRequest_1.createWSRequest(client, data.id, data.name, data.body, data.method, settings);
+                        switch (data.method) {
+                            case "GET":
+                                index_1.getEvent.triggerEvent(event_1);
+                                break;
+                            case "POST":
+                                index_1.postEvent.triggerEvent(event_1);
+                                break;
+                            case "PUT":
+                                index_1.putEvent.triggerEvent(event_1);
+                                break;
+                            case "DELETE":
+                                index_1.delEvent.triggerEvent(event_1);
+                                break;
+                        }
+                        console.log("Data Received", data);
                     }
-                    console.log(data);
+                    else {
+                        // if the method is not set then its a return data event
+                        for (var i = 0; i < client.events.length; i++) {
+                            var event_2 = client.events[i];
+                            // find the event with the same id
+                            if (event_2.id === data.id) {
+                                // if there is an error then reject the promise
+                                if (data.error) {
+                                    var error = new Error(data.error.message);
+                                    error.name = data.error.name;
+                                    event_2.reject(error);
+                                }
+                                else {
+                                    // resolve the promise with supplied data
+                                    event_2.resolve(data);
+                                }
+                                // remove the event from list of waiting
+                                client.events.splice(i, 1);
+                                // exit out
+                                return;
+                            }
+                        }
+                    }
                 }
             }
             catch (err) {

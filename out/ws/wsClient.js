@@ -52,6 +52,10 @@ var wsClient = /** @class */ (function () {
          * the client that was passed in on connection
          */
         this.client = client;
+        /**
+         * Create a list of events that are waiting to be resolved
+         */
+        this.events = [];
     }
     /**
      * Send a api request to the client
@@ -133,11 +137,11 @@ var wsClient = /** @class */ (function () {
                 // send the data to the client
                 _this.WebSocket.send(JSON.stringify(data));
                 // register the event listener for the fetch return value
-                // events.push({
-                //     id,
-                //     reject,
-                //     resolve
-                // });
+                _this.events.push({
+                    id: id,
+                    reject: reject,
+                    resolve: resolve
+                });
             }
             catch (err) {
                 reject(err);

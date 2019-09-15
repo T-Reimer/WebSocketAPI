@@ -9,12 +9,19 @@ export interface requestOptions {
     timeout?: number
 }
 
+interface FetchEvent {
+    id: number,
+    resolve: Function,
+    reject: Function
+}
+
 
 export class wsClient {
     WebSocket: WebSocket;
     request: ExpressRequest;
     client: any;
     _index: number;
+    events: FetchEvent[];
 
     constructor(ws: WebSocket, request: ExpressRequest, client?: any) {
 
@@ -36,6 +43,12 @@ export class wsClient {
          * the client that was passed in on connection
          */
         this.client = client;
+
+        /**
+         * Create a list of events that are waiting to be resolved
+         */
+        this.events = [];
+
     }
 
     /**
@@ -103,14 +116,11 @@ export class wsClient {
                 this.WebSocket.send(JSON.stringify(data));
 
                 // register the event listener for the fetch return value
-
-
-
-                // events.push({
-                //     id,
-                //     reject,
-                //     resolve
-                // });
+                this.events.push({
+                    id,
+                    reject,
+                    resolve
+                });
 
             } catch (err) {
                 reject(err);
