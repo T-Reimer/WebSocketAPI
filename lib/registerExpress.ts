@@ -13,6 +13,8 @@ export function registerExpress(app: Application, route: string, settings: Setti
 
     // register the Express js listeners
     app.get(url, (request, response) => {
+        let { id } = request.params;
+
         try {
             let event = createExpressRequest(request, response, "get", settings);
             getEvent.triggerEvent(event);
@@ -28,6 +30,11 @@ export function registerExpress(app: Application, route: string, settings: Setti
                 status = error.status;
             }
 
+            // set the id if its available
+            if (id) {
+                error.id = id;
+            }
+
             // send the status and error
             response.status(status)
                 .send(error);
@@ -35,6 +42,8 @@ export function registerExpress(app: Application, route: string, settings: Setti
     });
 
     app.post(url, (request, response) => {
+        let { id } = request.params;
+
         try {
             let event = createExpressRequest(request, response, "post", settings);
             postEvent.triggerEvent(event);
@@ -50,6 +59,11 @@ export function registerExpress(app: Application, route: string, settings: Setti
                 status = error.status;
             }
 
+            // set the id if its available
+            if (id) {
+                error.id = id;
+            }
+
             // send the status and error
             response.status(status)
                 .send(error);
@@ -57,6 +71,8 @@ export function registerExpress(app: Application, route: string, settings: Setti
     });
 
     app.put(url, (request, response) => {
+        let { id } = request.params;
+
         try {
             let event = createExpressRequest(request, response, "put", settings);
             putEvent.triggerEvent(event);
@@ -72,6 +88,11 @@ export function registerExpress(app: Application, route: string, settings: Setti
                 status = error.status;
             }
 
+            // set the id if its available
+            if (id) {
+                error.id = id;
+            }
+
             // send the status and error
             response.status(status)
                 .send(error);
@@ -80,6 +101,8 @@ export function registerExpress(app: Application, route: string, settings: Setti
     });
 
     app.delete(url, (request, response) => {
+        let { id } = request.params;
+
         try {
             let event = createExpressRequest(request, response, "delete", settings);
             delEvent.triggerEvent(event);
@@ -93,6 +116,11 @@ export function registerExpress(app: Application, route: string, settings: Setti
             const error = convertError(err);
             if (error.status) {
                 status = error.status;
+            }
+
+            // set the id if its available
+            if (id) {
+                error.id = id;
             }
 
             // send the status and error

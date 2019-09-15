@@ -12,6 +12,7 @@ function registerExpress(app, route, settings) {
     var url = "/" + route.replace(/^\/|\/$/g, "") + "/:id/:name";
     // register the Express js listeners
     app.get(url, function (request, response) {
+        var id = request.params.id;
         try {
             var event_1 = createExpressRequest_1.createExpressRequest(request, response, "get", settings);
             index_1.getEvent.triggerEvent(event_1);
@@ -26,12 +27,17 @@ function registerExpress(app, route, settings) {
             if (error.status) {
                 status_1 = error.status;
             }
+            // set the id if its available
+            if (id) {
+                error.id = id;
+            }
             // send the status and error
             response.status(status_1)
                 .send(error);
         }
     });
     app.post(url, function (request, response) {
+        var id = request.params.id;
         try {
             var event_2 = createExpressRequest_1.createExpressRequest(request, response, "post", settings);
             index_1.postEvent.triggerEvent(event_2);
@@ -46,12 +52,17 @@ function registerExpress(app, route, settings) {
             if (error.status) {
                 status_2 = error.status;
             }
+            // set the id if its available
+            if (id) {
+                error.id = id;
+            }
             // send the status and error
             response.status(status_2)
                 .send(error);
         }
     });
     app.put(url, function (request, response) {
+        var id = request.params.id;
         try {
             var event_3 = createExpressRequest_1.createExpressRequest(request, response, "put", settings);
             index_1.putEvent.triggerEvent(event_3);
@@ -66,12 +77,17 @@ function registerExpress(app, route, settings) {
             if (error.status) {
                 status_3 = error.status;
             }
+            // set the id if its available
+            if (id) {
+                error.id = id;
+            }
             // send the status and error
             response.status(status_3)
                 .send(error);
         }
     });
     app.delete(url, function (request, response) {
+        var id = request.params.id;
         try {
             var event_4 = createExpressRequest_1.createExpressRequest(request, response, "delete", settings);
             index_1.delEvent.triggerEvent(event_4);
@@ -85,6 +101,10 @@ function registerExpress(app, route, settings) {
             var error = convertError_1.convertError(err);
             if (error.status) {
                 status_4 = error.status;
+            }
+            // set the id if its available
+            if (id) {
+                error.id = id;
             }
             // send the status and error
             response.status(status_4)

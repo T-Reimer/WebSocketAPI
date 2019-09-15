@@ -31,4 +31,9 @@ api.on("test", (event, next) => {
         event.send(`Post: ${Math.floor(Math.random() * 1000)}`);
     });
 
+api.on("ping", (event, next) => {
+    console.log(event);
+    event.send("pong");
+});
+
 app.listen(port, () => console.log(`Express Listening on port > ${port}`));

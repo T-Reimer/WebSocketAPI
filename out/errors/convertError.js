@@ -15,7 +15,9 @@ function convertError(error) {
     var data = {
         name: name,
         message: message,
-        status: status
+        status: status,
+        error: true,
+        id: null
     };
     return data;
 }

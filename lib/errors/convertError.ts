@@ -16,7 +16,6 @@ export function convertError(error: InvalidRequest | Error) {
     const { name, message } = error;
 
     let status: number | null = null;
-
     if (error.status) {
         status = error.status;
     }
@@ -25,12 +24,16 @@ export function convertError(error: InvalidRequest | Error) {
     const data: {
         name: string,
         message: string,
-        status: number | null
+        status: number | null,
+        error: true,
+        id: number | null
     } = {
         name,
         message,
-        status
-    }
+        status,
+        error: true,
+        id: null
+    };
 
     return data;
 }
