@@ -2,6 +2,7 @@ import { Application } from "express";
 import { getEvent, postEvent, putEvent, delEvent } from "./events/index";
 import { SettingsInterface } from "./index";
 import { createExpressRequest } from "./createExpressRequest";
+import { convertError } from "./errors/convertError";
 /**
  * Register the get and post requests from express
  *
@@ -9,6 +10,8 @@ import { createExpressRequest } from "./createExpressRequest";
  */
 export function registerExpress(app: Application, route: string, settings: SettingsInterface) {
     const url = `/${route.replace(/^\/|\/$/g, "")}/:id/:name`;
+
+    // register the Express js listeners
     app.get(url, (request, response) => {
         try {
             let event = createExpressRequest(request, response, "get", settings);
@@ -19,18 +22,18 @@ export function registerExpress(app: Application, route: string, settings: Setti
              * Set the status number for the error
              */
             let status: number = 500;
-
-            if (err.status) {
-                status = err.status;
+            // convert the error into an object to send to client
+            const error = convertError(err);
+            if (error.status) {
+                status = error.status;
             }
 
+            // send the status and error
             response.status(status)
-                .send({
-                    name: err.name,
-                    message: err.message
-                });
+                .send(error);
         }
     });
+
     app.post(url, (request, response) => {
         try {
             let event = createExpressRequest(request, response, "post", settings);
@@ -41,18 +44,18 @@ export function registerExpress(app: Application, route: string, settings: Setti
              * Set the status number for the error
              */
             let status: number = 500;
-
-            if (err.status) {
-                status = err.status;
+            // convert the error into an object to send to client
+            const error = convertError(err);
+            if (error.status) {
+                status = error.status;
             }
 
+            // send the status and error
             response.status(status)
-                .send({
-                    name: err.name,
-                    message: err.message
-                });
+                .send(error);
         }
     });
+
     app.put(url, (request, response) => {
         try {
             let event = createExpressRequest(request, response, "put", settings);
@@ -63,19 +66,19 @@ export function registerExpress(app: Application, route: string, settings: Setti
              * Set the status number for the error
              */
             let status: number = 500;
-
-            if (err.status) {
-                status = err.status;
+            // convert the error into an object to send to client
+            const error = convertError(err);
+            if (error.status) {
+                status = error.status;
             }
 
+            // send the status and error
             response.status(status)
-                .send({
-                    name: err.name,
-                    message: err.message
-                });
+                .send(error);
         }
 
     });
+
     app.delete(url, (request, response) => {
         try {
             let event = createExpressRequest(request, response, "delete", settings);
@@ -83,19 +86,18 @@ export function registerExpress(app: Application, route: string, settings: Setti
         } catch (err) {
 
             /**
-             * Set the status number for the error
-             */
+              * Set the status number for the error
+              */
             let status: number = 500;
-
-            if (err.status) {
-                status = err.status;
+            // convert the error into an object to send to client
+            const error = convertError(err);
+            if (error.status) {
+                status = error.status;
             }
 
+            // send the status and error
             response.status(status)
-                .send({
-                    name: err.name,
-                    message: err.message
-                });
+                .send(error);
         }
     });
 }

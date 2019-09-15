@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./events/index");
 var createExpressRequest_1 = require("./createExpressRequest");
+var convertError_1 = require("./errors/convertError");
 /**
  * Register the get and post requests from express
  *
@@ -9,6 +10,7 @@ var createExpressRequest_1 = require("./createExpressRequest");
  */
 function registerExpress(app, route, settings) {
     var url = "/" + route.replace(/^\/|\/$/g, "") + "/:id/:name";
+    // register the Express js listeners
     app.get(url, function (request, response) {
         try {
             var event_1 = createExpressRequest_1.createExpressRequest(request, response, "get", settings);
@@ -19,14 +21,14 @@ function registerExpress(app, route, settings) {
              * Set the status number for the error
              */
             var status_1 = 500;
-            if (err.status) {
-                status_1 = err.status;
+            // convert the error into an object to send to client
+            var error = convertError_1.convertError(err);
+            if (error.status) {
+                status_1 = error.status;
             }
+            // send the status and error
             response.status(status_1)
-                .send({
-                name: err.name,
-                message: err.message
-            });
+                .send(error);
         }
     });
     app.post(url, function (request, response) {
@@ -39,14 +41,14 @@ function registerExpress(app, route, settings) {
              * Set the status number for the error
              */
             var status_2 = 500;
-            if (err.status) {
-                status_2 = err.status;
+            // convert the error into an object to send to client
+            var error = convertError_1.convertError(err);
+            if (error.status) {
+                status_2 = error.status;
             }
+            // send the status and error
             response.status(status_2)
-                .send({
-                name: err.name,
-                message: err.message
-            });
+                .send(error);
         }
     });
     app.put(url, function (request, response) {
@@ -59,14 +61,14 @@ function registerExpress(app, route, settings) {
              * Set the status number for the error
              */
             var status_3 = 500;
-            if (err.status) {
-                status_3 = err.status;
+            // convert the error into an object to send to client
+            var error = convertError_1.convertError(err);
+            if (error.status) {
+                status_3 = error.status;
             }
+            // send the status and error
             response.status(status_3)
-                .send({
-                name: err.name,
-                message: err.message
-            });
+                .send(error);
         }
     });
     app.delete(url, function (request, response) {
@@ -76,17 +78,17 @@ function registerExpress(app, route, settings) {
         }
         catch (err) {
             /**
-             * Set the status number for the error
-             */
+              * Set the status number for the error
+              */
             var status_4 = 500;
-            if (err.status) {
-                status_4 = err.status;
+            // convert the error into an object to send to client
+            var error = convertError_1.convertError(err);
+            if (error.status) {
+                status_4 = error.status;
             }
+            // send the status and error
             response.status(status_4)
-                .send({
-                name: err.name,
-                message: err.message
-            });
+                .send(error);
         }
     });
 }
