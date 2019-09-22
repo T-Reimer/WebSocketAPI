@@ -139,7 +139,12 @@ exports.newIndex = newIndex;
 exports.setOptions = {
     fetchUrl: "/api",
     websocketUrl: "/api",
-    websocketOnMessage: function (message) { console.group("Unregistered Event"); console.log(message); console.groupEnd(); },
+    websocketOnMessage: function (message) {
+        // debug logging to console if not set
+        console.group("Unregistered Event");
+        console.log(message);
+        console.groupEnd();
+    },
     reconnect: true,
     url: {},
     maxSocketLength: 10000,
@@ -463,7 +468,6 @@ function createNewConnection() {
                             throw new Error("Event id not found");
                         }
                         if (data.method) {
-                            console.log(data);
                             // if a method was received with the request then its a server side request
                             // create a event to dispatch
                             var event_1 = createRequest_1.createRequest(data);

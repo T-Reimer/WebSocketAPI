@@ -32,7 +32,12 @@ export function newIndex() {
 export const setOptions: Options = {
     fetchUrl: "/api",
     websocketUrl: "/api",
-    websocketOnMessage: (message: string) => { console.group("Unregistered Event"); console.log(message); console.groupEnd(); },
+    websocketOnMessage: (message: string) => {
+        // debug logging to console if not set
+        console.group("Unregistered Event");
+        console.log(message);
+        console.groupEnd();
+    },
     reconnect: true,
     url: {},
     maxSocketLength: 10000,

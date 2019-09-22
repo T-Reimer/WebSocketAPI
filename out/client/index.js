@@ -52,7 +52,12 @@ exports.newIndex = newIndex;
 exports.setOptions = {
     fetchUrl: "/api",
     websocketUrl: "/api",
-    websocketOnMessage: function (message) { console.group("Unregistered Event"); console.log(message); console.groupEnd(); },
+    websocketOnMessage: function (message) {
+        // debug logging to console if not set
+        console.group("Unregistered Event");
+        console.log(message);
+        console.groupEnd();
+    },
     reconnect: true,
     url: {},
     maxSocketLength: 10000,

@@ -53,7 +53,6 @@ function createNewConnection() {
                             throw new Error("Event id not found");
                         }
                         if (data.method) {
-                            console.log(data);
                             // if a method was received with the request then its a server side request
                             // create a event to dispatch
                             var event_1 = createRequest_1.createRequest(data);

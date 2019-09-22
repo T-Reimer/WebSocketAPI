@@ -17,7 +17,6 @@ function registerWS(wss, settings) {
         ws.send(JSON.stringify({ event: "connection" }));
         // register the on message event once the authentication is complete
         ws.on('message', function incoming(message) {
-            console.log('received: %s', message);
             try {
                 if (settings.maxLength && message.length <= settings.maxLength) {
                     // parse the message to create a event
@@ -39,7 +38,6 @@ function registerWS(wss, settings) {
                                 index_1.delEvent.triggerEvent(event_1);
                                 break;
                         }
-                        console.log("Data Received", data);
                     }
                     else {
                         // if the method is not set then its a return data event

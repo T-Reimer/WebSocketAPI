@@ -67,8 +67,6 @@ function createNewConnection() {
                         }
 
                         if (data.method) {
-                            console.log(data);
-
                             // if a method was received with the request then its a server side request
                             // create a event to dispatch
                             let event = createRequest(data);
