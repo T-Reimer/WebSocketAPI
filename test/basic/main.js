@@ -3,18 +3,16 @@ let logElement = null;
 window.addEventListener("load", () => {
     logElement = document.getElementById("logOutput");
 
-    let button = document.getElementById("submitButton");
-    /**
-     * @type {HTMLTextAreaElement}
-     */
-    let text = document.getElementById("sendMessage");
-    /**
-     * @type {HTMLInputElement}
-     */
-    let name = document.getElementById("sendAPI");
+    let button = document.getElementById("ping");
 
     button.addEventListener("click", () => {
-        sendData(name.value, text.value);
+        console.log("- - - - - - -");
+        console.log("Sending Request to Server");
+        WebSocketAPI.fetch("ping", { randomNumber: Math.random() }).then(response => {
+            console.log("Server Responded with", response);
+
+            console.log("- - - - - - -");
+        });
     });
 
     WebSocketAPI.setup({
@@ -23,21 +21,10 @@ window.addEventListener("load", () => {
     });
 
     WebSocketAPI.on("ping", (event) => {
+        console.log("- - - - - - -");
+        console.log("Got a Server Request with data", event);
+        console.log("Sending back a response.");
         event.send("pong");
-        console.log("Ping");
+        console.log("- - - - -");
     });
 });
-
-
-
-/**
- * Send data to the server
- * 
- * @param {String} name 
- * @param {String|Number} value 
- */
-function sendData(name, value) {
-
-    console.log(WebSocketAPI.fetch("test", 152));
-
-}

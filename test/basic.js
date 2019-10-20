@@ -32,17 +32,29 @@ api.on("test", (event, next) => {
     });
 
 api.on("ping", (event, next) => {
-    console.log("Received Ping");
+    console.log("- - - - - - -");
+    console.log("Received a Request from Client with data", event);
+
+    console.log("Responding to Client Response");
     event.send("pong");
 
+    console.log("- - - - - - -");
+
     setTimeout(() => {
-        console.log("Sending Ping");
-        event.client.fetch("ping")
+        console.log("- - - - - - -");
+        console.log("Sending a Server Event to Client");
+
+        event.client.fetch("ping", { randomNumber: Math.random() })
             .then(data => {
-                console.log("Ping Response", data);
+
+                console.log("Client Responded with", data);
+
+                console.log("- - - - - -");
             })
             .catch(console.warn);
     }, 2000);
+
 });
+
 
 app.listen(port, () => console.log(`Express Listening on port > ${port}`));

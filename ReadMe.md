@@ -142,8 +142,29 @@ An alternative way exists as well to make requests.
  
  - **timeout** The amount of ms to wait for a response. **TODO**
 
-## Listen for a Server Event
+## Listen for a Server Event from Client
 
-**Docs coming soon.**
+You can make a request to the client from the server using the client object from a client event. This is the exact reverse of the normal request to the server.
 
+### Server:
+
+    event.client.fetch(API, REQUEST)
+    .then(data  => {
+	    // received the data back from client
+    })
+
+### Client:
+
+    WebSocketAPI.on(API, (event) => {
+	    // event.body == REQUEST
+		// respond back to server
+		event.send(DATA); 
+    });
+
+When the client receives the Server event you can respond back to the server with `event.send(DATA)` to resolve the server side fetch Promise.
+
+## Notes
 *Contrary to a lot of other WS packages this package does not support or use http polling. If that is what you are looking for then this is not the package for you.*
+
+
+Used [https://stackedit.io/app#](https://stackedit.io/app#) to create this readme.
