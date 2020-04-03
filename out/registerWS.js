@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./events/index");
 var createWSRequest_1 = require("./createWSRequest");
 var wsClient_1 = require("./ws/wsClient");
+var registerSnapshotRequest_1 = require("./snapShots/registerSnapshotRequest");
 /**
  * Register the web wss server to use as api
  *
@@ -36,6 +37,14 @@ function registerWS(wss, settings) {
                                 break;
                             case "DELETE":
                                 index_1.delEvent.triggerEvent(event_1);
+                                break;
+                            case "SNAPSHOT":
+                                if (data.unregister) {
+                                    registerSnapshotRequest_1.unregisterSnapshotRequest(data);
+                                }
+                                else {
+                                    registerSnapshotRequest_1.registerSnapshotRequest(data, event_1, settings);
+                                }
                                 break;
                         }
                     }

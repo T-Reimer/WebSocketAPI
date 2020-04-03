@@ -15,7 +15,7 @@ interface eventObject {
  * @param name The api name
  * @param callback the callback function
  */
-export function registerEvent(name: string, callback: (event: Request) => {}) {
+export function registerEvent(name: string, callback: (event: Request) => void) {
     // if a callback function is given register it for each of the categories
     if (callback) {
         getEvent.on(name, callback);

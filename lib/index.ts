@@ -1,9 +1,12 @@
 import { Application } from "express";
 import WebSocket from "ws";
 
-import { getEvent, postEvent, putEvent, delEvent } from "./events/index";
+import { getEvent, postEvent, putEvent, delEvent, snapshotEvent } from "./events/index";
 import { registerExpress } from "./registerExpress";
 import { registerWS } from "./registerWS";
+import { ServerRequest } from "./ServerRequest";
+import { registeredListeners } from "./snapShots/registerSnapshotRequest";
+import { SnapshotResponse } from "./RequestData";
 
 export interface SettingsInterface {
     maxLength?: number, // the max upload length to automatically parse
@@ -38,10 +41,11 @@ export function register(app: Application, wss: WebSocket.Server, route: string,
 }
 
 interface eventObject {
-    get: Function;
-    post: Function;
-    put: Function;
-    delete: Function;
+    get: (callback: (request: ServerRequest) => void) => void;
+    post: (callback: (request: ServerRequest) => void) => void;
+    put: (callback: (request: ServerRequest) => void) => void;
+    delete: (callback: (request: ServerRequest) => void) => void;
+    snapshot: (callback: (request: SnapshotResponse) => void) => void;
 }
 
 
@@ -67,29 +71,54 @@ export function on(name: string, callback?: Function) {
 
     // return a object to register listeners for specific event types
     let obj: eventObject = {
-        get: (callback: Function) => {
+        get: (callback) => {
             getEvent.on(name, callback);
 
             return obj;
         },
-        post: (callback: Function) => {
+        post: (callback) => {
 
             postEvent.on(name, callback);
 
             return obj;
         },
-        put: (callback: Function) => {
+        put: (callback) => {
 
             putEvent.on(name, callback);
 
             return obj;
         },
-        delete: (callback: Function) => {
+        delete: (callback) => {
 
             delEvent.on(name, callback);
+
+            return obj;
+        },
+        snapshot: (callback) => {
+
+            snapshotEvent.on(name, callback);
 
             return obj;
         }
     }
     return obj;
+}
+
+/**
+ * Trigger a update event for any registered listeners
+ * 
+ * @param api the api name to update for
+ * @param extra the data to add
+ */
+export function triggerSnapshot(api: string, extra: any) {
+    registeredListeners.forEach(listener => {
+        if (listener.name === api) {
+
+            // set the extra event data
+            listener.extra = extra;
+
+            // trigger the event
+            snapshotEvent.triggerEvent(listener);
+        }
+    });
 }

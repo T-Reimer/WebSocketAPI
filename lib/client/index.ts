@@ -5,6 +5,8 @@ import RequestData from "./../RequestData";
 import { Request } from "./../Request";
 
 import { registerEvent } from "./registerEvent";
+import { onSnapshot } from "./onSnapshot";
+export { onSnapshot } from "./onSnapshot";
 
 interface Options {
     fetchUrl: string,
@@ -80,7 +82,7 @@ export function setup(options: Options) {
 }
 
 export interface requestOptions {
-    method?: "GET" | "POST" | "PUT" | "DELETE",
+    method?: "GET" | "POST" | "PUT" | "DELETE" | "SNAPSHOT",
     use?: "ws" | "http",
     timeout?: number
 }
@@ -110,7 +112,11 @@ export function api(api: string) {
             options.method = "DELETE";
 
             return await fetch(api, body, options);
-        }
+        },
+        snapshot: (body: any, callback: () => void) => {
+
+            return onSnapshot(api, body, callback)
+        },
     }
 }
 
@@ -149,7 +155,7 @@ export async function getData(id: number, api: string, body?: any, options?: req
             let data: { message: string, name: string } = await request.json();
 
             // compile an error based on the data and throw it
-            const error: Error = new Error(data.message);
+            const error = new Error(data.message);
             error.name = data.name;
 
             throw error;

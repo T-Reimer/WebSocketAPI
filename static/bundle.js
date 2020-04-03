@@ -84,13 +84,14 @@ function createRequest(data) {
 }
 exports.createRequest = createRequest;
 
-},{"./../Request":1,"./socket":5}],3:[function(require,module,exports){
+},{"./../Request":1,"./socket":6}],3:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -125,6 +126,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var globalFetch = window.fetch;
 var socket_1 = require("./socket");
 var registerEvent_1 = require("./registerEvent");
+var onSnapshot_1 = require("./onSnapshot");
+var onSnapshot_2 = require("./onSnapshot");
+exports.onSnapshot = onSnapshot_2.onSnapshot;
 /**
  * The incremental id used when fetching requests
  */
@@ -226,7 +230,10 @@ function api(api) {
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
-        }); }
+        }); },
+        snapshot: function (body, callback) {
+            return onSnapshot_1.onSnapshot(api, body, callback);
+        },
     };
 }
 exports.api = api;
@@ -371,7 +378,81 @@ function on(api, callback) {
 }
 exports.on = on;
 
-},{"./registerEvent":4,"./socket":5}],4:[function(require,module,exports){
+},{"./onSnapshot":4,"./registerEvent":5,"./socket":6}],4:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var socket_1 = require("./socket");
+var _1 = require(".");
+/**
+ * Register a new snapshot event to the server. This event will automatically re-register if the connection gets disconnected.
+ *
+ * @param api the api end point to call
+ * @param requestHead any information to send to server. This info gets used when matching the snapshot type. So don't use a large payload here
+ * @param callback the callback to run the the snapshot data
+ */
+function onSnapshot(api, requestHead, callback) {
+    // create a index number to use for all of the transactions
+    var id = _1.newIndex();
+    var unregister = function () { };
+    var unregisterState = function (unregisterServer) {
+        unregisterServer = typeof unregisterServer === "boolean" ? unregisterServer : true;
+        unregister();
+        for (var i = socket_1.stateChangeEvents.length - 1; i >= 0; i--) {
+            if (socket_1.stateChangeEvents[i] === onStateChange) {
+                socket_1.stateChangeEvents.splice(i, 1);
+            }
+        }
+        if (socket_1.ready && unregisterServer) {
+            // unregister event server side
+            var data = {
+                id: id,
+                name: api,
+                body: null,
+                method: "SNAPSHOT",
+                unregister: true,
+            };
+            socket_1.send(data);
+        }
+    };
+    // save the previous response in a variable
+    var lastResponse = null;
+    var createSnapshot = function (response) {
+        // if a unregister event is received from server then unregister the callback
+        if (response.unregister) {
+            unregisterState(false);
+            return;
+        }
+        // create the snapshot response to send to callback
+        var snapshot = {
+            last: lastResponse,
+            data: response.body,
+            timestamp: new Date(),
+            requestHead: requestHead,
+        };
+        callback(snapshot);
+        lastResponse = snapshot;
+        lastResponse.last = null;
+    };
+    // check if the web socket is open.. If it is then register
+    if (socket_1.ready) {
+        unregister = socket_1.registerSnapshot(id, api, requestHead, createSnapshot);
+    }
+    var onStateChange = function (state) {
+        if (state === "READY") {
+            // unregister the previous event listeners before registering again
+            unregister();
+            // register for updates from the server
+            unregister = socket_1.registerSnapshot(id, api, requestHead, createSnapshot);
+        }
+    };
+    // add a listener for when the state of the websocket changes
+    socket_1.stateChangeEvents.push(onStateChange);
+    // return the function to unregister the snapshot listener
+    return unregisterState;
+}
+exports.onSnapshot = onSnapshot;
+
+},{".":3,"./socket":6}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./../events/index");
@@ -412,13 +493,14 @@ function registerEvent(name, callback) {
 }
 exports.registerEvent = registerEvent;
 
-},{"./../events/index":8}],5:[function(require,module,exports){
+},{"./../events/index":9}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./index");
 var createRequest_1 = require("./createRequest");
 var index_2 = require("./../events/index");
 var events = [];
+exports.stateChangeEvents = [];
 exports.socket = null;
 exports.ready = false;
 function setup() {
@@ -449,6 +531,7 @@ function createNewConnection() {
                             registered_1 = true;
                             // set the ready flag. After this is set then the websocket will be used for message events
                             exports.ready = true;
+                            exports.stateChangeEvents.forEach(function (callback) { return callback("READY"); });
                         }
                         else {
                             // if the data wasn't the correct format then patch to the event
@@ -498,8 +581,10 @@ function createNewConnection() {
                                     else {
                                         event_2.resolve(data);
                                     }
-                                    // remove the event from list of waiting
-                                    events.splice(i, 1);
+                                    if (event_2.unregister) {
+                                        // remove the event from list of waiting
+                                        events.splice(i, 1);
+                                    }
                                     return;
                                 }
                             }
@@ -518,6 +603,7 @@ function createNewConnection() {
             exports.socket.addEventListener("error", function (error) {
                 exports.ready = false;
                 console.error(error);
+                exports.stateChangeEvents.forEach(function (callback) { return callback("ERROR"); });
             });
             exports.socket.addEventListener("close", function () {
                 exports.ready = false;
@@ -525,7 +611,9 @@ function createNewConnection() {
                 // wait for a little before reconnecting
                 // TODO: Set this time in the options
                 setTimeout(createNewConnection, timeout);
+                exports.stateChangeEvents.forEach(function (callback) { return callback("DISCONNECTED"); });
             });
+            exports.stateChangeEvents.forEach(function (callback) { return callback("CONNECTED"); });
         }
         else {
             createNewConnection();
@@ -554,6 +642,7 @@ function fetch(id, api, body, options) {
             // register the event listener for the fetch return value
             events.push({
                 id: id,
+                unregister: true,
                 reject: reject,
                 resolve: resolve
             });
@@ -564,6 +653,43 @@ function fetch(id, api, body, options) {
     });
 }
 exports.fetch = fetch;
+/**
+ * Register a event to fire each time that id gets sent
+ *
+ * Returns a function to unregister the event
+ *
+ * @param id the event id to use
+ * @param api the api string
+ * @param body the request body to send to the server
+ * @param callback the callback to run on each message
+ */
+function registerSnapshot(id, api, body, callback) {
+    var data = {
+        id: id,
+        name: api,
+        body: body,
+        method: "SNAPSHOT",
+    };
+    send(data);
+    var unregister = function () {
+        for (var i = events.length - 1; i >= 0; i--) {
+            if (events[i].id === id) {
+                events.splice(i, 1);
+            }
+        }
+    };
+    events.push({
+        id: id,
+        unregister: false,
+        reject: function () { },
+        resolve: function (data) {
+            callback(data);
+        },
+    });
+    // return a function to unregister
+    return unregister;
+}
+exports.registerSnapshot = registerSnapshot;
 /**
  * Send a payload to the server
  *
@@ -579,7 +705,7 @@ function send(body) {
 }
 exports.send = send;
 
-},{"./../events/index":8,"./createRequest":2,"./index":3}],6:[function(require,module,exports){
+},{"./../events/index":9,"./createRequest":2,"./index":3}],7:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -610,7 +736,7 @@ var InvalidRequest = /** @class */ (function (_super) {
 }(Error));
 exports.InvalidRequest = InvalidRequest;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var InvalidRequest_1 = require("./../errors/InvalidRequest");
@@ -691,7 +817,7 @@ var Events = /** @class */ (function () {
 }());
 exports.Events = Events;
 
-},{"./../errors/InvalidRequest":6}],8:[function(require,module,exports){
+},{"./../errors/InvalidRequest":7}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var event_1 = require("./event");
@@ -699,6 +825,7 @@ exports.getEvent = new event_1.Events();
 exports.postEvent = new event_1.Events();
 exports.putEvent = new event_1.Events();
 exports.delEvent = new event_1.Events();
+exports.snapshotEvent = new event_1.Events();
 
-},{"./event":7}]},{},[3])(3)
+},{"./event":8}]},{},[3])(3)
 });

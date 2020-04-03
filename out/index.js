@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./events/index");
 var registerExpress_1 = require("./registerExpress");
 var registerWS_1 = require("./registerWS");
+var registerSnapshotRequest_1 = require("./snapShots/registerSnapshotRequest");
 /**
  * the default settings object
  */
@@ -58,9 +59,30 @@ function on(name, callback) {
         delete: function (callback) {
             index_1.delEvent.on(name, callback);
             return obj;
+        },
+        snapshot: function (callback) {
+            index_1.snapshotEvent.on(name, callback);
+            return obj;
         }
     };
     return obj;
 }
 exports.on = on;
+/**
+ * Trigger a update event for any registered listeners
+ *
+ * @param api the api name to update for
+ * @param extra the data to add
+ */
+function triggerSnapshot(api, extra) {
+    registerSnapshotRequest_1.registeredListeners.forEach(function (listener) {
+        if (listener.name === api) {
+            // set the extra event data
+            listener.extra = extra;
+            // trigger the event
+            index_1.snapshotEvent.triggerEvent(listener);
+        }
+    });
+}
+exports.triggerSnapshot = triggerSnapshot;
 //# sourceMappingURL=index.js.map

@@ -1,8 +1,10 @@
 import WebSocket from "ws";
-import { getEvent, postEvent, putEvent, delEvent } from "./events/index";
+import { getEvent, postEvent, putEvent, delEvent, snapshotEvent } from "./events/index";
 import { createWSRequest } from "./createWSRequest";
 import { SettingsInterface } from "./index";
 import { wsClient } from "./ws/wsClient";
+import RequestData from "./RequestData";
+import { registerSnapshotRequest, unregisterSnapshotRequest } from "./snapShots/registerSnapshotRequest";
 
 /**
  * Register the web wss server to use as api
@@ -25,7 +27,7 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
                 if (settings.maxLength && message.length <= settings.maxLength) {
 
                     // parse the message to create a event
-                    let data = JSON.parse(message);
+                    let data: RequestData = JSON.parse(message);
 
                     if (data.method) {
 
@@ -44,6 +46,13 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
                                 break;
                             case "DELETE":
                                 delEvent.triggerEvent(event);
+                                break;
+                            case "SNAPSHOT":
+                                if (data.unregister) {
+                                    unregisterSnapshotRequest(data);
+                                } else {
+                                    registerSnapshotRequest(data, event, settings);
+                                }
                                 break;
                         }
                     } else {

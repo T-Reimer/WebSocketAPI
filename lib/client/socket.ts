@@ -5,11 +5,16 @@ import { getEvent, postEvent, putEvent, delEvent } from "./../events/index";
 
 interface FetchEvent {
     id: number,
-    resolve: Function,
+    unregister: boolean,
+    resolve: (data: RequestData) => void,
     reject: Function
 }
 
 let events: FetchEvent[] = [];
+
+// list of functions to fire when the state of the websocket changes
+export type stateChangeEvent = "CONNECTED" | "DISCONNECTED" | "ERROR" | "READY";
+export const stateChangeEvents: ((state: stateChangeEvent) => void)[] = [];
 
 export let socket: WebSocket | null = null;
 export let ready: Boolean = false;
@@ -45,6 +50,8 @@ function createNewConnection() {
                             registered = true;
                             // set the ready flag. After this is set then the websocket will be used for message events
                             ready = true;
+
+                            stateChangeEvents.forEach(callback => callback("READY"));
                         } else {
                             // if the data wasn't the correct format then patch to the event
                             setOptions.websocketOnMessage(event.data);
@@ -98,8 +105,10 @@ function createNewConnection() {
                                         event.resolve(data);
                                     }
 
-                                    // remove the event from list of waiting
-                                    events.splice(i, 1);
+                                    if (event.unregister) {
+                                        // remove the event from list of waiting
+                                        events.splice(i, 1);
+                                    }
 
                                     return;
                                 }
@@ -121,6 +130,8 @@ function createNewConnection() {
             socket.addEventListener("error", (error) => {
                 ready = false;
                 console.error(error);
+
+                stateChangeEvents.forEach(callback => callback("ERROR"));
             });
 
             socket.addEventListener("close", () => {
@@ -130,7 +141,10 @@ function createNewConnection() {
                 // wait for a little before reconnecting
                 // TODO: Set this time in the options
                 setTimeout(createNewConnection, timeout);
+                stateChangeEvents.forEach(callback => callback("DISCONNECTED"));
             });
+
+            stateChangeEvents.forEach(callback => callback("CONNECTED"));
         } else {
             createNewConnection();
         }
@@ -161,6 +175,7 @@ export function fetch(id: number, api: string, body?: any, options?: requestOpti
             // register the event listener for the fetch return value
             events.push({
                 id,
+                unregister: true,
                 reject,
                 resolve
             });
@@ -169,6 +184,49 @@ export function fetch(id: number, api: string, body?: any, options?: requestOpti
             reject(err);
         }
     });
+}
+
+
+/**
+ * Register a event to fire each time that id gets sent
+ * 
+ * Returns a function to unregister the event
+ * 
+ * @param id the event id to use
+ * @param api the api string
+ * @param body the request body to send to the server
+ * @param callback the callback to run on each message
+ */
+export function registerSnapshot(id: number, api: string, body: any, callback: (data: RequestData) => void) {
+
+    let data: RequestData = {
+        id,
+        name: api,
+        body: body,
+        method: "SNAPSHOT",
+    };
+
+    send(data);
+
+    const unregister = () => {
+        for (let i = events.length - 1; i >= 0; i--) {
+            if (events[i].id === id) {
+                events.splice(i, 1);
+            }
+        }
+    };
+
+    events.push({
+        id,
+        unregister: false,
+        reject: () => { },
+        resolve: (data) => {
+            callback(data);
+        },
+    });
+
+    // return a function to unregister
+    return unregister;
 }
 
 /**

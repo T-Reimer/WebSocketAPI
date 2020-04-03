@@ -4,6 +4,7 @@ var index_1 = require("./index");
 var createRequest_1 = require("./createRequest");
 var index_2 = require("./../events/index");
 var events = [];
+exports.stateChangeEvents = [];
 exports.socket = null;
 exports.ready = false;
 function setup() {
@@ -34,6 +35,7 @@ function createNewConnection() {
                             registered_1 = true;
                             // set the ready flag. After this is set then the websocket will be used for message events
                             exports.ready = true;
+                            exports.stateChangeEvents.forEach(function (callback) { return callback("READY"); });
                         }
                         else {
                             // if the data wasn't the correct format then patch to the event
@@ -83,8 +85,10 @@ function createNewConnection() {
                                     else {
                                         event_2.resolve(data);
                                     }
-                                    // remove the event from list of waiting
-                                    events.splice(i, 1);
+                                    if (event_2.unregister) {
+                                        // remove the event from list of waiting
+                                        events.splice(i, 1);
+                                    }
                                     return;
                                 }
                             }
@@ -103,6 +107,7 @@ function createNewConnection() {
             exports.socket.addEventListener("error", function (error) {
                 exports.ready = false;
                 console.error(error);
+                exports.stateChangeEvents.forEach(function (callback) { return callback("ERROR"); });
             });
             exports.socket.addEventListener("close", function () {
                 exports.ready = false;
@@ -110,7 +115,9 @@ function createNewConnection() {
                 // wait for a little before reconnecting
                 // TODO: Set this time in the options
                 setTimeout(createNewConnection, timeout);
+                exports.stateChangeEvents.forEach(function (callback) { return callback("DISCONNECTED"); });
             });
+            exports.stateChangeEvents.forEach(function (callback) { return callback("CONNECTED"); });
         }
         else {
             createNewConnection();
@@ -139,6 +146,7 @@ function fetch(id, api, body, options) {
             // register the event listener for the fetch return value
             events.push({
                 id: id,
+                unregister: true,
                 reject: reject,
                 resolve: resolve
             });
@@ -149,6 +157,43 @@ function fetch(id, api, body, options) {
     });
 }
 exports.fetch = fetch;
+/**
+ * Register a event to fire each time that id gets sent
+ *
+ * Returns a function to unregister the event
+ *
+ * @param id the event id to use
+ * @param api the api string
+ * @param body the request body to send to the server
+ * @param callback the callback to run on each message
+ */
+function registerSnapshot(id, api, body, callback) {
+    var data = {
+        id: id,
+        name: api,
+        body: body,
+        method: "SNAPSHOT",
+    };
+    send(data);
+    var unregister = function () {
+        for (var i = events.length - 1; i >= 0; i--) {
+            if (events[i].id === id) {
+                events.splice(i, 1);
+            }
+        }
+    };
+    events.push({
+        id: id,
+        unregister: false,
+        reject: function () { },
+        resolve: function (data) {
+            callback(data);
+        },
+    });
+    // return a function to unregister
+    return unregister;
+}
+exports.registerSnapshot = registerSnapshot;
 /**
  * Send a payload to the server
  *
