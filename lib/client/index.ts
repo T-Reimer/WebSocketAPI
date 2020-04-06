@@ -1,4 +1,4 @@
-import { setup as socketSetup, ready as socketReady, fetch as socketFetch, socket, send, stateChangeEvent } from "./socket";
+import { setup as socketSetup, ready as socketReady, fetch as socketFetch, socket, send, stateChangeEvent, stateChangeEvents } from "./socket";
 import RequestData from "./../RequestData";
 import { Request } from "./../Request";
 
@@ -114,6 +114,10 @@ export function setup(options: Options) {
     // set the modified urls
     setOptions.fetchUrl = fetchUrl.href;
     setOptions.websocketUrl = websocketUrl.href;
+
+    if (typeof options.stateChange === "function") {
+        stateChangeEvents.push(options.stateChange);
+    }
 
     socketSetup();
 }

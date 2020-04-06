@@ -216,6 +216,9 @@ function setup(options) {
     // set the modified urls
     exports.setOptions.fetchUrl = fetchUrl.href;
     exports.setOptions.websocketUrl = websocketUrl.href;
+    if (typeof options.stateChange === "function") {
+        socket_1.stateChangeEvents.push(options.stateChange);
+    }
     socket_1.setup();
 }
 exports.setup = setup;
