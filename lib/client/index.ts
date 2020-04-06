@@ -1,8 +1,8 @@
-import { setup as socketSetup, ready as socketReady, fetch as socketFetch, socket, send } from "./socket";
+import { setup as socketSetup, ready as socketReady, fetch as socketFetch, socket, send, stateChangeEvent } from "./socket";
 import RequestData from "./../RequestData";
 import { Request } from "./../Request";
 
-import { registerEvent } from "./registerEvent";
+import { registerEvent, eventObject } from "./registerEvent";
 import { onSnapshot } from "./onSnapshot";
 import { TimeoutError } from "../errors/timeoutError";
 export { onSnapshot } from "./onSnapshot";
@@ -51,7 +51,8 @@ interface Options {
     url: object,
     maxSocketLength: number, // the max length that the request is sent over websocket vs fetch request
     reconnectTimeOut: number | Function, // set the function to only return a number
-    unHandledWebSocketMessage?: Function
+    unHandledWebSocketMessage?: Function,
+    stateChange: (state: stateChangeEvent) => void,
 }
 
 /**
@@ -84,7 +85,8 @@ export const setOptions: Options = {
         console.error(err);
         console.warn(message);
         console.groupEnd();
-    }
+    },
+    stateChange: () => { },
 };
 
 
@@ -282,6 +284,6 @@ export async function fetch(api: string, body?: any, options?: requestOptions): 
  * @param api The api name
  * @param callback the callback function
  */
-export function on(api: string, callback: (event: Request) => {}) {
+export function on(api: string, callback: (event: Request) => void): eventObject {
     return registerEvent(api, callback);
 }

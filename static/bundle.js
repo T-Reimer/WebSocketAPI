@@ -192,7 +192,8 @@ exports.setOptions = {
         console.error(err);
         console.warn(message);
         console.groupEnd();
-    }
+    },
+    stateChange: function () { },
 };
 /**
  * Setup the client side api with the correct parameters

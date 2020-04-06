@@ -1,11 +1,11 @@
 import { Request } from "./../Request";
 import { getEvent, postEvent, putEvent, delEvent } from "./../events/index";
 
-interface eventObject {
-    get: Function;
-    post: Function;
-    put: Function;
-    delete: Function;
+export interface eventObject {
+    get: (callback: (data: any) => void) => eventObject;
+    post: (callback: (data: any) => void) => eventObject;
+    put: (callback: (data: any) => void) => eventObject;
+    delete: (callback: (data: any) => void) => eventObject;
 }
 
 
