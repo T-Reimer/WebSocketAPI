@@ -3,6 +3,7 @@ import { getEvent, postEvent, putEvent, delEvent } from "./events/index";
 import { SettingsInterface } from "./index";
 import { createExpressRequest } from "./createExpressRequest";
 import { convertError } from "./errors/convertError";
+import { ResponseData } from "./RequestData";
 /**
  * Register the get and post requests from express
  *
@@ -30,14 +31,16 @@ export function registerExpress(app: Application, route: string, settings: Setti
                 status = error.status;
             }
 
-            // set the id if its available
-            if (id) {
-                error.id = id;
-            }
+            const responseData: ResponseData = {
+                id: id || 0,
+                name: "",
+                error,
+                status
+            };
 
             // send the status and error
             response.status(status)
-                .send(error);
+                .send(responseData);
         }
     });
 
@@ -59,14 +62,16 @@ export function registerExpress(app: Application, route: string, settings: Setti
                 status = error.status;
             }
 
-            // set the id if its available
-            if (id) {
-                error.id = id;
-            }
+            const responseData: ResponseData = {
+                id: id || 0,
+                name: "",
+                error,
+                status
+            };
 
             // send the status and error
             response.status(status)
-                .send(error);
+                .send(responseData);
         }
     });
 
@@ -88,14 +93,16 @@ export function registerExpress(app: Application, route: string, settings: Setti
                 status = error.status;
             }
 
-            // set the id if its available
-            if (id) {
-                error.id = id;
-            }
+            const responseData: ResponseData = {
+                id: id || 0,
+                name: "",
+                error,
+                status
+            };
 
             // send the status and error
             response.status(status)
-                .send(error);
+                .send(responseData);
         }
 
     });
@@ -109,8 +116,8 @@ export function registerExpress(app: Application, route: string, settings: Setti
         } catch (err) {
 
             /**
-              * Set the status number for the error
-              */
+             * Set the status number for the error
+             */
             let status: number = 500;
             // convert the error into an object to send to client
             const error = convertError(err);
@@ -118,14 +125,16 @@ export function registerExpress(app: Application, route: string, settings: Setti
                 status = error.status;
             }
 
-            // set the id if its available
-            if (id) {
-                error.id = id;
-            }
+            const responseData: ResponseData = {
+                id: id || 0,
+                name: "",
+                error,
+                status
+            };
 
             // send the status and error
             response.status(status)
-                .send(error);
+                .send(responseData);
         }
     });
 }

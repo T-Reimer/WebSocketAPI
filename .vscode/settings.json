@@ -5,5 +5,14 @@
     "cSpell.words": [
         "Reimer",
         "uglifyjs"
+    ],
+    "cSpell.ignorePaths": [
+        "**/package-lock.json",
+        "**/node_modules/**",
+        "**/vscode-extension/**",
+        "**/.git/objects/**",
+        ".vscode",
+        "lib",
+        "**/test/autoTest/data.js"
     ]
 }

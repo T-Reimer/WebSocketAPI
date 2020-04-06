@@ -4,6 +4,7 @@ var index_1 = require("./events/index");
 var createWSRequest_1 = require("./createWSRequest");
 var wsClient_1 = require("./ws/wsClient");
 var registerSnapshotRequest_1 = require("./snapShots/registerSnapshotRequest");
+var convertError_1 = require("./errors/convertError");
 /**
  * Register the web wss server to use as api
  *
@@ -18,10 +19,12 @@ function registerWS(wss, settings) {
         ws.send(JSON.stringify({ event: "connection" }));
         // register the on message event once the authentication is complete
         ws.on('message', function incoming(message) {
+            var request = null;
             try {
                 if (settings.maxLength && message.length <= settings.maxLength) {
                     // parse the message to create a event
                     var data = JSON.parse(message);
+                    request = data;
                     if (data.method) {
                         // create a event to dispatch
                         var event_1 = createWSRequest_1.createWSRequest(client, data.id, data.name, data.body, data.method, settings);
@@ -76,6 +79,27 @@ function registerWS(wss, settings) {
             catch (err) {
                 if (settings.on.error) {
                     settings.on.error(err, message);
+                }
+                else {
+                    /**
+                     * Set the status number for the error
+                     */
+                    var status_1 = 500;
+                    // convert the error into an object to send to client
+                    var error = convertError_1.convertError(err);
+                    if (error.status) {
+                        status_1 = error.status;
+                    }
+                    else {
+                        error.status = status_1;
+                    }
+                    var response = {
+                        id: request && request.id || 0,
+                        name: request && request.name || "",
+                        error: error,
+                        status: status_1
+                    };
+                    ws.send(JSON.stringify(response));
                 }
             }
         });

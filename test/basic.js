@@ -56,5 +56,8 @@ api.on("ping", (event, next) => {
 
 });
 
+api.on("date/timestamp")
+    .get((event) => event.send((new Date()).toLocaleTimeString()));
+
 
 app.listen(port, () => console.log(`Express Listening on port > ${port}`));

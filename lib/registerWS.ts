@@ -3,8 +3,9 @@ import { getEvent, postEvent, putEvent, delEvent, snapshotEvent } from "./events
 import { createWSRequest } from "./createWSRequest";
 import { SettingsInterface } from "./index";
 import { wsClient } from "./ws/wsClient";
-import RequestData from "./RequestData";
+import RequestData, { ResponseData } from "./RequestData";
 import { registerSnapshotRequest, unregisterSnapshotRequest } from "./snapShots/registerSnapshotRequest";
+import { convertError } from "./errors/convertError";
 
 /**
  * Register the web wss server to use as api
@@ -23,11 +24,14 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
 
         // register the on message event once the authentication is complete
         ws.on('message', function incoming(message: string) {
+            let request: RequestData | null = null;
+
             try {
                 if (settings.maxLength && message.length <= settings.maxLength) {
 
                     // parse the message to create a event
                     let data: RequestData = JSON.parse(message);
+                    request = data;
 
                     if (data.method) {
 
@@ -87,6 +91,30 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
             catch (err) {
                 if (settings.on.error) {
                     settings.on.error(err, message);
+                } else {
+
+                    /**
+                     * Set the status number for the error
+                     */
+                    let status: number = 500;
+
+                    // convert the error into an object to send to client
+                    const error = convertError(err);
+
+                    if (error.status) {
+                        status = error.status;
+                    } else {
+                        error.status = status;
+                    }
+
+                    const response: ResponseData = {
+                        id: request && request.id || 0,
+                        name: request && request.name || "",
+                        error,
+                        status
+                    };
+
+                    ws.send(JSON.stringify(response));
                 }
             }
         });

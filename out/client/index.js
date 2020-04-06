@@ -36,12 +36,46 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var globalFetch = window.fetch;
 var socket_1 = require("./socket");
 var registerEvent_1 = require("./registerEvent");
 var onSnapshot_1 = require("./onSnapshot");
+var timeoutError_1 = require("../errors/timeoutError");
 var onSnapshot_2 = require("./onSnapshot");
 exports.onSnapshot = onSnapshot_2.onSnapshot;
+var globalFetch = function (input, init) { return __awaiter(void 0, void 0, void 0, function () {
+    var controller, fetchPromise, timeoutId, result, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                init = typeof init !== "object" ? {} : init;
+                controller = new AbortController();
+                init.signal = controller.signal;
+                fetchPromise = globalThis.fetch(input, init);
+                timeoutId = null;
+                if (init.timeout) {
+                    timeoutId = setTimeout(function () { return controller.abort(); }, init.timeout);
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, fetchPromise];
+            case 2:
+                result = _a.sent();
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+                return [2 /*return*/, result];
+            case 3:
+                err_1 = _a.sent();
+                // check if it's an abort error
+                if (err_1.name === "AbortError") {
+                    throw new timeoutError_1.TimeoutError("Request to server timed out!");
+                }
+                throw err_1;
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
 /**
  * The incremental id used when fetching requests
  */
@@ -156,11 +190,11 @@ exports.api = api;
  */
 function getData(id, api, body, options) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, search, bodyString, request, data, data, error, data;
+        var url, search, bodyString, request, data, error, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 6];
+                    if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
                     url = new URL(exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api));
                     search = url.search;
                     if (search) {
@@ -174,27 +208,32 @@ function getData(id, api, body, options) {
                     search += "body=" + bodyString;
                     url.search = search;
                     return [4 /*yield*/, globalFetch(url.href, {
-                            method: options && options.method ? options.method : "GET"
+                            method: options && options.method ? options.method : "GET",
+                            timeout: options && options.timeout,
                         })];
                 case 1:
                     request = _a.sent();
-                    if (!(request.status == 200)) return [3 /*break*/, 3];
                     return [4 /*yield*/, request.json()];
                 case 2:
                     data = _a.sent();
-                    return [2 /*return*/, data.body];
-                case 3: return [4 /*yield*/, request.json()];
+                    if (data.error) {
+                        error = new Error(data.error.message);
+                        error.name = data.error.name;
+                        if (data.error.status) {
+                            error.status = data.error.status;
+                        }
+                        throw error;
+                    }
+                    else {
+                        // return the data that was sent
+                        return [2 /*return*/, data.body];
+                    }
+                    return [3 /*break*/, 5];
+                case 3: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
                 case 4:
                     data = _a.sent();
-                    error = new Error(data.message);
-                    error.name = data.name;
-                    throw error;
-                case 5: return [3 /*break*/, 8];
-                case 6: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
-                case 7:
-                    data = _a.sent();
                     return [2 /*return*/, data.body];
-                case 8: return [2 /*return*/];
+                case 5: return [2 /*return*/];
             }
         });
     });
@@ -207,14 +246,15 @@ exports.getData = getData;
  */
 function sendData(id, api, body, options) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, request, data, data, error, data;
+        var url, request, data, error, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 6];
+                    if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
                     url = exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api);
                     return [4 /*yield*/, globalFetch(url, {
                             method: options && options.method ? options.method : "POST",
+                            timeout: options && options.timeout,
                             headers: {
                                 "Content-Type": "application/json"
                             },
@@ -222,23 +262,27 @@ function sendData(id, api, body, options) {
                         })];
                 case 1:
                     request = _a.sent();
-                    if (!(request.status == 200)) return [3 /*break*/, 3];
                     return [4 /*yield*/, request.json()];
                 case 2:
                     data = _a.sent();
-                    return [2 /*return*/, data.body];
-                case 3: return [4 /*yield*/, request.json()];
+                    if (data.error) {
+                        error = new Error(data.error.message);
+                        error.name = data.error.name;
+                        if (data.error.status) {
+                            error.status = data.error.status;
+                        }
+                        throw error;
+                    }
+                    else {
+                        // return the data that was sent
+                        return [2 /*return*/, data.body];
+                    }
+                    return [3 /*break*/, 5];
+                case 3: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
                 case 4:
                     data = _a.sent();
-                    error = new Error(data.message);
-                    error.name = data.name;
-                    throw error;
-                case 5: return [3 /*break*/, 8];
-                case 6: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
-                case 7:
-                    data = _a.sent();
                     return [2 /*return*/, data.body];
-                case 8: return [2 /*return*/];
+                case 5: return [2 /*return*/];
             }
         });
     });

@@ -1,7 +1,8 @@
 import { setOptions, requestOptions } from "./index";
-import RequestData from "./../RequestData";
+import RequestData, { ResponseData } from "./../RequestData";
 import { createRequest } from "./createRequest";
 import { getEvent, postEvent, putEvent, delEvent } from "./../events/index";
+import { TimeoutError } from "../errors/timeoutError";
 
 interface FetchEvent {
     id: number,
@@ -67,7 +68,7 @@ function createNewConnection() {
 
                     //parse the message and trigger the events
                     try {
-                        let data: RequestData = JSON.parse(event.data);
+                        let data = <RequestData>JSON.parse(event.data);
 
                         if (!data.id) {
                             throw new Error("Event id not found");
@@ -161,7 +162,16 @@ function createNewConnection() {
  */
 export function fetch(id: number, api: string, body?: any, options?: requestOptions): Promise<RequestData> {
     return new Promise((resolve, reject) => {
+
+        // set a timeout
+        if (options?.timeout) {
+            setTimeout(() => {
+                reject(new TimeoutError("Request to server timed out!"));
+            }, options.timeout);
+        }
+
         try {
+            // create the request to send to websocket server
             let data: RequestData = {
                 id,
                 name: api,

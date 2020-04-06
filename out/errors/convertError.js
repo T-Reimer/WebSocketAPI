@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 function convertError(error) {
     var name = error.name, message = error.message;
-    var status = null;
+    var status;
     if (error.status) {
         status = error.status;
     }
@@ -16,8 +16,6 @@ function convertError(error) {
         name: name,
         message: message,
         status: status,
-        error: true,
-        id: null
     };
     return data;
 }

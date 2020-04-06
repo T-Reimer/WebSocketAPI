@@ -1,12 +1,47 @@
-const globalFetch = window.fetch;
-
 import { setup as socketSetup, ready as socketReady, fetch as socketFetch, socket, send } from "./socket";
 import RequestData from "./../RequestData";
 import { Request } from "./../Request";
 
 import { registerEvent } from "./registerEvent";
 import { onSnapshot } from "./onSnapshot";
+import { TimeoutError } from "../errors/timeoutError";
 export { onSnapshot } from "./onSnapshot";
+
+interface RequestInitOption extends RequestInit {
+    timeout?: number;
+}
+
+const globalFetch: (input: RequestInfo, init?: RequestInitOption) => Promise<Response> = async (input, init) => {
+    init = typeof init !== "object" ? {} : init;
+
+    // create a abort controller to abort the fetch request on timeout
+    const controller = new AbortController();
+    init.signal = controller.signal;
+
+    // make the request to server
+    const fetchPromise = globalThis.fetch(input, init);
+
+    // set the timeout
+    let timeoutId = null;
+    if (init.timeout) {
+        timeoutId = setTimeout(() => controller.abort(), init.timeout);
+    }
+
+    try {
+        // wait for the server response
+        const result = await fetchPromise;
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        return result;
+    } catch (err) {
+        // check if it's an abort error
+        if (err.name === "AbortError") {
+            throw new TimeoutError("Request to server timed out!");
+        }
+        throw err;
+    }
+};
 
 interface Options {
     fetchUrl: string,
@@ -143,22 +178,25 @@ export async function getData(id: number, api: string, body?: any, options?: req
 
         // send the request to the server
         let request = await globalFetch(url.href, {
-            method: options && options.method ? options.method : "GET"
+            method: options && options.method ? options.method : "GET",
+            timeout: options && options.timeout,
         });
 
-        // if the request was successful
-        if (request.status == 200) {
-            let data: RequestData = await request.json();
-            return data.body;
-        } else {
-            // parse the error data
-            let data: { message: string, name: string } = await request.json();
+        let data: RequestData = await request.json();
 
+        if (data.error) {
             // compile an error based on the data and throw it
-            const error = new Error(data.message);
-            error.name = data.name;
+            const error: any = new Error(data.error.message);
+            error.name = data.error.name;
+
+            if (data.error.status) {
+                error.status = data.error.status;
+            }
 
             throw error;
+        } else {
+            // return the data that was sent
+            return data.body;
         }
     } else {
 
@@ -175,34 +213,33 @@ export async function getData(id: number, api: string, body?: any, options?: req
  * @todo Add the timeout error
  */
 export async function sendData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
-
-    // TODO: Add the timeout error here
-
     if ((options && options.use === "http") || !socketReady) {
         // use the http request instead of web socket
         const url = `${setOptions.fetchUrl}/${encodeURIComponent(id)}/${encodeURIComponent(api)}`;
 
         let request = await globalFetch(url, {
             method: options && options.method ? options.method : "POST",
+            timeout: options && options.timeout,
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(body) // stringify the content
         });
+        let data: RequestData = await request.json();
 
-        // if the request was successful
-        if (request.status == 200) {
-            let data: RequestData = await request.json();
-            return data.body;
-        } else {
-            // parse the error data
-            let data: { message: string, name: string } = await request.json();
-
+        if (data.error) {
             // compile an error based on the data and throw it
-            const error: Error = new Error(data.message);
-            error.name = data.name;
+            const error: any = new Error(data.error.message);
+            error.name = data.error.name;
+
+            if (data.error.status) {
+                error.status = data.error.status;
+            }
 
             throw error;
+        } else {
+            // return the data that was sent
+            return data.body;
         }
     } else {
 

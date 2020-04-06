@@ -123,12 +123,46 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var globalFetch = window.fetch;
 var socket_1 = require("./socket");
 var registerEvent_1 = require("./registerEvent");
 var onSnapshot_1 = require("./onSnapshot");
+var timeoutError_1 = require("../errors/timeoutError");
 var onSnapshot_2 = require("./onSnapshot");
 exports.onSnapshot = onSnapshot_2.onSnapshot;
+var globalFetch = function (input, init) { return __awaiter(void 0, void 0, void 0, function () {
+    var controller, fetchPromise, timeoutId, result, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                init = typeof init !== "object" ? {} : init;
+                controller = new AbortController();
+                init.signal = controller.signal;
+                fetchPromise = globalThis.fetch(input, init);
+                timeoutId = null;
+                if (init.timeout) {
+                    timeoutId = setTimeout(function () { return controller.abort(); }, init.timeout);
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, fetchPromise];
+            case 2:
+                result = _a.sent();
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+                return [2 /*return*/, result];
+            case 3:
+                err_1 = _a.sent();
+                // check if it's an abort error
+                if (err_1.name === "AbortError") {
+                    throw new timeoutError_1.TimeoutError("Request to server timed out!");
+                }
+                throw err_1;
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
 /**
  * The incremental id used when fetching requests
  */
@@ -243,11 +277,11 @@ exports.api = api;
  */
 function getData(id, api, body, options) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, search, bodyString, request, data, data, error, data;
+        var url, search, bodyString, request, data, error, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 6];
+                    if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
                     url = new URL(exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api));
                     search = url.search;
                     if (search) {
@@ -261,27 +295,32 @@ function getData(id, api, body, options) {
                     search += "body=" + bodyString;
                     url.search = search;
                     return [4 /*yield*/, globalFetch(url.href, {
-                            method: options && options.method ? options.method : "GET"
+                            method: options && options.method ? options.method : "GET",
+                            timeout: options && options.timeout,
                         })];
                 case 1:
                     request = _a.sent();
-                    if (!(request.status == 200)) return [3 /*break*/, 3];
                     return [4 /*yield*/, request.json()];
                 case 2:
                     data = _a.sent();
-                    return [2 /*return*/, data.body];
-                case 3: return [4 /*yield*/, request.json()];
+                    if (data.error) {
+                        error = new Error(data.error.message);
+                        error.name = data.error.name;
+                        if (data.error.status) {
+                            error.status = data.error.status;
+                        }
+                        throw error;
+                    }
+                    else {
+                        // return the data that was sent
+                        return [2 /*return*/, data.body];
+                    }
+                    return [3 /*break*/, 5];
+                case 3: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
                 case 4:
                     data = _a.sent();
-                    error = new Error(data.message);
-                    error.name = data.name;
-                    throw error;
-                case 5: return [3 /*break*/, 8];
-                case 6: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
-                case 7:
-                    data = _a.sent();
                     return [2 /*return*/, data.body];
-                case 8: return [2 /*return*/];
+                case 5: return [2 /*return*/];
             }
         });
     });
@@ -294,14 +333,15 @@ exports.getData = getData;
  */
 function sendData(id, api, body, options) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, request, data, data, error, data;
+        var url, request, data, error, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 6];
+                    if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
                     url = exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api);
                     return [4 /*yield*/, globalFetch(url, {
                             method: options && options.method ? options.method : "POST",
+                            timeout: options && options.timeout,
                             headers: {
                                 "Content-Type": "application/json"
                             },
@@ -309,23 +349,27 @@ function sendData(id, api, body, options) {
                         })];
                 case 1:
                     request = _a.sent();
-                    if (!(request.status == 200)) return [3 /*break*/, 3];
                     return [4 /*yield*/, request.json()];
                 case 2:
                     data = _a.sent();
-                    return [2 /*return*/, data.body];
-                case 3: return [4 /*yield*/, request.json()];
+                    if (data.error) {
+                        error = new Error(data.error.message);
+                        error.name = data.error.name;
+                        if (data.error.status) {
+                            error.status = data.error.status;
+                        }
+                        throw error;
+                    }
+                    else {
+                        // return the data that was sent
+                        return [2 /*return*/, data.body];
+                    }
+                    return [3 /*break*/, 5];
+                case 3: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
                 case 4:
                     data = _a.sent();
-                    error = new Error(data.message);
-                    error.name = data.name;
-                    throw error;
-                case 5: return [3 /*break*/, 8];
-                case 6: return [4 /*yield*/, socket_1.fetch(id, api, body, options)];
-                case 7:
-                    data = _a.sent();
                     return [2 /*return*/, data.body];
-                case 8: return [2 /*return*/];
+                case 5: return [2 /*return*/];
             }
         });
     });
@@ -378,7 +422,7 @@ function on(api, callback) {
 }
 exports.on = on;
 
-},{"./onSnapshot":4,"./registerEvent":5,"./socket":6}],4:[function(require,module,exports){
+},{"../errors/timeoutError":8,"./onSnapshot":4,"./registerEvent":5,"./socket":6}],4:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var socket_1 = require("./socket");
@@ -493,12 +537,13 @@ function registerEvent(name, callback) {
 }
 exports.registerEvent = registerEvent;
 
-},{"./../events/index":9}],6:[function(require,module,exports){
+},{"./../events/index":10}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./index");
 var createRequest_1 = require("./createRequest");
 var index_2 = require("./../events/index");
+var timeoutError_1 = require("../errors/timeoutError");
 var events = [];
 exports.stateChangeEvents = [];
 exports.socket = null;
@@ -630,7 +675,14 @@ function createNewConnection() {
  */
 function fetch(id, api, body, options) {
     return new Promise(function (resolve, reject) {
+        // set a timeout
+        if (options === null || options === void 0 ? void 0 : options.timeout) {
+            setTimeout(function () {
+                reject(new timeoutError_1.TimeoutError("Request to server timed out!"));
+            }, options.timeout);
+        }
         try {
+            // create the request to send to websocket server
             var data = {
                 id: id,
                 name: api,
@@ -705,7 +757,7 @@ function send(body) {
 }
 exports.send = send;
 
-},{"./../events/index":9,"./createRequest":2,"./index":3}],7:[function(require,module,exports){
+},{"../errors/timeoutError":8,"./../events/index":10,"./createRequest":2,"./index":3}],7:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -737,6 +789,33 @@ var InvalidRequest = /** @class */ (function (_super) {
 exports.InvalidRequest = InvalidRequest;
 
 },{}],8:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var TimeoutError = /** @class */ (function (_super) {
+    __extends(TimeoutError, _super);
+    function TimeoutError(message) {
+        var _this = _super.call(this, message) || this;
+        _this.name = "Timeout Error";
+        return _this;
+    }
+    return TimeoutError;
+}(Error));
+exports.TimeoutError = TimeoutError;
+
+},{}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var InvalidRequest_1 = require("./../errors/InvalidRequest");
@@ -817,7 +896,7 @@ var Events = /** @class */ (function () {
 }());
 exports.Events = Events;
 
-},{"./../errors/InvalidRequest":7}],9:[function(require,module,exports){
+},{"./../errors/InvalidRequest":7}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var event_1 = require("./event");
@@ -827,5 +906,5 @@ exports.putEvent = new event_1.Events();
 exports.delEvent = new event_1.Events();
 exports.snapshotEvent = new event_1.Events();
 
-},{"./event":8}]},{},[3])(3)
+},{"./event":9}]},{},[3])(3)
 });

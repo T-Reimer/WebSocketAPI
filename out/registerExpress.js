@@ -27,13 +27,15 @@ function registerExpress(app, route, settings) {
             if (error.status) {
                 status_1 = error.status;
             }
-            // set the id if its available
-            if (id) {
-                error.id = id;
-            }
+            var responseData = {
+                id: id || 0,
+                name: "",
+                error: error,
+                status: status_1
+            };
             // send the status and error
             response.status(status_1)
-                .send(error);
+                .send(responseData);
         }
     });
     app.post(url, function (request, response) {
@@ -52,13 +54,15 @@ function registerExpress(app, route, settings) {
             if (error.status) {
                 status_2 = error.status;
             }
-            // set the id if its available
-            if (id) {
-                error.id = id;
-            }
+            var responseData = {
+                id: id || 0,
+                name: "",
+                error: error,
+                status: status_2
+            };
             // send the status and error
             response.status(status_2)
-                .send(error);
+                .send(responseData);
         }
     });
     app.put(url, function (request, response) {
@@ -77,13 +81,15 @@ function registerExpress(app, route, settings) {
             if (error.status) {
                 status_3 = error.status;
             }
-            // set the id if its available
-            if (id) {
-                error.id = id;
-            }
+            var responseData = {
+                id: id || 0,
+                name: "",
+                error: error,
+                status: status_3
+            };
             // send the status and error
             response.status(status_3)
-                .send(error);
+                .send(responseData);
         }
     });
     app.delete(url, function (request, response) {
@@ -94,21 +100,23 @@ function registerExpress(app, route, settings) {
         }
         catch (err) {
             /**
-              * Set the status number for the error
-              */
+             * Set the status number for the error
+             */
             var status_4 = 500;
             // convert the error into an object to send to client
             var error = convertError_1.convertError(err);
             if (error.status) {
                 status_4 = error.status;
             }
-            // set the id if its available
-            if (id) {
-                error.id = id;
-            }
+            var responseData = {
+                id: id || 0,
+                name: "",
+                error: error,
+                status: status_4
+            };
             // send the status and error
             response.status(status_4)
-                .send(error);
+                .send(responseData);
         }
     });
 }

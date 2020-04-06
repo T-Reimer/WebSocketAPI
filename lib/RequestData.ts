@@ -1,11 +1,17 @@
+import { RequestError } from "./errors/convertError";
 
-export default interface RequestData {
-    id: number,
-    body: any,
-    error?: { name: string, message: string },
+export default interface RequestData extends ResponseData {
     method: "GET" | "POST" | "PUT" | "DELETE" | "SNAPSHOT",
+    body: any,
     name: string,
     unregister?: boolean, // this unregister event only happens on a snapshot
+}
+
+export interface ResponseData {
+    id: number,
+    error?: RequestError | false,
+    status?: number,
+    name: string,
 }
 
 

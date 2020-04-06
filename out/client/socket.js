@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./index");
 var createRequest_1 = require("./createRequest");
 var index_2 = require("./../events/index");
+var timeoutError_1 = require("../errors/timeoutError");
 var events = [];
 exports.stateChangeEvents = [];
 exports.socket = null;
@@ -134,7 +135,14 @@ function createNewConnection() {
  */
 function fetch(id, api, body, options) {
     return new Promise(function (resolve, reject) {
+        // set a timeout
+        if (options === null || options === void 0 ? void 0 : options.timeout) {
+            setTimeout(function () {
+                reject(new timeoutError_1.TimeoutError("Request to server timed out!"));
+            }, options.timeout);
+        }
         try {
+            // create the request to send to websocket server
             var data = {
                 id: id,
                 name: api,

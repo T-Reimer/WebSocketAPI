@@ -28,3 +28,25 @@ window.addEventListener("load", () => {
         console.log("- - - - -");
     });
 });
+
+
+function getDate() {
+    const el = document.getElementById("date-output");
+
+    el.innerHTML = "<br>" + el.innerHTML;
+
+    WebSocketAPI.fetch("date/timestamp")
+        .then(response => {
+            el.innerHTML = "auto:" + response + "<br>" + el.innerHTML;
+        });
+
+    WebSocketAPI.fetch("date/timestamp", null, { use: "http" })
+        .then(response => {
+            el.innerHTML = "http:" + response + "<br>" + el.innerHTML;
+        });
+
+    WebSocketAPI.fetch("date/timestamp", null, { use: "ws" })
+        .then(response => {
+            el.innerHTML = "ws:" + response + "<br>" + el.innerHTML;
+        });
+}
