@@ -4,9 +4,7 @@ Web Socket API is a new way to interact with data from an Express JS web server 
 
 ## This Package is Still in dev stage
 
-I am working on this project in my spare time. So if you'd like to contribute then check it out on [bitbucket](https://bitbucket.org/t-reimer/websocketapi/src/master/).
-
-https://bitbucket.org/t-reimer/websocketapi/src/master/
+I am working on this project in my spare time. So if you'd like to contribute then check it out on [https://github.com/T-Reimer/WebSocketAPI](https://github.com/T-Reimer/WebSocketAPI)
 
 ## Register Server
 To get started you need to register both Express and WS with the api. 
@@ -142,6 +140,31 @@ An alternative way exists as well to make requests.
  
  - **timeout** The amount of ms to wait for a response. **TODO**
 
+
+## Websocket Snapshot API
+
+You can register listeners *(called snaphots in this package)* to listen to web-socket messages. This feature only works when you have a ws connection established. Any listeners that you register will get re-registered if the connection was lost at any time. The `onSnapshot` function returns a `unregister` function to use to unregister the snapshot. The unregister call sends a event to the server to stop sending those events to the client.
+
+    let unregister = WebSocketAPI.onSnapshot(API, BODY, (response)  =>  {
+	    console.log(response.last.data);
+        console.log(response.data);
+    });
+
+ - **API** is the api string that the server will register to.
+ - **Body** is any additional data that you want to use server side when creating the data for the client. The body can be read using `request.data`
+
+Listen for snapshot hooks on the server using. This snapshot function will be called anytime that the client needs data. When the client registers a snapshot it will always request the latest data for that api end point.
+
+    api.on(API)
+        .snapshot(async (request) => {
+			// respond with
+			request.send(request.extra || await getFromDatabase());
+	    });
+
+To trigger the snapshot to update you call `api.triggerSnapshot(API, EXTRA)` to fire the snapshot events. The extra can be the data that you wish to send to the clients or it can be ignored and each snapshot function would have to create the data. If the `EXTRA` is set then that can be accessed via `request.extra` and then  it's your discretion per client how to send the data. This is helpful if the data needs to filtered differently based on user permissions.
+
+
+
 ## Listen for a Server Event from Client
 
 You can make a request to the client from the server using the client object from a client event. This is the exact reverse of the normal request to the server.
@@ -167,4 +190,4 @@ When the client receives the Server event you can respond back to the server wit
 *Contrary to a lot of other WS packages this package does not support or use http polling. If that is what you are looking for then this is not the package for you.*
 
 
-Used [https://stackedit.io/app#](https://stackedit.io/app#) to create this readme.
+> Created with [https://stackedit.io/app#](https://stackedit.io/app#)

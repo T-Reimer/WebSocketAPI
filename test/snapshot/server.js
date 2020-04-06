@@ -27,6 +27,7 @@ api.on("date")
 
 api.on("date/change")
     .snapshot((request) => {
+        console.log(request);
         if (!request.number) {
             request.number = 1;
         } else {
