@@ -11,7 +11,7 @@ describe("browser", () => {
 
     before((done) => {
         WebSocketAPI.setup({
-            fetchUrl: "/api",
+            fetchUrl: "http://localhost:3030/api",
             websocketUrl: "ws://localhost:8090/"
         });
         setTimeout(() => {
@@ -34,7 +34,7 @@ describe("browser", () => {
     // ---------------------------------------------------------------------------------------
 
     describe("get", () => {
-
+        debugger;
         // WEBSOCKET REQUESTS
 
         describe("websocket", () => {

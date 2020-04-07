@@ -3,6 +3,7 @@ const data = require("./data");
 const fetch = require("node-fetch");
 const WebSocket = require("ws");
 const open = require("open");
+const execSh = require("exec-sh");
 
 // Test the server framework
 describe("server", () => {
@@ -16,14 +17,30 @@ describe("server", () => {
     });
 
     // shutdown the websocket server after tests are completed
-    after(() => {
-
+    after(function(done) {
+        this.timeout(10000);
         // start testing the browser
-        open("http://localhost:3030/")
-            .then(_ => {
-                console.log("Opened page");
 
+        if (process.argv.includes("--browser")) {
+
+            open("http://localhost:3030/")
+                .then(_ => {
+                    console.log("Opened page");
+
+                });
+
+        } else {
+
+            execSh("npx mochify test/autoTest/client.js --web-security", {}, (err) => {
+                server.stop(() => {
+                    if (err) {
+                        done(err);
+                    } else {
+                        done();
+                    }
+                });
             });
+        }
 
     });
 

@@ -41,14 +41,11 @@ api.on("error", (event) => event.send(new Error("test error")));
 api.on("timeout", () => {});
 
 api.on("stop", (event) => {
-    console.log("Closing server");
+    console.log("- - - Browser Complete - - -");
     event.send(true);
 
     setTimeout(() => {
-        console.log("- - -");
-        server.close();
-
-        process.exit(0);
+        exports.stop();
     }, 2000);
 });
 
@@ -58,8 +55,14 @@ exports.start = (callback) => {
     });
 };
 
-exports.stop = () => {
+exports.stop = (callback) => {
     if (server) {
+        console.log("- - - Closing Server - - -");
         server.close();
+
+        if (callback) {
+            callback();
+        }
     }
+    process.exit(0);
 };
