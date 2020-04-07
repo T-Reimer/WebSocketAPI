@@ -12,6 +12,13 @@ interface Options {
     reconnectTimeOut: number | Function;
     unHandledWebSocketMessage?: Function;
     stateChange: (state: stateChangeEvent) => void;
+    /**
+     * If this function is set then this function will get called to authenticate the websocket
+     *
+     * This function must return the auth key. It can be an object or a string. The same format will be presented server side for authentication
+     * This function can be async to fetch a auth key
+     */
+    authKey?: (ws: WebSocket) => Promise<string | object>;
 }
 export declare function newIndex(): number;
 /**
@@ -62,3 +69,15 @@ export declare function fetch(api: string, body?: any, options?: requestOptions)
  * @param callback the callback function
  */
 export declare function on(api: string, callback: (event: Request) => void): eventObject;
+/**
+ * Returns the current web socket connection. This will be null if there isn't a active connection
+ */
+export declare function getCurrentConnection(): WebSocket | null;
+/**
+ * Returns the current state of the web socket
+ */
+export declare function getCurrentState(): stateChangeEvent;
+/**
+ * Attempt to reconnect to the server
+ */
+export declare function reconnect(): void;

@@ -1,6 +1,6 @@
 import { requestOptions } from "./index";
 import RequestData from "./../RequestData";
-export declare type stateChangeEvent = "CONNECTED" | "DISCONNECTED" | "ERROR" | "READY";
+export declare type stateChangeEvent = "OPEN" | "CLOSED" | "ERROR" | "READY" | "AUTHFAILED";
 export declare const stateChangeEvents: ((state: stateChangeEvent) => void)[];
 export declare let socket: WebSocket | null;
 export declare let ready: Boolean;

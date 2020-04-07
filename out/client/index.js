@@ -80,6 +80,7 @@ var globalFetch = function (input, init) { return __awaiter(void 0, void 0, void
  * The incremental id used when fetching requests
  */
 var increment = 0;
+var currentWebSocketState = "CLOSED";
 function newIndex() {
     return ++increment;
 }
@@ -338,4 +339,34 @@ function on(api, callback) {
     return registerEvent_1.registerEvent(api, callback);
 }
 exports.on = on;
+/**
+ * Returns the current web socket connection. This will be null if there isn't a active connection
+ */
+function getCurrentConnection() {
+    return socket_1.socket;
+}
+exports.getCurrentConnection = getCurrentConnection;
+// register a event to keep the current state var fresh
+socket_1.stateChangeEvents.push(function (state) { return currentWebSocketState = state; });
+/**
+ * Returns the current state of the web socket
+ */
+function getCurrentState() {
+    return currentWebSocketState;
+}
+exports.getCurrentState = getCurrentState;
+/**
+ * Attempt to reconnect to the server
+ */
+function reconnect() {
+    // close the current connection
+    if (socket_1.socket) {
+        socket_1.socket.close();
+    }
+    // if auto reconnect is turned off then trigger a new connection
+    if (!exports.setOptions.reconnect) {
+        socket_1.setup();
+    }
+}
+exports.reconnect = reconnect;
 //# sourceMappingURL=index.js.map

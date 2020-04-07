@@ -21,6 +21,22 @@ function createNewConnection() {
     exports.socket = new WebSocket(index_1.setOptions.websocketUrl);
     exports.socket.addEventListener("open", function () {
         if (exports.socket) {
+            // if the auth method is set in settings then the first message to the server should be the auth token
+            if (index_1.setOptions.authKey) {
+                index_1.setOptions.authKey(exports.socket)
+                    .then(function (key) {
+                    var keyData = { event: "auth", key: key };
+                    exports.socket === null || exports.socket === void 0 ? void 0 : exports.socket.send(JSON.stringify(keyData));
+                })
+                    .catch(function (err) {
+                    // if the auth key errors then disconnect from server
+                    exports.ready = false;
+                    exports.socket === null || exports.socket === void 0 ? void 0 : exports.socket.close();
+                    exports.socket = null;
+                    console.error(err);
+                    exports.stateChangeEvents.forEach(function (callback) { return callback("ERROR"); });
+                });
+            }
             /**
              * Tell if the events are registered or not
              */
@@ -37,6 +53,27 @@ function createNewConnection() {
                             // set the ready flag. After this is set then the websocket will be used for message events
                             exports.ready = true;
                             exports.stateChangeEvents.forEach(function (callback) { return callback("READY"); });
+                        }
+                        else if (data && data.event === "auth-failed") {
+                            // if authentication failed
+                            exports.stateChangeEvents.forEach(function (callback) { return callback("AUTHFAILED"); });
+                            // register a listener for READY event to turn on the reconnect again
+                            if (index_1.setOptions.reconnect) {
+                                exports.stateChangeEvents.push(function stateReady(state) {
+                                    if (state === "READY") {
+                                        // reset the set options reconnect value
+                                        index_1.setOptions.reconnect = true;
+                                        // unregister this listner
+                                        for (var i = exports.stateChangeEvents.length - 1; i >= 0; i--) {
+                                            if (exports.stateChangeEvents[i] === stateReady) {
+                                                exports.stateChangeEvents.splice(i, 1);
+                                            }
+                                        }
+                                    }
+                                });
+                                index_1.setOptions.reconnect = false;
+                            }
+                            return;
                         }
                         else {
                             // if the data wasn't the correct format then patch to the event
@@ -114,11 +151,15 @@ function createNewConnection() {
                 exports.ready = false;
                 var timeout = typeof index_1.setOptions.reconnectTimeOut === "function" ? index_1.setOptions.reconnectTimeOut() : index_1.setOptions.reconnectTimeOut;
                 // wait for a little before reconnecting
-                // TODO: Set this time in the options
-                setTimeout(createNewConnection, timeout);
-                exports.stateChangeEvents.forEach(function (callback) { return callback("DISCONNECTED"); });
+                if (index_1.setOptions.reconnect) {
+                    setTimeout(createNewConnection, timeout);
+                }
+                // if the previous state wasn't auth failed then send a closed message
+                if (index_1.getCurrentState() !== "AUTHFAILED") {
+                    exports.stateChangeEvents.forEach(function (callback) { return callback("CLOSED"); });
+                }
             });
-            exports.stateChangeEvents.forEach(function (callback) { return callback("CONNECTED"); });
+            exports.stateChangeEvents.forEach(function (callback) { return callback("OPEN"); });
         }
         else {
             createNewConnection();

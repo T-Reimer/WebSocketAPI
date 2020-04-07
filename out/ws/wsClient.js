@@ -51,6 +51,8 @@ var wsClient = /** @class */ (function () {
         this.request = request;
         /**
          * the client that was passed in on connection
+         *
+         * This is the third var that comes on on a wss.connection event.
          */
         this.client = client;
         /**

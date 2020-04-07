@@ -1,8 +1,9 @@
-import { setOptions, requestOptions } from "./index";
+import { setOptions, requestOptions, getCurrentState } from "./index";
 import RequestData, { ResponseData } from "./../RequestData";
 import { createRequest } from "./createRequest";
 import { getEvent, postEvent, putEvent, delEvent } from "./../events/index";
 import { TimeoutError } from "../errors/timeoutError";
+import AuthEventMessage from "../authRequest";
 
 interface FetchEvent {
     id: number,
@@ -14,7 +15,7 @@ interface FetchEvent {
 let events: FetchEvent[] = [];
 
 // list of functions to fire when the state of the websocket changes
-export type stateChangeEvent = "CONNECTED" | "DISCONNECTED" | "ERROR" | "READY";
+export type stateChangeEvent = "OPEN" | "CLOSED" | "ERROR" | "READY" | "AUTHFAILED";
 export const stateChangeEvents: ((state: stateChangeEvent) => void)[] = [];
 
 export let socket: WebSocket | null = null;
@@ -34,6 +35,26 @@ function createNewConnection() {
 
     socket.addEventListener("open", () => {
         if (socket) {
+
+            // if the auth method is set in settings then the first message to the server should be the auth token
+            if (setOptions.authKey) {
+
+                setOptions.authKey(socket)
+                    .then(key => {
+                        const keyData: AuthEventMessage = { event: "auth", key };
+                        socket?.send(JSON.stringify(keyData));
+                    })
+                    .catch(err => {
+                        // if the auth key errors then disconnect from server
+                        ready = false;
+                        socket?.close();
+                        socket = null;
+                        console.error(err);
+
+                        stateChangeEvents.forEach(callback => callback("ERROR"));
+                    });
+            }
+
             /**
              * Tell if the events are registered or not
              */
@@ -53,6 +74,31 @@ function createNewConnection() {
                             ready = true;
 
                             stateChangeEvents.forEach(callback => callback("READY"));
+
+                        } else if (data && data.event === "auth-failed") {
+                            // if authentication failed
+
+                            stateChangeEvents.forEach(callback => callback("AUTHFAILED"));
+
+                            // register a listener for READY event to turn on the reconnect again
+                            if (setOptions.reconnect) {
+                                stateChangeEvents.push(function stateReady(state) {
+                                    if (state === "READY") {
+                                        // reset the set options reconnect value
+                                        setOptions.reconnect = true;
+                                        // unregister this listner
+                                        for (let i = stateChangeEvents.length - 1; i >= 0; i--) {
+                                            if (stateChangeEvents[i] === stateReady) {
+                                                stateChangeEvents.splice(i, 1);
+                                            }
+                                        }
+                                    }
+                                });
+                                setOptions.reconnect = false;
+                            }
+
+                            return;
+
                         } else {
                             // if the data wasn't the correct format then patch to the event
                             setOptions.websocketOnMessage(event.data);
@@ -140,12 +186,16 @@ function createNewConnection() {
                 const timeout: number = typeof setOptions.reconnectTimeOut === "function" ? setOptions.reconnectTimeOut() : setOptions.reconnectTimeOut;
 
                 // wait for a little before reconnecting
-                // TODO: Set this time in the options
-                setTimeout(createNewConnection, timeout);
-                stateChangeEvents.forEach(callback => callback("DISCONNECTED"));
+                if (setOptions.reconnect) {
+                    setTimeout(createNewConnection, timeout);
+                }
+                // if the previous state wasn't auth failed then send a closed message
+                if (getCurrentState() !== "AUTHFAILED") {
+                    stateChangeEvents.forEach(callback => callback("CLOSED"));
+                }
             });
 
-            stateChangeEvents.forEach(callback => callback("CONNECTED"));
+            stateChangeEvents.forEach(callback => callback("OPEN"));
         } else {
             createNewConnection();
         }

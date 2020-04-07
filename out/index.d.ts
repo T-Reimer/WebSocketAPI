@@ -2,8 +2,17 @@ import { Application } from "express";
 import WebSocket from "ws";
 import { ServerRequest } from "./ServerRequest";
 import { SnapshotResponse } from "./RequestData";
+import AuthEventMessage from "./authRequest";
+import { wsClient } from "./ws/wsClient";
 export interface SettingsInterface {
     maxLength?: number;
+    /**
+     * If the onAuthKey is set as a function then the request must be authenticated before more api calls will be answered
+     *
+     * This function can be async and if it throws an error or returns false the client will be disconnected.
+     * A truthy response will register the api.
+     */
+    onAuthKey: (key: AuthEventMessage["key"], client: wsClient, ws: WebSocket, req: any) => Promise<boolean>;
     on: {
         error: Function;
     };
@@ -40,7 +49,7 @@ interface eventObject {
  *
  * @example on("test", () => {\/*Always run *\/}).get(() => {\/** Get request *\/}).post(() => {\/** post request *\/})
  */
-export declare function on(name: string, callback?: Function): eventObject;
+export declare function on(name: string, callback?: (request: ServerRequest) => void | Promise<void>): eventObject;
 /**
  * Trigger a update event for any registered listeners
  *

@@ -167,6 +167,7 @@ var globalFetch = function (input, init) { return __awaiter(void 0, void 0, void
  * The incremental id used when fetching requests
  */
 var increment = 0;
+var currentWebSocketState = "CLOSED";
 function newIndex() {
     return ++increment;
 }
@@ -425,6 +426,36 @@ function on(api, callback) {
     return registerEvent_1.registerEvent(api, callback);
 }
 exports.on = on;
+/**
+ * Returns the current web socket connection. This will be null if there isn't a active connection
+ */
+function getCurrentConnection() {
+    return socket_1.socket;
+}
+exports.getCurrentConnection = getCurrentConnection;
+// register a event to keep the current state var fresh
+socket_1.stateChangeEvents.push(function (state) { return currentWebSocketState = state; });
+/**
+ * Returns the current state of the web socket
+ */
+function getCurrentState() {
+    return currentWebSocketState;
+}
+exports.getCurrentState = getCurrentState;
+/**
+ * Attempt to reconnect to the server
+ */
+function reconnect() {
+    // close the current connection
+    if (socket_1.socket) {
+        socket_1.socket.close();
+    }
+    // if auto reconnect is turned off then trigger a new connection
+    if (!exports.setOptions.reconnect) {
+        socket_1.setup();
+    }
+}
+exports.reconnect = reconnect;
 
 },{"../errors/timeoutError":8,"./onSnapshot":4,"./registerEvent":5,"./socket":6}],4:[function(require,module,exports){
 "use strict";
@@ -565,6 +596,22 @@ function createNewConnection() {
     exports.socket = new WebSocket(index_1.setOptions.websocketUrl);
     exports.socket.addEventListener("open", function () {
         if (exports.socket) {
+            // if the auth method is set in settings then the first message to the server should be the auth token
+            if (index_1.setOptions.authKey) {
+                index_1.setOptions.authKey(exports.socket)
+                    .then(function (key) {
+                    var keyData = { event: "auth", key: key };
+                    exports.socket === null || exports.socket === void 0 ? void 0 : exports.socket.send(JSON.stringify(keyData));
+                })
+                    .catch(function (err) {
+                    // if the auth key errors then disconnect from server
+                    exports.ready = false;
+                    exports.socket === null || exports.socket === void 0 ? void 0 : exports.socket.close();
+                    exports.socket = null;
+                    console.error(err);
+                    exports.stateChangeEvents.forEach(function (callback) { return callback("ERROR"); });
+                });
+            }
             /**
              * Tell if the events are registered or not
              */
@@ -581,6 +628,27 @@ function createNewConnection() {
                             // set the ready flag. After this is set then the websocket will be used for message events
                             exports.ready = true;
                             exports.stateChangeEvents.forEach(function (callback) { return callback("READY"); });
+                        }
+                        else if (data && data.event === "auth-failed") {
+                            // if authentication failed
+                            exports.stateChangeEvents.forEach(function (callback) { return callback("AUTHFAILED"); });
+                            // register a listener for READY event to turn on the reconnect again
+                            if (index_1.setOptions.reconnect) {
+                                exports.stateChangeEvents.push(function stateReady(state) {
+                                    if (state === "READY") {
+                                        // reset the set options reconnect value
+                                        index_1.setOptions.reconnect = true;
+                                        // unregister this listner
+                                        for (var i = exports.stateChangeEvents.length - 1; i >= 0; i--) {
+                                            if (exports.stateChangeEvents[i] === stateReady) {
+                                                exports.stateChangeEvents.splice(i, 1);
+                                            }
+                                        }
+                                    }
+                                });
+                                index_1.setOptions.reconnect = false;
+                            }
+                            return;
                         }
                         else {
                             // if the data wasn't the correct format then patch to the event
@@ -658,11 +726,15 @@ function createNewConnection() {
                 exports.ready = false;
                 var timeout = typeof index_1.setOptions.reconnectTimeOut === "function" ? index_1.setOptions.reconnectTimeOut() : index_1.setOptions.reconnectTimeOut;
                 // wait for a little before reconnecting
-                // TODO: Set this time in the options
-                setTimeout(createNewConnection, timeout);
-                exports.stateChangeEvents.forEach(function (callback) { return callback("DISCONNECTED"); });
+                if (index_1.setOptions.reconnect) {
+                    setTimeout(createNewConnection, timeout);
+                }
+                // if the previous state wasn't auth failed then send a closed message
+                if (index_1.getCurrentState() !== "AUTHFAILED") {
+                    exports.stateChangeEvents.forEach(function (callback) { return callback("CLOSED"); });
+                }
             });
-            exports.stateChangeEvents.forEach(function (callback) { return callback("CONNECTED"); });
+            exports.stateChangeEvents.forEach(function (callback) { return callback("OPEN"); });
         }
         else {
             createNewConnection();

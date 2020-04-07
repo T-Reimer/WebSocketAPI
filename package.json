@@ -13,7 +13,8 @@
     "scripts": {
         "test": "npx mocha test/autoTest/test.js",
         "build:client": "watchify out/client/index.js -o static/bundle.js -s WebSocketAPI",
-        "uglify": "npm run test && uglifyjs static/bundle.js -o static/bundle.min.js"
+        "uglify": "npm run test && uglifyjs static/bundle.js -o static/bundle.min.js",
+        "docs": "npx typedoc --plugin typedoc-plugin-markdown --excludeExternals --excludeNotExported --name WebSocketAPI --includeVersion"
     },
     "keywords": [
         "Websocket",
@@ -31,6 +32,9 @@
         "@types/ws": "^6.0.1",
         "mocha": "^7.1.1",
         "node-fetch": "^2.6.0",
-        "open": "^7.0.3"
+        "open": "^7.0.3",
+        "typedoc": "^0.17.4",
+        "typedoc-plugin-markdown": "^2.2.17",
+        "typescript": "^3.8.3"
     }
 }

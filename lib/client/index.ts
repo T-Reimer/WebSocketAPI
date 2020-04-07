@@ -53,12 +53,20 @@ interface Options {
     reconnectTimeOut: number | Function, // set the function to only return a number
     unHandledWebSocketMessage?: Function,
     stateChange: (state: stateChangeEvent) => void,
+    /**
+     * If this function is set then this function will get called to authenticate the websocket
+     * 
+     * This function must return the auth key. It can be an object or a string. The same format will be presented server side for authentication
+     * This function can be async to fetch a auth key
+     */
+    authKey?: (ws: WebSocket) => Promise<string | object>,
 }
 
 /**
  * The incremental id used when fetching requests
  */
 let increment = 0;
+let currentWebSocketState: stateChangeEvent = "CLOSED";
 
 export function newIndex() {
     return ++increment;
@@ -290,4 +298,36 @@ export async function fetch(api: string, body?: any, options?: requestOptions): 
  */
 export function on(api: string, callback: (event: Request) => void): eventObject {
     return registerEvent(api, callback);
+}
+
+/**
+ * Returns the current web socket connection. This will be null if there isn't a active connection
+ */
+export function getCurrentConnection() {
+    return socket;
+}
+
+// register a event to keep the current state var fresh
+stateChangeEvents.push(state => currentWebSocketState = state);
+
+/**
+ * Returns the current state of the web socket
+ */
+export function getCurrentState() {
+    return currentWebSocketState;
+}
+
+/**
+ * Attempt to reconnect to the server
+ */
+export function reconnect() {
+    // close the current connection
+    if (socket) {
+        socket.close();
+    }
+
+    // if auto reconnect is turned off then trigger a new connection
+    if (!setOptions.reconnect) {
+        socketSetup();
+    }
 }
