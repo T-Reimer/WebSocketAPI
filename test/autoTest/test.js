@@ -18,7 +18,7 @@ describe("server", () => {
 
     // shutdown the websocket server after tests are completed
     after(function(done) {
-        this.timeout(10000);
+        this.timeout(30000);
         // start testing the browser
 
         if (process.argv.includes("--browser")) {
