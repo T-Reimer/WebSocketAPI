@@ -1,5 +1,6 @@
 import { Request } from "./../Request";
 import { getEvent, postEvent, putEvent, delEvent } from "./../events/index";
+import stripUrlSlashes from "../stripSlashes";
 
 export interface eventObject {
     get: (callback: (data: any) => void) => eventObject;
@@ -16,6 +17,9 @@ export interface eventObject {
  * @param callback the callback function
  */
 export function registerEvent(name: string, callback: (event: Request) => void) {
+    // remove the leading and trailing slashes from the url
+    name = stripUrlSlashes(name);
+
     // if a callback function is given register it for each of the categories
     if (callback) {
         getEvent.on(name, callback);

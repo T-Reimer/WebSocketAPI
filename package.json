@@ -14,6 +14,7 @@
         "test": "npx mocha test/autoTest/test.js",
         "test:browser": "npx mochify test/autoTest/client.js",
         "build:client": "watchify out/client/index.js -o static/bundle.js -s WebSocketAPI",
+        "build:tsc": "tsc --watch",
         "build": "npx browserify out/client/index.js -o static/bundle.js -s WebSocketAPI && npm run uglify",
         "uglify": "uglifyjs static/bundle.js -o static/bundle.min.js",
         "docs": "npx typedoc --plugin typedoc-plugin-markdown --excludeExternals --excludeNotExported --name WebSocketAPI --includeVersion"

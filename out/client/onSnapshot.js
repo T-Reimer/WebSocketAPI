@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var socket_1 = require("./socket");
 var _1 = require(".");
+var stripSlashes_1 = __importDefault(require("../stripSlashes"));
 /**
  * Register a new snapshot event to the server. This event will automatically re-register if the connection gets disconnected.
  *
@@ -10,6 +14,8 @@ var _1 = require(".");
  * @param callback the callback to run the the snapshot data
  */
 function onSnapshot(api, requestHead, callback) {
+    // remove leading and trailing slashes from the url
+    api = stripSlashes_1.default(api);
     // create a index number to use for all of the transactions
     var id = _1.newIndex();
     var unregister = function () { };

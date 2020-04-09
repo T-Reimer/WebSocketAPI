@@ -15,7 +15,9 @@ app.use("/static", express.static(path.join(__dirname, "./../static")));
 app.use(bodyParser.json());
 
 // create the websocket server
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({
+    port: 8080
+});
 
 // register the api
 api.register(app, wss, "api");
@@ -44,14 +46,21 @@ api.on("ping", (event, next) => {
         console.log("- - - - - - -");
         console.log("Sending a Server Event to Client");
 
-        event.client.fetch("ping", { randomNumber: Math.random() })
-            .then(data => {
+        if (event.client) {
+            // the client is connected with websocket
+            event.client.fetch("ping", {
+                    randomNumber: Math.random()
+                })
+                .then(data => {
 
-                console.log("Client Responded with", data);
+                    console.log("Client Responded with", data);
 
-                console.log("- - - - - -");
-            })
-            .catch(console.warn);
+                    console.log("- - - - - -");
+                })
+                .catch(console.warn);
+
+        }
+
     }, 2000);
 
 });

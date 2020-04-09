@@ -1,9 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./events/index");
 var registerExpress_1 = require("./registerExpress");
 var registerWS_1 = require("./registerWS");
 var registerSnapshotRequest_1 = require("./snapShots/registerSnapshotRequest");
+var stripSlashes_1 = __importDefault(require("./stripSlashes"));
 /**
  * the default settings object
  */
@@ -35,6 +39,8 @@ exports.register = register;
  * @example on("test", () => {\/*Always run *\/}).get(() => {\/** Get request *\/}).post(() => {\/** post request *\/})
  */
 function on(name, callback) {
+    // remove leading and trailing slashes in the url
+    name = stripSlashes_1.default(name);
     // if a callback function is given register it for each of the categories
     if (callback) {
         index_1.getEvent.on(name, callback);
@@ -75,6 +81,8 @@ exports.on = on;
  * @param extra the data to add
  */
 function triggerSnapshot(api, extra) {
+    // remove leading and trailing slashes from url
+    api = stripSlashes_1.default(api);
     registerSnapshotRequest_1.registeredListeners.forEach(function (listener) {
         if (listener.name === api) {
             // set the extra event data

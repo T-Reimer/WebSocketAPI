@@ -9,6 +9,7 @@ import { registeredListeners } from "./snapShots/registerSnapshotRequest";
 import { SnapshotResponse } from "./RequestData";
 import AuthEventMessage from "./authRequest";
 import { wsClient } from "./ws/wsClient";
+import stripUrlSlashes from "./stripSlashes";
 
 export interface SettingsInterface {
     maxLength?: number, // the max upload length to automatically parse
@@ -70,6 +71,9 @@ interface eventObject {
  */
 export function on(name: string, callback?: (request: ServerRequest) => void | Promise<void>) {
 
+    // remove leading and trailing slashes in the url
+    name = stripUrlSlashes(name);
+
     // if a callback function is given register it for each of the categories
     if (callback) {
         getEvent.on(name, callback);
@@ -120,6 +124,9 @@ export function on(name: string, callback?: (request: ServerRequest) => void | P
  * @param extra the data to add
  */
 export function triggerSnapshot(api: string, extra: any) {
+    // remove leading and trailing slashes from url
+    api = stripUrlSlashes(api);
+
     registeredListeners.forEach(listener => {
         if (listener.name === api) {
 

@@ -1,6 +1,7 @@
 import { registerSnapshot, ready as socketReady, stateChangeEvents, stateChangeEvent, send } from "./socket";
 import { newIndex } from ".";
 import RequestData, { SnapshotResponse } from "../RequestData";
+import stripUrlSlashes from "../stripSlashes";
 
 
 /**
@@ -11,6 +12,9 @@ import RequestData, { SnapshotResponse } from "../RequestData";
  * @param callback the callback to run the the snapshot data
  */
 export function onSnapshot(api: string, requestHead: any, callback: (snapshot: SnapshotResponse) => void): () => void {
+
+    // remove leading and trailing slashes from the url
+    api = stripUrlSlashes(api);
 
     // create a index number to use for all of the transactions
     let id = newIndex();
