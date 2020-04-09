@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["client/registerEvent"](../modules/_client_registerevent_.md) › [eventObject](_client_registerevent_.eventobject.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["client/registerEvent"](../modules/_client_registerevent_.md) › [eventObject](_client_registerevent_.eventobject.md)
 
 # Interface: eventObject
 
@@ -21,7 +21,7 @@
 
 • **delete**: *function*
 
-*Defined in [lib/client/registerEvent.ts:8](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/registerEvent.ts#L8)*
+*Defined in [lib/client/registerEvent.ts:9](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/registerEvent.ts#L9)*
 
 #### Type declaration:
 
@@ -45,7 +45,7 @@ ___
 
 • **get**: *function*
 
-*Defined in [lib/client/registerEvent.ts:5](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/registerEvent.ts#L5)*
+*Defined in [lib/client/registerEvent.ts:6](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/registerEvent.ts#L6)*
 
 #### Type declaration:
 
@@ -69,7 +69,7 @@ ___
 
 • **post**: *function*
 
-*Defined in [lib/client/registerEvent.ts:6](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/registerEvent.ts#L6)*
+*Defined in [lib/client/registerEvent.ts:7](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/registerEvent.ts#L7)*
 
 #### Type declaration:
 
@@ -93,7 +93,7 @@ ___
 
 • **put**: *function*
 
-*Defined in [lib/client/registerEvent.ts:7](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/registerEvent.ts#L7)*
+*Defined in [lib/client/registerEvent.ts:8](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/registerEvent.ts#L8)*
 
 #### Type declaration:
 

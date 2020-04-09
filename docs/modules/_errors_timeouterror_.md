@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["errors/timeoutError"](_errors_timeouterror_.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["errors/timeoutError"](_errors_timeouterror_.md)
 
 # Module: "errors/timeoutError"
 

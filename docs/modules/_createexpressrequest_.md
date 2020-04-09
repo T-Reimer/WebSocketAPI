@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["createExpressRequest"](_createexpressrequest_.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["createExpressRequest"](_createexpressrequest_.md)
 
 # Module: "createExpressRequest"
 
@@ -14,7 +14,7 @@
 
 ▸ **createExpressRequest**(`req`: ExpressRequest, `res`: ExpressResponse, `method`: string, `settings`: [SettingsInterface](../interfaces/_index_.settingsinterface.md)): *[ServerRequest](../classes/_serverrequest_.serverrequest.md)‹›*
 
-*Defined in [lib/createExpressRequest.ts:12](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/createExpressRequest.ts#L12)*
+*Defined in [lib/createExpressRequest.ts:13](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/createExpressRequest.ts#L13)*
 
 **Parameters:**
 

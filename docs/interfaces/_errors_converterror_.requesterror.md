@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["errors/convertError"](../modules/_errors_converterror_.md) › [RequestError](_errors_converterror_.requesterror.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["errors/convertError"](../modules/_errors_converterror_.md) › [RequestError](_errors_converterror_.requesterror.md)
 
 # Interface: RequestError
 
@@ -20,7 +20,7 @@
 
 • **message**: *string*
 
-*Defined in [lib/errors/convertError.ts:11](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/errors/convertError.ts#L11)*
+*Defined in [lib/errors/convertError.ts:11](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/errors/convertError.ts#L11)*
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 • **name**: *string*
 
-*Defined in [lib/errors/convertError.ts:10](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/errors/convertError.ts#L10)*
+*Defined in [lib/errors/convertError.ts:10](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/errors/convertError.ts#L10)*
 
 ___
 
@@ -36,4 +36,4 @@ ___
 
 • **status**? : *undefined | number*
 
-*Defined in [lib/errors/convertError.ts:12](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/errors/convertError.ts#L12)*
+*Defined in [lib/errors/convertError.ts:12](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/errors/convertError.ts#L12)*

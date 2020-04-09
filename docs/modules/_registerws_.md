@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["registerWS"](_registerws_.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["registerWS"](_registerws_.md)
 
 # Module: "registerWS"
 
@@ -14,7 +14,7 @@
 
 ▸ **registerWS**(`wss`: Server, `settings`: [SettingsInterface](../interfaces/_index_.settingsinterface.md)): *void*
 
-*Defined in [lib/registerWS.ts:15](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/registerWS.ts#L15)*
+*Defined in [lib/registerWS.ts:17](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/registerWS.ts#L17)*
 
 Register the web wss server to use as api
 

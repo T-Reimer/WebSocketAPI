@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["ws/wsClient"](../modules/_ws_wsclient_.md) › [wsClient](_ws_wsclient_.wsclient.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["ws/wsClient"](../modules/_ws_wsclient_.md) › [wsClient](_ws_wsclient_.wsclient.md)
 
 # Class: wsClient
 
@@ -32,7 +32,7 @@
 
 \+ **new wsClient**(`ws`: WebSocket, `request`: ExpressRequest, `client?`: any): *[wsClient](_ws_wsclient_.wsclient.md)*
 
-*Defined in [lib/ws/wsClient.ts:24](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/ws/wsClient.ts#L24)*
+*Defined in [lib/ws/wsClient.ts:24](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L24)*
 
 **Parameters:**
 
@@ -50,7 +50,7 @@ Name | Type |
 
 • **WebSocket**: *WebSocket*
 
-*Defined in [lib/ws/wsClient.ts:20](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/ws/wsClient.ts#L20)*
+*Defined in [lib/ws/wsClient.ts:20](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L20)*
 
 ___
 
@@ -58,7 +58,7 @@ ___
 
 • **_index**: *number*
 
-*Defined in [lib/ws/wsClient.ts:23](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/ws/wsClient.ts#L23)*
+*Defined in [lib/ws/wsClient.ts:23](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L23)*
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 • **client**: *any*
 
-*Defined in [lib/ws/wsClient.ts:22](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/ws/wsClient.ts#L22)*
+*Defined in [lib/ws/wsClient.ts:22](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L22)*
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 • **events**: *FetchEvent[]*
 
-*Defined in [lib/ws/wsClient.ts:24](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/ws/wsClient.ts#L24)*
+*Defined in [lib/ws/wsClient.ts:24](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L24)*
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 • **request**: *ExpressRequest*
 
-*Defined in [lib/ws/wsClient.ts:21](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/ws/wsClient.ts#L21)*
+*Defined in [lib/ws/wsClient.ts:21](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L21)*
 
 ## Methods
 
@@ -90,7 +90,7 @@ ___
 
 ▸ **api**(`api`: string): *object*
 
-*Defined in [lib/ws/wsClient.ts:59](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/ws/wsClient.ts#L59)*
+*Defined in [lib/ws/wsClient.ts:61](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L61)*
 
 Send a api request to the client
 
@@ -116,7 +116,7 @@ ___
 
 ▸ **fetch**(`api`: string, `body?`: any, `options?`: [requestOptions](../interfaces/_ws_wsclient_.requestoptions.md)): *Promise‹unknown›*
 
-*Defined in [lib/ws/wsClient.ts:99](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/ws/wsClient.ts#L99)*
+*Defined in [lib/ws/wsClient.ts:101](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L101)*
 
 Send a reverse fetch to the client.
 
@@ -138,6 +138,6 @@ ___
 
 ▸ **newIndex**(): *number*
 
-*Defined in [lib/ws/wsClient.ts:131](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/ws/wsClient.ts#L131)*
+*Defined in [lib/ws/wsClient.ts:133](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L133)*
 
 **Returns:** *number*

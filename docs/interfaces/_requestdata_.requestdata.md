@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["RequestData"](../modules/_requestdata_.md) › [RequestData](_requestdata_.requestdata.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["RequestData"](../modules/_requestdata_.md) › [RequestData](_requestdata_.requestdata.md)
 
 # Interface: RequestData
 
@@ -26,7 +26,7 @@
 
 • **body**: *any*
 
-*Defined in [lib/RequestData.ts:5](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L5)*
+*Defined in [lib/RequestData.ts:5](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L5)*
 
 ___
 
@@ -36,7 +36,7 @@ ___
 
 *Inherited from [RequestData](_requestdata_.requestdata.md).[error](_requestdata_.requestdata.md#optional-error)*
 
-*Defined in [lib/RequestData.ts:12](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L12)*
+*Defined in [lib/RequestData.ts:12](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L12)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 *Inherited from [RequestData](_requestdata_.requestdata.md).[id](_requestdata_.requestdata.md#id)*
 
-*Defined in [lib/RequestData.ts:11](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L11)*
+*Defined in [lib/RequestData.ts:11](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L11)*
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 • **method**: *"GET" | "POST" | "PUT" | "DELETE" | "SNAPSHOT"*
 
-*Defined in [lib/RequestData.ts:4](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L4)*
+*Defined in [lib/RequestData.ts:4](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L4)*
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 *Overrides [ResponseData](_requestdata_.responsedata.md).[name](_requestdata_.responsedata.md#name)*
 
-*Defined in [lib/RequestData.ts:6](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L6)*
+*Defined in [lib/RequestData.ts:6](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L6)*
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 *Inherited from [RequestData](_requestdata_.requestdata.md).[status](_requestdata_.requestdata.md#optional-status)*
 
-*Defined in [lib/RequestData.ts:13](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L13)*
+*Defined in [lib/RequestData.ts:13](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L13)*
 
 ___
 
@@ -82,4 +82,4 @@ ___
 
 • **unregister**? : *undefined | false | true*
 
-*Defined in [lib/RequestData.ts:7](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L7)*
+*Defined in [lib/RequestData.ts:7](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L7)*
