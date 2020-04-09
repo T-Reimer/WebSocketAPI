@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["client/index"](../modules/_client_index_.md) › [requestOptions](_client_index_.requestoptions.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["client/index"](../modules/_client_index_.md) › [requestOptions](_client_index_.requestoptions.md)
 
 # Interface: requestOptions
 
@@ -20,7 +20,7 @@
 
 • **method**? : *"GET" | "POST" | "PUT" | "DELETE" | "SNAPSHOT"*
 
-*Defined in [lib/client/index.ts:128](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/index.ts#L128)*
+*Defined in [lib/client/index.ts:135](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/index.ts#L135)*
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 • **timeout**? : *undefined | number*
 
-*Defined in [lib/client/index.ts:130](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/index.ts#L130)*
+*Defined in [lib/client/index.ts:137](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/index.ts#L137)*
 
 ___
 
@@ -36,4 +36,4 @@ ___
 
 • **use**? : *"ws" | "http"*
 
-*Defined in [lib/client/index.ts:129](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/index.ts#L129)*
+*Defined in [lib/client/index.ts:136](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/index.ts#L136)*

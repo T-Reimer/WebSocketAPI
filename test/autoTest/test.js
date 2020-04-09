@@ -17,7 +17,7 @@ describe("server", () => {
     });
 
     // shutdown the websocket server after tests are completed
-    after(function(done) {
+    after(function (done) {
         this.timeout(30000);
         // start testing the browser
 
@@ -73,7 +73,7 @@ describe("server", () => {
                 ws.close();
             });
 
-            it("should respond with matching records", function(done) {
+            it("should respond with matching records", function (done) {
                 ws.send('{"id":1,"name":"todo/mine","method":"GET"}');
 
                 ws.on("message", (response) => {
@@ -86,7 +86,21 @@ describe("server", () => {
                 });
             });
 
-            it("should respond with status 404", function(done) {
+            it("nested api request", function (done) {
+
+                ws.send('{"id":4,"name":"nested/api/request/","method":"GET"}');
+
+                ws.on("message", (response) => {
+                    const msg = JSON.parse(response);
+
+                    if (msg.id === 4) {
+                        assert.equal("nested/api/request", msg.body);
+                        done();
+                    }
+                });
+            });
+
+            it("should respond with status 404", function (done) {
                 ws.send('{"id":2,"name":"something404","method":"GET"}');
 
                 ws.on("message", (response) => {
@@ -100,7 +114,7 @@ describe("server", () => {
 
             });
 
-            it("should respond with an error", function(done) {
+            it("should respond with an error", function (done) {
 
                 ws.send('{"id":3,"name":"error","method":"GET"}');
 
@@ -121,24 +135,40 @@ describe("server", () => {
         // test the server http response to the same api
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await fetch("http://localhost:3030/api/1/todo%2fmine", { method: "GET" });
+            it("should respond with matching records", async function () {
+                const response = await fetch("http://localhost:3030/api/1/todo%2fmine", {
+                    method: "GET"
+                });
                 const responseData = await response.json();
 
                 assert.deepEqual(data.todo[0], responseData.body);
 
             });
 
-            it("should respond with status 404", async function() {
-                const response = await fetch("http://localhost:3030/api/1/something404", { method: "GET" });
+            it("nested api request", async function () {
+                const response = await fetch("http://localhost:3030/api/1/nested/api/request/", {
+                    method: "GET"
+                });
+                const responseData = await response.json();
+
+                assert.equal("nested/api/request", responseData.body);
+
+            });
+
+            it("should respond with status 404", async function () {
+                const response = await fetch("http://localhost:3030/api/1/something404", {
+                    method: "GET"
+                });
                 const responseData = await response.json();
 
                 assert.equal(404, responseData.status);
 
             });
 
-            it("should respond with an error", async function() {
-                const response = await fetch("http://localhost:3030/api/1/error", { method: "GET" });
+            it("should respond with an error", async function () {
+                const response = await fetch("http://localhost:3030/api/1/error", {
+                    method: "GET"
+                });
                 const responseData = await response.json();
 
                 assert.deepEqual(data.errorMessage, responseData);
@@ -175,7 +205,7 @@ describe("server", () => {
                 ws.close();
             });
 
-            it("should respond with matching records", function(done) {
+            it("should respond with matching records", function (done) {
                 ws.send(JSON.stringify({
                     id: 1,
                     method: "POST",
@@ -193,7 +223,7 @@ describe("server", () => {
                 });
             });
 
-            it("should respond with status 404", function(done) {
+            it("should respond with status 404", function (done) {
                 ws.send('{"id":2,"name":"something404","method":"POST"}');
 
                 ws.on("message", (response) => {
@@ -207,7 +237,7 @@ describe("server", () => {
 
             });
 
-            it("should respond with an error", function(done) {
+            it("should respond with an error", function (done) {
 
                 ws.send('{"id":3,"name":"error","method":"POST"}');
 
@@ -228,11 +258,13 @@ describe("server", () => {
         // test the server http response to the same api
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
+            it("should respond with matching records", async function () {
                 const response = await fetch("http://localhost:3030/api/1/echo", {
                     method: "POST",
                     body: JSON.stringify(data.todo[2]),
-                    headers: { "Content-Type": "application/json" }
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 });
                 const responseData = await response.json();
 
@@ -240,16 +272,20 @@ describe("server", () => {
 
             });
 
-            it("should respond with status 404", async function() {
-                const response = await fetch("http://localhost:3030/api/1/something404", { method: "POST" });
+            it("should respond with status 404", async function () {
+                const response = await fetch("http://localhost:3030/api/1/something404", {
+                    method: "POST"
+                });
                 const responseData = await response.json();
 
                 assert.equal(404, responseData.status);
 
             });
 
-            it("should respond with an error", async function() {
-                const response = await fetch("http://localhost:3030/api/1/error", { method: "POST" });
+            it("should respond with an error", async function () {
+                const response = await fetch("http://localhost:3030/api/1/error", {
+                    method: "POST"
+                });
                 const responseData = await response.json();
 
                 assert.deepEqual(data.errorMessage, responseData);
@@ -287,7 +323,7 @@ describe("server", () => {
                 ws.close();
             });
 
-            it("should respond with matching records", function(done) {
+            it("should respond with matching records", function (done) {
                 ws.send(JSON.stringify({
                     id: 1,
                     method: "PUT",
@@ -305,7 +341,7 @@ describe("server", () => {
                 });
             });
 
-            it("should respond with status 404", function(done) {
+            it("should respond with status 404", function (done) {
                 ws.send('{"id":2,"name":"something404","method":"PUT"}');
 
                 ws.on("message", (response) => {
@@ -319,7 +355,7 @@ describe("server", () => {
 
             });
 
-            it("should respond with an error", function(done) {
+            it("should respond with an error", function (done) {
 
                 ws.send('{"id":3,"name":"error","method":"PUT"}');
 
@@ -340,11 +376,13 @@ describe("server", () => {
         // test the server http response to the same api
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
+            it("should respond with matching records", async function () {
                 const response = await fetch("http://localhost:3030/api/1/echo", {
                     method: "PUT",
                     body: JSON.stringify(data.todo[2]),
-                    headers: { "Content-Type": "application/json" }
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 });
                 const responseData = await response.json();
 
@@ -352,16 +390,20 @@ describe("server", () => {
 
             });
 
-            it("should respond with status 404", async function() {
-                const response = await fetch("http://localhost:3030/api/1/something404", { method: "PUT" });
+            it("should respond with status 404", async function () {
+                const response = await fetch("http://localhost:3030/api/1/something404", {
+                    method: "PUT"
+                });
                 const responseData = await response.json();
 
                 assert.equal(404, responseData.status);
 
             });
 
-            it("should respond with an error", async function() {
-                const response = await fetch("http://localhost:3030/api/1/error", { method: "PUT" });
+            it("should respond with an error", async function () {
+                const response = await fetch("http://localhost:3030/api/1/error", {
+                    method: "PUT"
+                });
                 const responseData = await response.json();
 
                 assert.deepEqual(data.errorMessage, responseData);
@@ -398,7 +440,7 @@ describe("server", () => {
                 ws.close();
             });
 
-            it("should respond with matching records", function(done) {
+            it("should respond with matching records", function (done) {
                 ws.send('{"id":1,"name":"todo/mine","method":"DELETE"}');
 
                 ws.on("message", (response) => {
@@ -411,7 +453,7 @@ describe("server", () => {
                 });
             });
 
-            it("should respond with status 404", function(done) {
+            it("should respond with status 404", function (done) {
                 ws.send('{"id":2,"name":"something404","method":"DELETE"}');
 
                 ws.on("message", (response) => {
@@ -425,7 +467,7 @@ describe("server", () => {
 
             });
 
-            it("should respond with an error", function(done) {
+            it("should respond with an error", function (done) {
 
                 ws.send('{"id":3,"name":"error","method":"DELETE"}');
 
@@ -446,24 +488,30 @@ describe("server", () => {
         // test the server http response to the same api
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await fetch("http://localhost:3030/api/1/todo%2fmine", { method: "DELETE" });
+            it("should respond with matching records", async function () {
+                const response = await fetch("http://localhost:3030/api/1/todo%2fmine", {
+                    method: "DELETE"
+                });
                 const responseData = await response.json();
                 // console.log(responseData);
                 assert.deepEqual(responseData, data.deleted);
 
             });
 
-            it("should respond with status 404", async function() {
-                const response = await fetch("http://localhost:3030/api/1/something404", { method: "DELETE" });
+            it("should respond with status 404", async function () {
+                const response = await fetch("http://localhost:3030/api/1/something404", {
+                    method: "DELETE"
+                });
                 const responseData = await response.json();
 
                 assert.equal(404, responseData.status);
 
             });
 
-            it("should respond with an error", async function() {
-                const response = await fetch("http://localhost:3030/api/1/error", { method: "DELETE" });
+            it("should respond with an error", async function () {
+                const response = await fetch("http://localhost:3030/api/1/error", {
+                    method: "DELETE"
+                });
                 const responseData = await response.json();
 
                 assert.deepEqual(responseData, data.errorMessage);

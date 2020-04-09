@@ -2,6 +2,7 @@ import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 import { SettingsInterface } from "./index";
 
 import { ServerRequest } from "./ServerRequest";
+import stripUrlSlashes from "./stripSlashes";
 
 /**
  *
@@ -11,7 +12,8 @@ import { ServerRequest } from "./ServerRequest";
  */
 export function createExpressRequest(req: ExpressRequest, res: ExpressResponse, method: string, settings: SettingsInterface) {
 
-    let newRequest = new ServerRequest(req.params.id, req.params.name, req.body, method, null);
+    const name = stripUrlSlashes(req.params['0']);
+    let newRequest = new ServerRequest(req.params.id, name, req.body, method, null);
 
     newRequest.request = req;
 

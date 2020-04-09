@@ -5,6 +5,7 @@ import { Request } from "./../Request";
 import { registerEvent, eventObject } from "./registerEvent";
 import { onSnapshot } from "./onSnapshot";
 import { TimeoutError } from "../errors/timeoutError";
+import stripUrlSlashes from "../stripSlashes";
 export { onSnapshot } from "./onSnapshot";
 
 interface RequestInitOption extends RequestInit {
@@ -137,6 +138,9 @@ export interface requestOptions {
 }
 
 export function api(api: string) {
+    // remove the leading and trailing slashes from the url
+    api = stripUrlSlashes(api);
+
     return {
         get: async (body: any, options?: requestOptions) => {
             options = options ? options : {};
@@ -174,9 +178,11 @@ export function api(api: string) {
  * 
  */
 export async function getData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
+    // remove leading and trailing slashes from request
+    api = stripUrlSlashes(api);
 
     if ((options && options.use === "http") || !socketReady) {
-        let url = new URL(`${setOptions.fetchUrl}/${encodeURIComponent(id)}/${encodeURIComponent(api)}`);
+        let url = new URL(`${setOptions.fetchUrl}/${id}/${api}`);
         let search = url.search;
 
         if (search) {
@@ -227,9 +233,12 @@ export async function getData(id: number, api: string, body?: any, options?: req
  * @todo Add the timeout error
  */
 export async function sendData(id: number, api: string, body?: any, options?: requestOptions): Promise<any> {
+    // remove leading and trailing slashes from request
+    api = stripUrlSlashes(api);
+
     if ((options && options.use === "http") || !socketReady) {
         // use the http request instead of web socket
-        const url = `${setOptions.fetchUrl}/${encodeURIComponent(id)}/${encodeURIComponent(api)}`;
+        const url = `${setOptions.fetchUrl}/${id}/${api}`;
 
         let request = await globalFetch(url, {
             method: options && options.method ? options.method : "POST",

@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["RequestData"](../modules/_requestdata_.md) › [ResponseData](_requestdata_.responsedata.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["RequestData"](../modules/_requestdata_.md) › [ResponseData](_requestdata_.responsedata.md)
 
 # Interface: ResponseData
 
@@ -23,7 +23,7 @@
 
 • **error**? : *[RequestError](_errors_converterror_.requesterror.md) | false*
 
-*Defined in [lib/RequestData.ts:12](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L12)*
+*Defined in [lib/RequestData.ts:12](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L12)*
 
 ___
 
@@ -31,7 +31,7 @@ ___
 
 • **id**: *number*
 
-*Defined in [lib/RequestData.ts:11](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L11)*
+*Defined in [lib/RequestData.ts:11](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L11)*
 
 ___
 
@@ -39,7 +39,7 @@ ___
 
 • **name**: *string*
 
-*Defined in [lib/RequestData.ts:14](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L14)*
+*Defined in [lib/RequestData.ts:14](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L14)*
 
 ___
 
@@ -47,4 +47,4 @@ ___
 
 • **status**? : *undefined | number*
 
-*Defined in [lib/RequestData.ts:13](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/RequestData.ts#L13)*
+*Defined in [lib/RequestData.ts:13](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/RequestData.ts#L13)*

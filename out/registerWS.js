@@ -35,12 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./events/index");
 var createWSRequest_1 = require("./createWSRequest");
 var wsClient_1 = require("./ws/wsClient");
 var registerSnapshotRequest_1 = require("./snapShots/registerSnapshotRequest");
 var convertError_1 = require("./errors/convertError");
+var stripSlashes_1 = __importDefault(require("./stripSlashes"));
 /**
  * Register the web wss server to use as api
  *
@@ -117,7 +121,7 @@ function sendOpenMessage(ws, client, settings) {
                 request = data;
                 if (data.method) {
                     // create a event to dispatch
-                    var event_1 = createWSRequest_1.createWSRequest(client, data.id, data.name, data.body, data.method, settings);
+                    var event_1 = createWSRequest_1.createWSRequest(client, data.id, stripSlashes_1.default(data.name), data.body, data.method, settings);
                     switch (data.method) {
                         case "GET":
                             index_1.getEvent.triggerEvent(event_1);

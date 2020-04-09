@@ -1,8 +1,10 @@
-[WebSocketAPI - v1.1.1](README.md) › [Globals](globals.md)
+[WebSocketAPI - v1.1.2-3](README.md) › [Globals](globals.md)
 
-# WebSocketAPI - v1.1.1
+# WebSocketAPI - v1.1.2-3
 
 # Web Socket Api
+
+[TypeDoc](./docs/globals.md)
 
 Web Socket API is a new way to interact with data from an Express JS web server to the client built on top of [Express](https://www.npmjs.com/package/express) and [WS](https://www.npmjs.com/package/ws). Register for both endpoints with a single event listener and effortlessly pick your preferred protocol on request. 
 
@@ -92,7 +94,7 @@ To setup the client call the `WebSocketAPI.setup` function. Set the fetchUrl to 
 	    websocketUrl:  "ws://localhost:8080/"
     });
 
-## Options
+## [Options](modules/_client_index_.md)
 
     {
 		fetchUrl:  string,
