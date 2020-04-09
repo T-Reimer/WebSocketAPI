@@ -7,6 +7,7 @@ import RequestData, { ResponseData } from "./RequestData";
 import { registerSnapshotRequest, unregisterSnapshotRequest } from "./snapShots/registerSnapshotRequest";
 import { convertError } from "./errors/convertError";
 import AuthEventMessage, { AuthFailedMessage } from "./authRequest";
+import stripUrlSlashes from "./stripSlashes";
 
 /**
  * Register the web wss server to use as api
@@ -82,7 +83,7 @@ function sendOpenMessage(ws: WebSocket, client: wsClient, settings: SettingsInte
                 if (data.method) {
 
                     // create a event to dispatch
-                    let event = createWSRequest(client, data.id, data.name, data.body, data.method, settings);
+                    let event = createWSRequest(client, data.id, stripUrlSlashes(data.name), data.body, data.method, settings);
 
                     switch (data.method) {
                         case "GET":
