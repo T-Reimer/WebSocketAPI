@@ -1,3 +1,5 @@
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable arrow-parens */
 const express = require("express");
 const bodyParser = require("body-parser");
 const WebSocket = require("ws");
