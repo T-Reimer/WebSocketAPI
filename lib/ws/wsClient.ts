@@ -2,6 +2,7 @@ import WebSocket from "ws";
 import { Request as ExpressRequest } from "express";
 import RequestData from "../RequestData";
 import { getEvent, postEvent, putEvent, delEvent } from "./../events/index";
+import { TimeoutError } from "../errors/timeoutError";
 
 export interface requestOptions {
     method?: "GET" | "POST" | "PUT" | "DELETE",
@@ -117,11 +118,32 @@ export class wsClient {
                 // send the data to the client
                 this.WebSocket.send(JSON.stringify(data));
 
+                let timeout: number | undefined = undefined;
+                if (options && options.timeout) {
+                    timeout = <any>setTimeout(() => {
+                        // reject the event if it hasn't run yet
+                        reject(new TimeoutError("Request to client timed out!"));
+
+                        // remove the event from the list
+                        for (let i = this.events.length - 1; i >= 0; i--) {
+                            if (this.events[i].id === id) {
+                                this.events.splice(i, 1);
+                            }
+                        }
+                    }, options.timeout);
+                }
+
                 // register the event listener for the fetch return value
                 this.events.push({
                     id,
-                    reject,
-                    resolve
+                    reject: (err: Error) => {
+                        reject(err);
+                        clearTimeout(timeout);
+                    },
+                    resolve: (...args: any[]) => {
+                        resolve(...args);
+                        clearTimeout(timeout);
+                    }
                 });
 
             } catch (err) {
