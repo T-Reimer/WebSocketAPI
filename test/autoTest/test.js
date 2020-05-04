@@ -529,6 +529,7 @@ describe("server", () => {
         let ws = null;
         let called = false;
 
+        // call before each
         beforeEach((done) => {
             called = false;
             ws = new WebSocket("ws://localhost:8090/api");
