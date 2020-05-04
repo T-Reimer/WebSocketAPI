@@ -4,7 +4,9 @@
     },
     "cSpell.words": [
         "Reimer",
-        "uglifyjs"
+        "mochify",
+        "uglifyjs",
+        "websocketapi"
     ],
     "cSpell.ignorePaths": [
         "**/package-lock.json",

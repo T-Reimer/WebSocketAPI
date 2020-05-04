@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const assert = require("assert");
 const data = require("./data");
 const fetch = require("node-fetch");
@@ -9,11 +10,14 @@ const execSh = require("exec-sh");
 describe("server", () => {
 
     let server = null;
+    let api = null;
 
     before((done) => {
         // start up the server so it's ready for requests
         server = require("./server");
         server.start(done);
+
+        api = require("./../../out/index");
     });
 
     // shutdown the websocket server after tests are completed
@@ -24,7 +28,7 @@ describe("server", () => {
         if (process.argv.includes("--browser")) {
 
             open("http://localhost:3030/")
-                .then(_ => {
+                .then(() => {
                     console.log("Opened page");
 
                 });
@@ -60,7 +64,7 @@ describe("server", () => {
                 called = false;
                 ws = new WebSocket("ws://localhost:8090/api");
 
-                ws.on("message", (data) => {
+                ws.on("message", () => {
                     if (!called) {
                         done();
                     }
@@ -192,7 +196,7 @@ describe("server", () => {
                 called = false;
                 ws = new WebSocket("ws://localhost:8090/api");
 
-                ws.on("message", (data) => {
+                ws.on("message", () => {
                     if (!called) {
                         done();
                     }
@@ -310,7 +314,7 @@ describe("server", () => {
                 called = false;
                 ws = new WebSocket("ws://localhost:8090/api");
 
-                ws.on("message", (data) => {
+                ws.on("message", () => {
                     if (!called) {
                         done();
                     }
@@ -427,7 +431,7 @@ describe("server", () => {
                 called = false;
                 ws = new WebSocket("ws://localhost:8090/api");
 
-                ws.on("message", (data) => {
+                ws.on("message", () => {
                     if (!called) {
                         done();
                     }
@@ -520,4 +524,48 @@ describe("server", () => {
         });
     });
 
+    describe("server timeout", function () {
+
+        let ws = null;
+        let called = false;
+
+        beforeEach((done) => {
+            called = false;
+            ws = new WebSocket("ws://localhost:8090/api");
+
+            ws.on("message", () => {
+                if (!called) {
+                    done();
+                }
+                called = true;
+            });
+        });
+
+        afterEach(() => {
+            // console.log(ws);
+            ws.close();
+        });
+
+        it("should timeout after 250 milliseconds", function (done) {
+
+            this.slow(260);
+            this.timeout(300);
+
+            api.on("msg", (event) => {
+                event.client.fetch("timeout", {}, {
+                        timeout: 250,
+                        method: "GET"
+                    })
+                    .catch(err => {
+                        assert.equal(err.message, "Request to client timed out!");
+                        done();
+                    });
+            });
+
+            ws.send('{"id":1,"name":"msg","method":"GET"}');
+
+
+        });
+
+    });
 });
