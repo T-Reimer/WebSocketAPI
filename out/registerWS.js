@@ -105,12 +105,21 @@ exports.registerWS = registerWS;
  */
 function sendAuthFailed(ws) {
     var failed = { event: "auth-failed" };
-    ws.send(JSON.stringify(failed));
+    try {
+        ws.send(JSON.stringify(failed));
+    }
+    catch (err) { }
     ws.terminate();
 }
 function sendOpenMessage(ws, client, settings) {
     // send a Open connection event to tell the api on client side to start listening
-    ws.send(JSON.stringify({ event: "connection" }));
+    try {
+        ws.send(JSON.stringify({ event: "connection" }));
+    }
+    catch (err) {
+        // disconnect the client
+        ws.terminate();
+    }
     // register the on message event once the authentication is complete
     ws.on('message', function incoming(message) {
         var request = null;

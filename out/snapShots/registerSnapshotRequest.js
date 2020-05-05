@@ -17,12 +17,22 @@ var Request_1 = require("../Request");
 var events_1 = require("../events");
 exports.registeredListeners = [];
 function registerSnapshotRequest(data, event, settings) {
+    var _a;
     // create a snapshot request
     var snapshot = new SnapshotRequest(data, event);
     // push into the listeners list
     exports.registeredListeners.push(snapshot);
     // execute the initial event
     events_1.snapshotEvent.triggerEvent(snapshot);
+    (_a = event.WebSocket) === null || _a === void 0 ? void 0 : _a.on("close", unRegister);
+    // remove the close event listener if the snapshot gets unregistered at any point
+    snapshot.onUnregister(function () {
+        var _a;
+        (_a = event.WebSocket) === null || _a === void 0 ? void 0 : _a.removeEventListener("close", unRegister);
+    });
+    function unRegister() {
+        snapshot.unregister(true);
+    }
 }
 exports.registerSnapshotRequest = registerSnapshotRequest;
 /**
@@ -49,6 +59,7 @@ var SnapshotRequest = /** @class */ (function (_super) {
         _this.data = data;
         _this.event = event;
         _this.client = event.client;
+        _this._onUnregister = [];
         /**
          * Any extra event data that is added on the trigger event
          */
@@ -80,6 +91,13 @@ var SnapshotRequest = /** @class */ (function (_super) {
                 unregister: true,
             });
         }
+        this._onUnregister.forEach(function (callback) { return callback(); });
+    };
+    /**
+     * Add a event listener to run when the event get's un registered
+     */
+    SnapshotRequest.prototype.onUnregister = function (callback) {
+        this._onUnregister.push(callback);
     };
     return SnapshotRequest;
 }(Request_1.Request));

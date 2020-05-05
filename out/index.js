@@ -12,7 +12,7 @@ var stripSlashes_1 = __importDefault(require("./stripSlashes"));
  * the default settings object
  */
 exports.Settings = {
-    maxLength: 10000,
+    maxLength: 100000,
     on: {}
 };
 /**
