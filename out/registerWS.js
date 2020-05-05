@@ -62,16 +62,21 @@ function registerWS(wss, settings) {
         else {
             ws.on("message", function onMessage(message) {
                 return __awaiter(this, void 0, void 0, function () {
-                    var data, err_1;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
+                    var data, _a, err_1;
+                    return __generator(this, function (_b) {
+                        switch (_b.label) {
                             case 0:
-                                _a.trys.push([0, 4, , 5]);
+                                _b.trys.push([0, 5, , 6]);
                                 data = JSON.parse(message);
-                                if (!(data.event === "auth")) return [3 /*break*/, 2];
+                                if (!(data.event === "auth")) return [3 /*break*/, 3];
+                                _a = settings.onAuthKey;
+                                if (!_a) return [3 /*break*/, 2];
                                 return [4 /*yield*/, settings.onAuthKey(data.key, client, ws, req)];
                             case 1:
-                                if (_a.sent()) {
+                                _a = (_b.sent());
+                                _b.label = 2;
+                            case 2:
+                                if (_a) {
                                     // register the api to start receiving events
                                     sendOpenMessage(ws, client, settings);
                                     ws.removeEventListener("message", onMessage);
@@ -80,16 +85,16 @@ function registerWS(wss, settings) {
                                     // disconnect. Authentication error
                                     return [2 /*return*/, sendAuthFailed(ws)];
                                 }
-                                return [3 /*break*/, 3];
-                            case 2: 
+                                return [3 /*break*/, 4];
+                            case 3: 
                             // disconnect. Authentication error
                             return [2 /*return*/, sendAuthFailed(ws)];
-                            case 3: return [3 /*break*/, 5];
-                            case 4:
-                                err_1 = _a.sent();
+                            case 4: return [3 /*break*/, 6];
+                            case 5:
+                                err_1 = _b.sent();
                                 // disconnect. Authentication error
                                 return [2 /*return*/, sendAuthFailed(ws)];
-                            case 5: return [2 /*return*/];
+                            case 6: return [2 /*return*/];
                         }
                     });
                 });

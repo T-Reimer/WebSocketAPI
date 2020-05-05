@@ -16,10 +16,11 @@ export declare function unregisterSnapshotRequest(data: RequestData): void;
 declare class SnapshotRequest extends Request {
     data: RequestData;
     event: ServerRequest;
+    private settings;
     client: import("./../../lib/ws/wsClient").wsClient | null;
     extra: any;
     _onUnregister: (() => void)[];
-    constructor(data: RequestData, event: ServerRequest);
+    constructor(data: RequestData, event: ServerRequest, settings: SettingsInterface);
     /**
      * Un register the snapshot event
      */

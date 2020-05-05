@@ -11,8 +11,27 @@ export function createWSRequest(client: wsClient, id: number, name: string, body
 
     newRequest._send = (value) => {
 
-        // send the data to the client via ws
-        client.WebSocket.send(JSON.stringify(value));
+        try {
+            // send the data to the client via ws
+            client.WebSocket.send(JSON.stringify(value));
+        } catch (err) {
+
+            // if failed to send check if the ready state is closed... If so then unregister anything for that client
+            if (client.WebSocket.readyState === client.WebSocket.CLOSED) {
+                // the client connection is closed already
+                try {
+                    // make sure that disconnect events are called
+                    client.WebSocket.terminate();
+                    //ignore any errors
+                } catch (err) { }
+            } else {
+
+                // call the on error handler
+                if (settings.on.error) {
+                    settings.on.error(err);
+                }
+            }
+        }
     };
     return newRequest;
 }
