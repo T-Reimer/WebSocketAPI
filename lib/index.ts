@@ -29,7 +29,7 @@ export interface SettingsInterface {
  * the default settings object
  */
 export const Settings = {
-    maxLength: 10000,
+    maxLength: 100000,
     on: {}
 }
 

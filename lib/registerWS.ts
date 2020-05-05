@@ -61,13 +61,20 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
  */
 function sendAuthFailed(ws: WebSocket) {
     const failed: AuthFailedMessage = { event: "auth-failed" };
-    ws.send(JSON.stringify(failed));
+    try {
+        ws.send(JSON.stringify(failed));
+    } catch (err) { }
     ws.terminate();
 }
 
 function sendOpenMessage(ws: WebSocket, client: wsClient, settings: SettingsInterface) {
     // send a Open connection event to tell the api on client side to start listening
-    ws.send(JSON.stringify({ event: "connection" }));
+    try {
+        ws.send(JSON.stringify({ event: "connection" }));
+    } catch (err) {
+        // disconnect the client
+        ws.terminate();
+    }
 
     // register the on message event once the authentication is complete
     ws.on('message', function incoming(message: string) {
@@ -103,6 +110,7 @@ function sendOpenMessage(ws: WebSocket, client: wsClient, settings: SettingsInte
                                 unregisterSnapshotRequest(data);
                             } else {
                                 registerSnapshotRequest(data, event, settings);
+
                             }
                             break;
                     }

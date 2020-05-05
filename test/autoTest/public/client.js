@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 mocha.setup({
     ui: 'tdd',
     globals: [
@@ -7,6 +9,7 @@ mocha.setup({
 
 const {
     assert,
+    // eslint-disable-next-line no-unused-vars
     expect
 } = chai;
 
@@ -37,7 +40,6 @@ describe("browser", () => {
     // ---------------------------------------------------------------------------------------
 
     describe("get", () => {
-        debugger;
         // WEBSOCKET REQUESTS
 
         describe("websocket", () => {

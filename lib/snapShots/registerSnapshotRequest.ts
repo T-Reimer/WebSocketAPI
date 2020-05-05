@@ -17,6 +17,16 @@ export function registerSnapshotRequest(data: RequestData, event: ServerRequest,
     // execute the initial event
     snapshotEvent.triggerEvent(snapshot);
 
+    event.WebSocket?.on("close", unRegister);
+
+    // remove the close event listener if the snapshot gets unregistered at any point
+    snapshot.onUnregister(() => {
+        event.WebSocket?.removeEventListener("close", unRegister);
+    });
+
+    function unRegister() {
+        snapshot.unregister(true);
+    }
 }
 
 /**
@@ -40,6 +50,7 @@ class SnapshotRequest extends Request {
     event: ServerRequest;
     client: import("./../../lib/ws/wsClient").wsClient | null;
     extra: any;
+    _onUnregister: (() => void)[];
 
     constructor(data: RequestData, event: ServerRequest) {
         super(data.id, data.name, data.body, "SNAPSHOT");
@@ -47,6 +58,8 @@ class SnapshotRequest extends Request {
         this.data = data;
         this.event = event;
         this.client = event.client;
+
+        this._onUnregister = [];
 
         /**
          * Any extra event data that is added on the trigger event
@@ -81,5 +94,14 @@ class SnapshotRequest extends Request {
                 unregister: true,
             });
         }
+
+        this._onUnregister.forEach(callback => callback());
+    }
+
+    /**
+     * Add a event listener to run when the event get's un registered
+     */
+    onUnregister(callback: () => void) {
+        this._onUnregister.push(callback);
     }
 }

@@ -12,7 +12,7 @@ describe("server", () => {
     let server = null;
     let api = null;
 
-    before((done) => {
+    before(function (done) {
         // start up the server so it's ready for requests
         server = require("./server");
         server.start(done);
@@ -565,6 +565,150 @@ describe("server", () => {
 
             ws.send('{"id":1,"name":"msg","method":"GET"}');
 
+
+        });
+
+    });
+
+    describe("snapshots", function () {
+
+        // test the client snapshot integrations
+        describe("client", function () {
+
+            let ws = null;
+            let called = false;
+
+            before(function () {
+                api.on("/snapshot/number")
+                    .snapshot((request) => {
+                        request.send(request.body);
+                    });
+
+                api.on("/snapshot/number/2")
+                    .snapshot((request) => {
+                        request.send(request.body);
+                    });
+            });
+
+            // call before each
+            beforeEach((done) => {
+                called = false;
+                ws = new WebSocket("ws://localhost:8090/api");
+
+                ws.on("message", () => {
+                    if (!called) {
+                        done();
+                    }
+                    called = true;
+                });
+            });
+
+            afterEach(() => {
+                // console.log(ws);
+                ws.close();
+
+            });
+
+            describe("register", function () {
+
+                it("should respond with message", function (done) {
+
+                    ws.send(JSON.stringify({
+                        id: 6,
+                        name: "snapshot/number",
+                        method: "SNAPSHOT",
+                        body: 1000
+                    }));
+
+                    ws.on("message", (response) => {
+                        const msg = JSON.parse(response);
+                        if (msg.id === 6) {
+
+                            assert.equal(1000, msg.body);
+                            done();
+                        }
+                    });
+                });
+
+            });
+
+            describe("un-register", function () {
+
+                it("should not fail when triggering snapshot", function (done) {
+                    this.slow(250);
+
+                    ws.send(JSON.stringify({
+                        id: 6,
+                        name: "snapshot/number/2",
+                        method: "SNAPSHOT",
+                        body: 1000
+                    }));
+
+                    ws.on("message", (response) => {
+                        const msg = JSON.parse(response);
+
+                        if (msg.id === 6) {
+
+                            ws.send(JSON.stringify({
+                                id: 6,
+                                name: "snapshot/number/2",
+                                method: "SNAPSHOT",
+                                unregister: true,
+                            }));
+
+                            setTimeout(() => {
+                                try {
+                                    api.triggerSnapshot("snapshot/number/2", 10);
+                                } catch (err) {
+                                    done(err);
+                                }
+                            }, 1);
+
+                            setTimeout(done, 150);
+                            // done();
+                        }
+                    });
+
+                });
+
+            });
+
+            describe("un-register on disconnect", function () {
+
+                it("should unregister and not receive 2nd message", function (done) {
+                    this.slow(250);
+
+                    ws.send(JSON.stringify({
+                        id: 6,
+                        name: "snapshot/number/2",
+                        method: "SNAPSHOT",
+                        body: 1000
+                    }));
+
+                    ws.on("message", (response) => {
+                        const msg = JSON.parse(response);
+
+                        if (msg.id === 6) {
+
+                            ws.send(JSON.stringify({
+                                id: 6,
+                                name: "snapshot/number/2",
+                                method: "SNAPSHOT",
+                                unregister: true,
+                            }));
+
+                            setTimeout(() => {
+                                api.triggerSnapshot("snapshot/number/2", 10);
+                            }, 50);
+
+                            setTimeout(done, 150);
+                            // done();
+                        }
+                    });
+
+                });
+
+            });
 
         });
 

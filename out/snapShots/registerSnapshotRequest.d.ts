@@ -18,10 +18,15 @@ declare class SnapshotRequest extends Request {
     event: ServerRequest;
     client: import("./../../lib/ws/wsClient").wsClient | null;
     extra: any;
+    _onUnregister: (() => void)[];
     constructor(data: RequestData, event: ServerRequest);
     /**
      * Un register the snapshot event
      */
     unregister(unregisterClient?: boolean): void;
+    /**
+     * Add a event listener to run when the event get's un registered
+     */
+    onUnregister(callback: () => void): void;
 }
 export {};
