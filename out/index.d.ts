@@ -12,18 +12,20 @@ export interface SettingsInterface {
      * This function can be async and if it throws an error or returns false the client will be disconnected.
      * A truthy response will register the api.
      */
-    onAuthKey: (key: AuthEventMessage["key"], client: wsClient, ws: WebSocket, req: any) => Promise<boolean>;
+    onAuthKey?: (key: AuthEventMessage["key"], client: wsClient, ws: WebSocket, req: any) => Promise<boolean>;
     on: {
-        error: Function;
+        /**
+         * The error is always a instance of an error
+         *
+         * The message is the incoming string message if failed to parse
+         */
+        error?: (err: Error, message?: string) => void;
     };
 }
 /**
  * the default settings object
  */
-export declare const Settings: {
-    maxLength: number;
-    on: {};
-};
+export declare const Settings: SettingsInterface;
 /**
  * Register the default route with express
  *

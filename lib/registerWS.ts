@@ -30,11 +30,13 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
                     const data = <AuthEventMessage>JSON.parse(message);
 
                     if (data.event === "auth") {
-                        if (await settings.onAuthKey(data.key, client, ws, req)) {
+                        if (settings.onAuthKey && await settings.onAuthKey(data.key, client, ws, req)) {
+
                             // register the api to start receiving events
                             sendOpenMessage(ws, client, settings);
 
                             ws.removeEventListener("message", <any>onMessage);
+
                         } else {
                             // disconnect. Authentication error
                             return sendAuthFailed(ws);
