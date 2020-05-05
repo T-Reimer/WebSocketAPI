@@ -13,8 +13,6 @@ describe("server", () => {
     let api = null;
 
     before(function (done) {
-        // this.timeout(3000);
-
         // start up the server so it's ready for requests
         server = require("./server");
         server.start(done);
