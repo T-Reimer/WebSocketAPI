@@ -12,7 +12,7 @@ import { wsClient } from "./ws/wsClient";
 import stripUrlSlashes from "./stripSlashes";
 
 export interface SettingsInterface {
-    maxLength?: number, // the max upload length to automatically parse
+    maxLength: number, // the max upload length to automatically parse
     /**
      * If the onAuthKey is set as a function then the request must be authenticated before more api calls will be answered
      * 
@@ -26,7 +26,21 @@ export interface SettingsInterface {
          * 
          * The message is the incoming string message if failed to parse
          */
-        error?: (err: Error, message?: string) => void
+        error?: (err: Error, message?: string) => void,
+
+        /**
+         * Function gets called as soon as the event is created but before any of the hooks are executed.
+         * 
+         * This allows for collecting metrics in code performance
+         */
+        eventReceived: (event: ServerRequest) => void,
+
+        /**
+         * Function gets run as soon as the event.send function is called to respond to a api request.
+         * 
+         * Use in conjuction with `eventReceived` to collect usage metrics.
+         */
+        eventCompleted: (event: ServerRequest) => void,
     }
 }
 
@@ -34,8 +48,12 @@ export interface SettingsInterface {
  * the default settings object
  */
 export const Settings: SettingsInterface = {
-    maxLength: 100000,
-    on: {}
+    maxLength: 100000,// default max string length to convert into an object
+    on: {
+        // add noop functions to the code as a default
+        eventReceived: () => {},
+        eventCompleted: () => {},
+    },
 }
 
 /**
@@ -45,9 +63,9 @@ export const Settings: SettingsInterface = {
  * @param wss the web-wss connection
  * @param route the default route
  */
-export function register(app: Application, wss: WebSocket.Server, route: string, options: SettingsInterface) {
+export function register(app: Application, wss: WebSocket.Server, route: string, options: Partial<SettingsInterface>) {
 
-    let settings = Object.assign({}, Settings, options);
+    let settings: SettingsInterface = Object.assign({}, Settings, options);
 
     registerExpress(app, route, settings);
 

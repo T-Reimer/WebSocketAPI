@@ -13,7 +13,11 @@ var stripSlashes_1 = __importDefault(require("./stripSlashes"));
  */
 exports.Settings = {
     maxLength: 100000,
-    on: {}
+    on: {
+        // add noop functions to the code as a default
+        eventReceived: function () { },
+        eventCompleted: function () { },
+    },
 };
 /**
  * Register the default route with express

@@ -9,6 +9,9 @@ export function createWSRequest(client: wsClient, id: number, name: string, body
 
     let newRequest = new ServerRequest(id, name, body, method, client);
 
+    // call the metric start function
+    settings.on.eventReceived(newRequest);
+
     newRequest._send = (value) => {
 
         try {
@@ -32,6 +35,9 @@ export function createWSRequest(client: wsClient, id: number, name: string, body
                 }
             }
         }
+
+        // ping a event completed value
+        settings.on.eventCompleted(newRequest);
     };
     return newRequest;
 }

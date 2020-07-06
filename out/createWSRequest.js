@@ -6,6 +6,8 @@ var ServerRequest_1 = require("./ServerRequest");
  */
 function createWSRequest(client, id, name, body, method, settings) {
     var newRequest = new ServerRequest_1.ServerRequest(id, name, body, method, client);
+    // call the metric start function
+    settings.on.eventReceived(newRequest);
     newRequest._send = function (value) {
         try {
             // send the data to the client via ws
@@ -29,6 +31,8 @@ function createWSRequest(client, id, name, body, method, settings) {
                 }
             }
         }
+        // ping a event completed value
+        settings.on.eventCompleted(newRequest);
     };
     return newRequest;
 }

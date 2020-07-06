@@ -20,7 +20,18 @@ const wss = new WebSocket.Server({
 });
 
 // register the api
-api.register(app, wss, "api");
+api.register(app, wss, "api", {
+    on: {
+        eventReceived: (event) => {
+            event.startTime = Date.now();
+        },
+        eventCompleted: (event) => {
+            if(event.startTime){
+                console.log(event.name, "Took:", Date.now() - event.startTime, "ms");
+            }
+        }
+    }
+});
 
 api.on("test", (event, next) => {
         console.log(event);

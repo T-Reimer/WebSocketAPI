@@ -14,11 +14,16 @@ export function createExpressRequest(req: ExpressRequest, res: ExpressResponse, 
 
     const name = stripUrlSlashes(req.params['0']);
     let newRequest = new ServerRequest(req.params.id, name, req.body, method, null);
+// call the metric start function
+settings.on.eventReceived(newRequest);
 
     newRequest.request = req;
 
     newRequest._send = (value: any) => {
         res.status(newRequest._status).send(value);
+
+        // ping a event completed value
+        settings.on.eventCompleted(newRequest);
     };
     return newRequest;
 }
