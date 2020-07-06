@@ -1,6 +1,6 @@
-[WebSocketAPI - v1.1.2-3](README.md) › [Globals](globals.md)
+[WebSocketAPI - v1.1.5-1](README.md) › [Globals](globals.md)
 
-# WebSocketAPI - v1.1.2-3
+# WebSocketAPI - v1.1.5-1
 
 ## Index
 

@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["ws/wsClient"](../modules/_ws_wsclient_.md) › [requestOptions](_ws_wsclient_.requestoptions.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["ws/wsClient"](../modules/_ws_wsclient_.md) › [requestOptions](_ws_wsclient_.requestoptions.md)
 
 # Interface: requestOptions
 
@@ -20,7 +20,7 @@
 
 • **method**? : *"GET" | "POST" | "PUT" | "DELETE"*
 
-*Defined in [lib/ws/wsClient.ts:7](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L7)*
+*Defined in [lib/ws/wsClient.ts:8](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/ws/wsClient.ts#L8)*
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 • **timeout**? : *undefined | number*
 
-*Defined in [lib/ws/wsClient.ts:9](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L9)*
+*Defined in [lib/ws/wsClient.ts:10](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/ws/wsClient.ts#L10)*
 
 ___
 
@@ -36,4 +36,4 @@ ___
 
 • **use**? : *"ws" | "http"*
 
-*Defined in [lib/ws/wsClient.ts:8](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ws/wsClient.ts#L8)*
+*Defined in [lib/ws/wsClient.ts:9](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/ws/wsClient.ts#L9)*

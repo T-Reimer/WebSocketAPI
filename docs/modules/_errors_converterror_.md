@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["errors/convertError"](_errors_converterror_.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["errors/convertError"](_errors_converterror_.md)
 
 # Module: "errors/convertError"
 
@@ -18,7 +18,7 @@
 
 ▸ **convertError**(`error`: [InvalidRequest](../classes/_errors_invalidrequest_.invalidrequest.md) | [Error](../classes/_errors_invalidrequest_.invalidrequest.md#static-error)): *[RequestError](../interfaces/_errors_converterror_.requesterror.md)*
 
-*Defined in [lib/errors/convertError.ts:20](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/errors/convertError.ts#L20)*
+*Defined in [lib/errors/convertError.ts:20](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/errors/convertError.ts#L20)*
 
 Convert any error to a object to send to client
 

@@ -1,6 +1,6 @@
-[WebSocketAPI - v1.1.2-3](README.md) › [Globals](globals.md)
+[WebSocketAPI - v1.1.5-1](README.md) › [Globals](globals.md)
 
-# WebSocketAPI - v1.1.2-3
+# WebSocketAPI - v1.1.5-1
 
 # Web Socket Api
 
@@ -54,7 +54,7 @@ You can also listen for specific types of requests.
     const  wss  =  new  WebSocket.Server({ port:  8080 });
     
     // register the api
-    api.register(app, wss, "api");
+    api.register(app, wss, "api", ServerOptions);
     
     api.on("test", (event, next) => {
         next();
@@ -78,7 +78,10 @@ You can also listen for specific types of requests.
     {
       maxLength?:  number, // the max upload length to automatically parse
 	  on: {
-	    error:  Function // an error callback function
+	    error:  (err: Error, message?: string) => void, // an error callback function
+        // the event for *Received* and *Completed* is the same object that is fed into the listener events
+        eventReceived: (event: ServerRequest) => void, 
+        eventCompleted: (event: ServerRequest) => void,
 	  }
 	}
 

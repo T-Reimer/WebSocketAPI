@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["client/registerEvent"](_client_registerevent_.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["client/registerEvent"](_client_registerevent_.md)
 
 # Module: "client/registerEvent"
 
@@ -18,7 +18,7 @@
 
 ▸ **registerEvent**(`name`: string, `callback`: function): *[eventObject](../interfaces/_client_registerevent_.eventobject.md)*
 
-*Defined in [lib/client/registerEvent.ts:19](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/registerEvent.ts#L19)*
+*Defined in [lib/client/registerEvent.ts:19](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/client/registerEvent.ts#L19)*
 
 Register a event listener for events sent from the server
 

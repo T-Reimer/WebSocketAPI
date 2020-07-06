@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["authRequest"](_authrequest_.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["authRequest"](_authrequest_.md)
 
 # Module: "authRequest"
 

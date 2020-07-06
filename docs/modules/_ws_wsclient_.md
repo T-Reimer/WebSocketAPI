@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["ws/wsClient"](_ws_wsclient_.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["ws/wsClient"](_ws_wsclient_.md)
 
 # Module: "ws/wsClient"
 

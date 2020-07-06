@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["stripSlashes"](_stripslashes_.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["stripSlashes"](_stripslashes_.md)
 
 # Module: "stripSlashes"
 
@@ -14,7 +14,7 @@
 
 ▸ **stripUrlSlashes**(`url`: string): *string*
 
-*Defined in [lib/stripSlashes.ts:8](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/stripSlashes.ts#L8)*
+*Defined in [lib/stripSlashes.ts:8](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/stripSlashes.ts#L8)*
 
 Removes any leading or following slashes in the endpoint url
 

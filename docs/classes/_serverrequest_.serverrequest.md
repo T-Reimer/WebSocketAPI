@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["ServerRequest"](../modules/_serverrequest_.md) › [ServerRequest](_serverrequest_.serverrequest.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["ServerRequest"](../modules/_serverrequest_.md) › [ServerRequest](_serverrequest_.serverrequest.md)
 
 # Class: ServerRequest
 
@@ -41,7 +41,7 @@ A simple api request
 
 *Overrides [Request](_request_.request.md).[constructor](_request_.request.md#constructor)*
 
-*Defined in [lib/ServerRequest.ts:13](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ServerRequest.ts#L13)*
+*Defined in [lib/ServerRequest.ts:13](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/ServerRequest.ts#L13)*
 
 **Parameters:**
 
@@ -61,7 +61,7 @@ Name | Type |
 
 • **WebSocket**: *WebSocket | null*
 
-*Defined in [lib/ServerRequest.ts:12](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ServerRequest.ts#L12)*
+*Defined in [lib/ServerRequest.ts:12](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/ServerRequest.ts#L12)*
 
 ___
 
@@ -71,7 +71,7 @@ ___
 
 *Inherited from [Request](_request_.request.md).[_send](_request_.request.md#_send)*
 
-*Defined in [lib/Request.ts:11](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/Request.ts#L11)*
+*Defined in [lib/Request.ts:11](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/Request.ts#L11)*
 
 #### Type declaration:
 
@@ -91,7 +91,7 @@ ___
 
 *Inherited from [Request](_request_.request.md).[_status](_request_.request.md#_status)*
 
-*Defined in [lib/Request.ts:10](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/Request.ts#L10)*
+*Defined in [lib/Request.ts:10](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/Request.ts#L10)*
 
 ___
 
@@ -101,7 +101,7 @@ ___
 
 *Inherited from [Request](_request_.request.md).[body](_request_.request.md#body)*
 
-*Defined in [lib/Request.ts:8](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/Request.ts#L8)*
+*Defined in [lib/Request.ts:8](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/Request.ts#L8)*
 
 ___
 
@@ -109,7 +109,7 @@ ___
 
 • **client**: *[wsClient](_ws_wsclient_.wsclient.md) | null*
 
-*Defined in [lib/ServerRequest.ts:13](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ServerRequest.ts#L13)*
+*Defined in [lib/ServerRequest.ts:13](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/ServerRequest.ts#L13)*
 
 ___
 
@@ -119,7 +119,7 @@ ___
 
 *Inherited from [Request](_request_.request.md).[id](_request_.request.md#id)*
 
-*Defined in [lib/Request.ts:6](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/Request.ts#L6)*
+*Defined in [lib/Request.ts:6](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/Request.ts#L6)*
 
 ___
 
@@ -129,7 +129,7 @@ ___
 
 *Inherited from [Request](_request_.request.md).[method](_request_.request.md#method)*
 
-*Defined in [lib/Request.ts:9](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/Request.ts#L9)*
+*Defined in [lib/Request.ts:9](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/Request.ts#L9)*
 
 ___
 
@@ -139,7 +139,7 @@ ___
 
 *Inherited from [Request](_request_.request.md).[name](_request_.request.md#name)*
 
-*Defined in [lib/Request.ts:7](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/Request.ts#L7)*
+*Defined in [lib/Request.ts:7](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/Request.ts#L7)*
 
 ___
 
@@ -147,7 +147,7 @@ ___
 
 • **request**: *ExpressRequest | null*
 
-*Defined in [lib/ServerRequest.ts:11](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/ServerRequest.ts#L11)*
+*Defined in [lib/ServerRequest.ts:11](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/ServerRequest.ts#L11)*
 
 ## Methods
 
@@ -157,7 +157,7 @@ ___
 
 *Inherited from [Request](_request_.request.md).[send](_request_.request.md#send)*
 
-*Defined in [lib/Request.ts:59](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/Request.ts#L59)*
+*Defined in [lib/Request.ts:59](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/Request.ts#L59)*
 
 Send a response to the client
 
@@ -177,7 +177,7 @@ ___
 
 *Inherited from [Request](_request_.request.md).[status](_request_.request.md#status)*
 
-*Defined in [lib/Request.ts:49](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/Request.ts#L49)*
+*Defined in [lib/Request.ts:49](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/Request.ts#L49)*
 
 Set the request status code
 

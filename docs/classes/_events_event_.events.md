@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["events/event"](../modules/_events_event_.md) › [Events](_events_event_.events.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["events/event"](../modules/_events_event_.md) › [Events](_events_event_.events.md)
 
 # Class: Events
 
@@ -28,7 +28,7 @@
 
 \+ **new Events**(): *[Events](_events_event_.events.md)*
 
-*Defined in [lib/events/event.ts:6](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/events/event.ts#L6)*
+*Defined in [lib/events/event.ts:6](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/events/event.ts#L6)*
 
 **Returns:** *[Events](_events_event_.events.md)*
 
@@ -38,7 +38,7 @@
 
 • **events**: *object*
 
-*Defined in [lib/events/event.ts:6](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/events/event.ts#L6)*
+*Defined in [lib/events/event.ts:6](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/events/event.ts#L6)*
 
 #### Type declaration:
 
@@ -50,7 +50,7 @@
 
 ▸ **on**(`name`: string, `callback`: Function): *void*
 
-*Defined in [lib/events/event.ts:58](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/events/event.ts#L58)*
+*Defined in [lib/events/event.ts:58](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/events/event.ts#L58)*
 
 Add a Event listener to the event name
 
@@ -69,7 +69,7 @@ ___
 
 ▸ **remove**(`name`: string, `callback`: Function): *void*
 
-*Defined in [lib/events/event.ts:73](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/events/event.ts#L73)*
+*Defined in [lib/events/event.ts:73](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/events/event.ts#L73)*
 
 Remove the event from the list
 
@@ -88,7 +88,7 @@ ___
 
 ▸ **triggerEvent**(`event`: [Request](_request_.request.md)): *void*
 
-*Defined in [lib/events/event.ts:21](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/events/event.ts#L21)*
+*Defined in [lib/events/event.ts:21](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/events/event.ts#L21)*
 
 Trigger a event
 

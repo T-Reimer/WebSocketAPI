@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["events/index"](_events_index_.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["events/index"](_events_index_.md)
 
 # Module: "events/index"
 
@@ -18,7 +18,7 @@
 
 • **delEvent**: *[Events](../classes/_events_event_.events.md)‹›* = new Events()
 
-*Defined in [lib/events/index.ts:9](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/events/index.ts#L9)*
+*Defined in [lib/events/index.ts:9](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/events/index.ts#L9)*
 
 ___
 
@@ -26,7 +26,7 @@ ___
 
 • **getEvent**: *[Events](../classes/_events_event_.events.md)‹›* = new Events()
 
-*Defined in [lib/events/index.ts:3](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/events/index.ts#L3)*
+*Defined in [lib/events/index.ts:3](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/events/index.ts#L3)*
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 • **postEvent**: *[Events](../classes/_events_event_.events.md)‹›* = new Events()
 
-*Defined in [lib/events/index.ts:5](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/events/index.ts#L5)*
+*Defined in [lib/events/index.ts:5](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/events/index.ts#L5)*
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 • **putEvent**: *[Events](../classes/_events_event_.events.md)‹›* = new Events()
 
-*Defined in [lib/events/index.ts:7](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/events/index.ts#L7)*
+*Defined in [lib/events/index.ts:7](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/events/index.ts#L7)*
 
 ___
 
@@ -50,4 +50,4 @@ ___
 
 • **snapshotEvent**: *[Events](../classes/_events_event_.events.md)‹›* = new Events()
 
-*Defined in [lib/events/index.ts:11](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/events/index.ts#L11)*
+*Defined in [lib/events/index.ts:11](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/events/index.ts#L11)*

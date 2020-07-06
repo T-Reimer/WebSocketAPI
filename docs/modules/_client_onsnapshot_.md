@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["client/onSnapshot"](_client_onsnapshot_.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["client/onSnapshot"](_client_onsnapshot_.md)
 
 # Module: "client/onSnapshot"
 
@@ -14,7 +14,7 @@
 
 ▸ **onSnapshot**(`api`: string, `requestHead`: any, `callback`: function): *function*
 
-*Defined in [lib/client/onSnapshot.ts:14](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/onSnapshot.ts#L14)*
+*Defined in [lib/client/onSnapshot.ts:14](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/client/onSnapshot.ts#L14)*
 
 Register a new snapshot event to the server. This event will automatically re-register if the connection gets disconnected.
 

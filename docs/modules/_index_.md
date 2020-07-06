@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["index"](_index_.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["index"](_index_.md)
 
 # Module: "index"
 
@@ -24,7 +24,7 @@
 
 ▸ **on**(`name`: string, `callback?`: undefined | function): *eventObject*
 
-*Defined in [lib/index.ts:72](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/index.ts#L72)*
+*Defined in [lib/index.ts:95](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/index.ts#L95)*
 
 Register a event listener for the name.
 
@@ -45,9 +45,9 @@ ___
 
 ###  register
 
-▸ **register**(`app`: Application, `wss`: Server, `route`: string, `options`: [SettingsInterface](../interfaces/_index_.settingsinterface.md)): *void*
+▸ **register**(`app`: Application, `wss`: Server, `route`: string, `options`: Partial‹[SettingsInterface](../interfaces/_index_.settingsinterface.md)›): *void*
 
-*Defined in [lib/index.ts:43](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/index.ts#L43)*
+*Defined in [lib/index.ts:66](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/index.ts#L66)*
 
 Register the default route with express
 
@@ -58,7 +58,7 @@ Name | Type | Description |
 `app` | Application | Express app |
 `wss` | Server | the web-wss connection |
 `route` | string | the default route  |
-`options` | [SettingsInterface](../interfaces/_index_.settingsinterface.md) | - |
+`options` | Partial‹[SettingsInterface](../interfaces/_index_.settingsinterface.md)› | - |
 
 **Returns:** *void*
 
@@ -68,7 +68,7 @@ ___
 
 ▸ **triggerSnapshot**(`api`: string, `extra`: any): *void*
 
-*Defined in [lib/index.ts:126](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/index.ts#L126)*
+*Defined in [lib/index.ts:149](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/index.ts#L149)*
 
 Trigger a update event for any registered listeners
 
@@ -87,20 +87,20 @@ Name | Type | Description |
 
 ### ▪ **Settings**: *object*
 
-*Defined in [lib/index.ts:31](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/index.ts#L31)*
+*Defined in [lib/index.ts:50](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/index.ts#L50)*
 
 the default settings object
 
 ###  maxLength
 
-• **maxLength**: *number* = 10000
+• **maxLength**: *number* = 100000
 
-*Defined in [lib/index.ts:32](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/index.ts#L32)*
+*Defined in [lib/index.ts:51](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/index.ts#L51)*
 
-###  on
+▪ **on**: *object*
 
-• **on**: *object*
+*Defined in [lib/index.ts:52](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/index.ts#L52)*
 
-*Defined in [lib/index.ts:33](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/index.ts#L33)*
+* **eventCompleted**(): *void*
 
-#### Type declaration:
+* **eventReceived**(): *void*

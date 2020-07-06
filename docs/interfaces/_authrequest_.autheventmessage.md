@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["authRequest"](../modules/_authrequest_.md) › [AuthEventMessage](_authrequest_.autheventmessage.md)
+[WebSocketAPI - v1.1.5-1](../README.md) › [Globals](../globals.md) › ["authRequest"](../modules/_authrequest_.md) › [AuthEventMessage](_authrequest_.autheventmessage.md)
 
 # Interface: AuthEventMessage
 
@@ -19,7 +19,7 @@
 
 • **event**: *"auth"*
 
-*Defined in [lib/authRequest.ts:4](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/authRequest.ts#L4)*
+*Defined in [lib/authRequest.ts:4](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/authRequest.ts#L4)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **key**: *string | object*
 
-*Defined in [lib/authRequest.ts:5](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/authRequest.ts#L5)*
+*Defined in [lib/authRequest.ts:5](https://github.com/T-Reimer/WebSocketAPI/blob/230abad/lib/authRequest.ts#L5)*
