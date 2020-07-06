@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["errors/timeoutError"](../modules/_errors_timeouterror_.md) › [TimeoutError](_errors_timeouterror_.timeouterror.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["errors/timeoutError"](../modules/_errors_timeouterror_.md) › [TimeoutError](_errors_timeouterror_.timeouterror.md)
 
 # Class: TimeoutError
 
@@ -27,7 +27,7 @@
 
 \+ **new TimeoutError**(`message`: string): *[TimeoutError](_errors_timeouterror_.timeouterror.md)*
 
-*Defined in [lib/errors/timeoutError.ts:3](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/errors/timeoutError.ts#L3)*
+*Defined in [lib/errors/timeoutError.ts:3](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/errors/timeoutError.ts#L3)*
 
 **Parameters:**
 

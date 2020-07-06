@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["client/socket"](_client_socket_.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["client/socket"](_client_socket_.md)
 
 # Module: "client/socket"
 
@@ -25,9 +25,9 @@
 
 ###  stateChangeEvent
 
-Ƭ **stateChangeEvent**: *"CONNECTED" | "DISCONNECTED" | "ERROR" | "READY"*
+Ƭ **stateChangeEvent**: *"OPEN" | "CLOSED" | "ERROR" | "READY" | "AUTHFAILED"*
 
-*Defined in [lib/client/socket.ts:17](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/socket.ts#L17)*
+*Defined in [lib/client/socket.ts:18](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/socket.ts#L18)*
 
 ## Variables
 
@@ -35,7 +35,7 @@
 
 • **ready**: *Boolean* = false
 
-*Defined in [lib/client/socket.ts:21](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/socket.ts#L21)*
+*Defined in [lib/client/socket.ts:22](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/socket.ts#L22)*
 
 ___
 
@@ -43,7 +43,7 @@ ___
 
 • **socket**: *WebSocket | null* = null
 
-*Defined in [lib/client/socket.ts:20](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/socket.ts#L20)*
+*Defined in [lib/client/socket.ts:21](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/socket.ts#L21)*
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 • **stateChangeEvents**: *function[]* = []
 
-*Defined in [lib/client/socket.ts:18](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/socket.ts#L18)*
+*Defined in [lib/client/socket.ts:19](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/socket.ts#L19)*
 
 ## Functions
 
@@ -59,7 +59,7 @@ ___
 
 ▸ **fetch**(`id`: number, `api`: string, `body?`: any, `options?`: [requestOptions](../interfaces/_ws_wsclient_.requestoptions.md)): *Promise‹[RequestData](../interfaces/_requestdata_.requestdata.md)›*
 
-*Defined in [lib/client/socket.ts:163](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/socket.ts#L163)*
+*Defined in [lib/client/socket.ts:213](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/socket.ts#L213)*
 
 Create a fetch request from the server
 
@@ -80,7 +80,7 @@ ___
 
 ▸ **registerSnapshot**(`id`: number, `api`: string, `body`: any, `callback`: function): *unregister*
 
-*Defined in [lib/client/socket.ts:210](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/socket.ts#L210)*
+*Defined in [lib/client/socket.ts:260](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/socket.ts#L260)*
 
 Register a event to fire each time that id gets sent
 
@@ -120,7 +120,7 @@ ___
 
 ▸ **send**(`body`: object): *void*
 
-*Defined in [lib/client/socket.ts:247](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/socket.ts#L247)*
+*Defined in [lib/client/socket.ts:297](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/socket.ts#L297)*
 
 Send a payload to the server
 
@@ -138,6 +138,6 @@ ___
 
 ▸ **setup**(): *void*
 
-*Defined in [lib/client/socket.ts:23](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/client/socket.ts#L23)*
+*Defined in [lib/client/socket.ts:24](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/client/socket.ts#L24)*
 
 **Returns:** *void*

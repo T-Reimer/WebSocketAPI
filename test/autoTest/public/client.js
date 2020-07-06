@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 mocha.setup({
     ui: 'tdd',
     globals: [
@@ -5,7 +7,11 @@ mocha.setup({
     ]
 });
 
-const { assert, expect } = chai;
+const {
+    assert,
+    // eslint-disable-next-line no-unused-vars
+    expect
+} = chai;
 
 describe("browser", () => {
 
@@ -34,13 +40,14 @@ describe("browser", () => {
     // ---------------------------------------------------------------------------------------
 
     describe("get", () => {
-        debugger;
         // WEBSOCKET REQUESTS
 
         describe("websocket", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await WebSocketAPI.fetch("todo/mine", undefined, { use: "ws" });
+            it("should respond with matching records", async function () {
+                const response = await WebSocketAPI.fetch("todo/mine", undefined, {
+                    use: "ws"
+                });
 
                 assert.deepEqual(response, {
                     "userId": 1,
@@ -51,13 +58,25 @@ describe("browser", () => {
                 });
             });
 
-            it("should throw error with 'Unknown api request.'", function(done) {
+            it("nested api request", async function () {
+                const response = await WebSocketAPI.fetch("nested/api/request/", undefined, {
+                    use: "ws"
+                });
 
-                WebSocketAPI.fetch("something404", undefined, { use: "ws" })
+                assert.equal("nested/api/request", response);
+            });
+
+            it("should throw error with 'Unknown api request.'", function (done) {
+
+                WebSocketAPI.fetch("something404", undefined, {
+                        use: "ws"
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Unknown api request");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Unknown api request");
                             done();
                         } catch (err) {
                             done(err);
@@ -66,13 +85,17 @@ describe("browser", () => {
 
             });
 
-            it("should throw error with 'test error'", function(done) {
+            it("should throw error with 'test error'", function (done) {
 
-                WebSocketAPI.fetch("error", undefined, { use: "ws" })
+                WebSocketAPI.fetch("error", undefined, {
+                        use: "ws"
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "test error");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "test error");
                             done();
                         } catch (err) {
                             done(err);
@@ -81,13 +104,18 @@ describe("browser", () => {
 
             });
 
-            it("should throw timeout error with 'Timeout Error'", function(done) {
+            it("should throw timeout error with 'Timeout Error'", function (done) {
 
-                WebSocketAPI.fetch("timeout", undefined, { use: "ws", timeout: 150 })
+                WebSocketAPI.fetch("timeout", undefined, {
+                        use: "ws",
+                        timeout: 150
+                    })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Request to server timed out");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Request to server timed out");
                             done();
                         } catch (err) {
                             done(err);
@@ -103,8 +131,10 @@ describe("browser", () => {
 
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await WebSocketAPI.fetch("todo/mine", undefined, { use: "http" });
+            it("should respond with matching records", async function () {
+                const response = await WebSocketAPI.fetch("todo/mine", undefined, {
+                    use: "http"
+                });
 
                 assert.deepEqual(response, {
                     "userId": 1,
@@ -115,13 +145,17 @@ describe("browser", () => {
                 });
             });
 
-            it("should throw error with 'Unknown api request.'", function(done) {
+            it("should throw error with 'Unknown api request.'", function (done) {
 
-                WebSocketAPI.fetch("something404", undefined, { use: "http" })
+                WebSocketAPI.fetch("something404", undefined, {
+                        use: "http"
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Unknown api request");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Unknown api request");
                             done();
                         } catch (err) {
                             done(err);
@@ -130,13 +164,17 @@ describe("browser", () => {
 
             });
 
-            it("should throw error with 'test error'", function(done) {
+            it("should throw error with 'test error'", function (done) {
 
-                WebSocketAPI.fetch("error", undefined, { use: "http" })
+                WebSocketAPI.fetch("error", undefined, {
+                        use: "http"
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "test error");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "test error");
                             done();
                         } catch (err) {
                             done(err);
@@ -145,13 +183,18 @@ describe("browser", () => {
 
             });
 
-            it("should throw timeout error with 'Timeout Error'", function(done) {
+            it("should throw timeout error with 'Timeout Error'", function (done) {
 
-                WebSocketAPI.fetch("timeout", undefined, { use: "http", timeout: 150 })
+                WebSocketAPI.fetch("timeout", undefined, {
+                        use: "http",
+                        timeout: 150
+                    })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Request to server timed out");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Request to server timed out");
                             done();
                         } catch (err) {
                             done(err);
@@ -183,19 +226,27 @@ describe("browser", () => {
 
         describe("websocket", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await WebSocketAPI.fetch("echo", postData, { use: "ws", method: "POST", });
+            it("should respond with matching records", async function () {
+                const response = await WebSocketAPI.fetch("echo", postData, {
+                    use: "ws",
+                    method: "POST",
+                });
 
                 assert.deepEqual(response, postData);
             });
 
-            it("should throw error with 'Unknown api request.'", function(done) {
+            it("should throw error with 'Unknown api request.'", function (done) {
 
-                WebSocketAPI.fetch("something404", undefined, { use: "ws", method: "POST", })
+                WebSocketAPI.fetch("something404", undefined, {
+                        use: "ws",
+                        method: "POST",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Unknown api request");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Unknown api request");
                             done();
                         } catch (err) {
                             done(err);
@@ -204,13 +255,18 @@ describe("browser", () => {
 
             });
 
-            it("should throw error with 'test error'", function(done) {
+            it("should throw error with 'test error'", function (done) {
 
-                WebSocketAPI.fetch("error", postData, { use: "ws", method: "POST", })
+                WebSocketAPI.fetch("error", postData, {
+                        use: "ws",
+                        method: "POST",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "test error");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "test error");
                             done();
                         } catch (err) {
                             done(err);
@@ -219,13 +275,19 @@ describe("browser", () => {
 
             });
 
-            it("should throw timeout error with 'Timeout Error'", function(done) {
+            it("should throw timeout error with 'Timeout Error'", function (done) {
 
-                WebSocketAPI.fetch("timeout", postData, { use: "ws", timeout: 150, method: "POST", })
+                WebSocketAPI.fetch("timeout", postData, {
+                        use: "ws",
+                        timeout: 150,
+                        method: "POST",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Request to server timed out");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Request to server timed out");
                             done();
                         } catch (err) {
                             done(err);
@@ -241,19 +303,27 @@ describe("browser", () => {
 
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await WebSocketAPI.fetch("echo", postData, { use: "http", method: "POST", });
+            it("should respond with matching records", async function () {
+                const response = await WebSocketAPI.fetch("echo", postData, {
+                    use: "http",
+                    method: "POST",
+                });
 
                 assert.deepEqual(response, postData);
             });
 
-            it("should throw error with 'Unknown api request.'", function(done) {
+            it("should throw error with 'Unknown api request.'", function (done) {
 
-                WebSocketAPI.fetch("something404", postData, { use: "http", method: "POST", })
+                WebSocketAPI.fetch("something404", postData, {
+                        use: "http",
+                        method: "POST",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Unknown api request");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Unknown api request");
                             done();
                         } catch (err) {
                             done(err);
@@ -262,13 +332,18 @@ describe("browser", () => {
 
             });
 
-            it("should throw error with 'test error'", function(done) {
+            it("should throw error with 'test error'", function (done) {
 
-                WebSocketAPI.fetch("error", postData, { use: "http", method: "POST", })
+                WebSocketAPI.fetch("error", postData, {
+                        use: "http",
+                        method: "POST",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "test error");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "test error");
                             done();
                         } catch (err) {
                             done(err);
@@ -277,13 +352,19 @@ describe("browser", () => {
 
             });
 
-            it("should throw timeout error with 'Timeout Error'", function(done) {
+            it("should throw timeout error with 'Timeout Error'", function (done) {
 
-                WebSocketAPI.fetch("timeout", postData, { use: "http", timeout: 150, method: "POST", })
+                WebSocketAPI.fetch("timeout", postData, {
+                        use: "http",
+                        timeout: 150,
+                        method: "POST",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Request to server timed out");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Request to server timed out");
                             done();
                         } catch (err) {
                             done(err);
@@ -315,19 +396,27 @@ describe("browser", () => {
 
         describe("websocket", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await WebSocketAPI.fetch("echo", postData, { use: "ws", method: "PUT", });
+            it("should respond with matching records", async function () {
+                const response = await WebSocketAPI.fetch("echo", postData, {
+                    use: "ws",
+                    method: "PUT",
+                });
 
                 assert.deepEqual(response, postData);
             });
 
-            it("should throw error with 'Unknown api request.'", function(done) {
+            it("should throw error with 'Unknown api request.'", function (done) {
 
-                WebSocketAPI.fetch("something404", undefined, { use: "ws", method: "PUT", })
+                WebSocketAPI.fetch("something404", undefined, {
+                        use: "ws",
+                        method: "PUT",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Unknown api request");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Unknown api request");
                             done();
                         } catch (err) {
                             done(err);
@@ -336,13 +425,18 @@ describe("browser", () => {
 
             });
 
-            it("should throw error with 'test error'", function(done) {
+            it("should throw error with 'test error'", function (done) {
 
-                WebSocketAPI.fetch("error", postData, { use: "ws", method: "PUT", })
+                WebSocketAPI.fetch("error", postData, {
+                        use: "ws",
+                        method: "PUT",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "test error");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "test error");
                             done();
                         } catch (err) {
                             done(err);
@@ -351,13 +445,19 @@ describe("browser", () => {
 
             });
 
-            it("should throw timeout error with 'Timeout Error'", function(done) {
+            it("should throw timeout error with 'Timeout Error'", function (done) {
 
-                WebSocketAPI.fetch("timeout", postData, { use: "ws", timeout: 150, method: "PUT", })
+                WebSocketAPI.fetch("timeout", postData, {
+                        use: "ws",
+                        timeout: 150,
+                        method: "PUT",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Request to server timed out");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Request to server timed out");
                             done();
                         } catch (err) {
                             done(err);
@@ -373,19 +473,27 @@ describe("browser", () => {
 
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await WebSocketAPI.fetch("echo", postData, { use: "http", method: "PUT", });
+            it("should respond with matching records", async function () {
+                const response = await WebSocketAPI.fetch("echo", postData, {
+                    use: "http",
+                    method: "PUT",
+                });
 
                 assert.deepEqual(response, postData);
             });
 
-            it("should throw error with 'Unknown api request.'", function(done) {
+            it("should throw error with 'Unknown api request.'", function (done) {
 
-                WebSocketAPI.fetch("something404", postData, { use: "http", method: "PUT", })
+                WebSocketAPI.fetch("something404", postData, {
+                        use: "http",
+                        method: "PUT",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Unknown api request");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Unknown api request");
                             done();
                         } catch (err) {
                             done(err);
@@ -394,13 +502,18 @@ describe("browser", () => {
 
             });
 
-            it("should throw error with 'test error'", function(done) {
+            it("should throw error with 'test error'", function (done) {
 
-                WebSocketAPI.fetch("error", postData, { use: "http", method: "PUT", })
+                WebSocketAPI.fetch("error", postData, {
+                        use: "http",
+                        method: "PUT",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "test error");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "test error");
                             done();
                         } catch (err) {
                             done(err);
@@ -409,13 +522,19 @@ describe("browser", () => {
 
             });
 
-            it("should throw timeout error with 'Timeout Error'", function(done) {
+            it("should throw timeout error with 'Timeout Error'", function (done) {
 
-                WebSocketAPI.fetch("timeout", postData, { use: "http", timeout: 150, method: "PUT", })
+                WebSocketAPI.fetch("timeout", postData, {
+                        use: "http",
+                        timeout: 150,
+                        method: "PUT",
+                    })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Request to server timed out");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Request to server timed out");
                             done();
                         } catch (err) {
                             done(err);
@@ -438,19 +557,28 @@ describe("browser", () => {
 
         describe("websocket", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await WebSocketAPI.fetch("todo/mine", undefined, { use: "ws", method: "DELETE" });
+            it("should respond with matching records", async function () {
+                const response = await WebSocketAPI.fetch("todo/mine", undefined, {
+                    use: "ws",
+                    method: "DELETE"
+                });
 
-                assert.deepEqual(response, { deleted: true });
+                assert.deepEqual(response, {
+                    deleted: true
+                });
             });
 
-            it("should throw error with 'Unknown api request.'", function(done) {
+            it("should throw error with 'Unknown api request.'", function (done) {
 
-                WebSocketAPI.fetch("something404", undefined, { use: "ws" })
+                WebSocketAPI.fetch("something404", undefined, {
+                        use: "ws"
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Unknown api request");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Unknown api request");
                             done();
                         } catch (err) {
                             done(err);
@@ -459,13 +587,18 @@ describe("browser", () => {
 
             });
 
-            it("should throw error with 'test error'", function(done) {
+            it("should throw error with 'test error'", function (done) {
 
-                WebSocketAPI.fetch("error", undefined, { use: "ws", method: "DELETE" })
+                WebSocketAPI.fetch("error", undefined, {
+                        use: "ws",
+                        method: "DELETE"
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "test error");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "test error");
                             done();
                         } catch (err) {
                             done(err);
@@ -474,13 +607,19 @@ describe("browser", () => {
 
             });
 
-            it("should throw timeout error with 'Timeout Error'", function(done) {
+            it("should throw timeout error with 'Timeout Error'", function (done) {
 
-                WebSocketAPI.fetch("timeout", undefined, { use: "ws", timeout: 150, method: "DELETE" })
+                WebSocketAPI.fetch("timeout", undefined, {
+                        use: "ws",
+                        timeout: 150,
+                        method: "DELETE"
+                    })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Request to server timed out");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Request to server timed out");
                             done();
                         } catch (err) {
                             done(err);
@@ -496,19 +635,29 @@ describe("browser", () => {
 
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await WebSocketAPI.fetch("todo/mine", undefined, { use: "http", method: "DELETE" });
+            it("should respond with matching records", async function () {
+                const response = await WebSocketAPI.fetch("todo/mine", undefined, {
+                    use: "http",
+                    method: "DELETE"
+                });
 
-                assert.deepEqual(response, { deleted: true, });
+                assert.deepEqual(response, {
+                    deleted: true,
+                });
             });
 
-            it("should throw error with 'Unknown api request.'", function(done) {
+            it("should throw error with 'Unknown api request.'", function (done) {
 
-                WebSocketAPI.fetch("something404", undefined, { use: "http", method: "DELETE" })
+                WebSocketAPI.fetch("something404", undefined, {
+                        use: "http",
+                        method: "DELETE"
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Unknown api request");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Unknown api request");
                             done();
                         } catch (err) {
                             done(err);
@@ -517,13 +666,18 @@ describe("browser", () => {
 
             });
 
-            it("should throw error with 'test error'", function(done) {
+            it("should throw error with 'test error'", function (done) {
 
-                WebSocketAPI.fetch("error", undefined, { use: "http", method: "DELETE" })
+                WebSocketAPI.fetch("error", undefined, {
+                        use: "http",
+                        method: "DELETE"
+                    })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "test error");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "test error");
                             done();
                         } catch (err) {
                             done(err);
@@ -532,13 +686,19 @@ describe("browser", () => {
 
             });
 
-            it("should throw timeout error with 'Timeout Error'", function(done) {
+            it("should throw timeout error with 'Timeout Error'", function (done) {
 
-                WebSocketAPI.fetch("timeout", undefined, { use: "http", timeout: 150, method: "DELETE" })
+                WebSocketAPI.fetch("timeout", undefined, {
+                        use: "http",
+                        timeout: 150,
+                        method: "DELETE"
+                    })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
-                            assert.throws(() => { throw err; }, Error, "Request to server timed out");
+                            assert.throws(() => {
+                                throw err;
+                            }, Error, "Request to server timed out");
                             done();
                         } catch (err) {
                             done(err);

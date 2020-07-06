@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["registerExpress"](_registerexpress_.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["registerExpress"](_registerexpress_.md)
 
 # Module: "registerExpress"
 
@@ -14,7 +14,7 @@
 
 ▸ **registerExpress**(`app`: Application, `route`: string, `settings`: [SettingsInterface](../interfaces/_index_.settingsinterface.md)): *void*
 
-*Defined in [lib/registerExpress.ts:12](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/registerExpress.ts#L12)*
+*Defined in [lib/registerExpress.ts:13](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/registerExpress.ts#L13)*
 
 Register the get and post requests from express
 

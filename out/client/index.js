@@ -35,11 +35,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var socket_1 = require("./socket");
 var registerEvent_1 = require("./registerEvent");
 var onSnapshot_1 = require("./onSnapshot");
 var timeoutError_1 = require("../errors/timeoutError");
+var stripSlashes_1 = __importDefault(require("../stripSlashes"));
 var onSnapshot_2 = require("./onSnapshot");
 exports.onSnapshot = onSnapshot_2.onSnapshot;
 var globalFetch = function (input, init) { return __awaiter(void 0, void 0, void 0, function () {
@@ -138,6 +142,8 @@ function setup(options) {
 exports.setup = setup;
 function api(api) {
     var _this = this;
+    // remove the leading and trailing slashes from the url
+    api = stripSlashes_1.default(api);
     return {
         get: function (body, options) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -199,8 +205,10 @@ function getData(id, api, body, options) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    // remove leading and trailing slashes from request
+                    api = stripSlashes_1.default(api);
                     if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
-                    url = new URL(exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api));
+                    url = new URL(exports.setOptions.fetchUrl + "/" + id + "/" + api);
                     search = url.search;
                     if (search) {
                         // append the body to the url
@@ -255,8 +263,10 @@ function sendData(id, api, body, options) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    // remove leading and trailing slashes from request
+                    api = stripSlashes_1.default(api);
                     if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
-                    url = exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api);
+                    url = exports.setOptions.fetchUrl + "/" + id + "/" + api;
                     return [4 /*yield*/, globalFetch(url, {
                             method: options && options.method ? options.method : "POST",
                             timeout: options && options.timeout,

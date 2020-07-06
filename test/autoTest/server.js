@@ -1,3 +1,5 @@
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable arrow-parens */
 const express = require("express");
 const bodyParser = require("body-parser");
 const WebSocket = require("ws");
@@ -18,7 +20,9 @@ app.use("/static", express.static(path.join(__dirname, "./../../static")));
 app.use(bodyParser.json());
 
 // create the websocket server
-const wss = new WebSocket.Server({ port: 8090 });
+const wss = new WebSocket.Server({
+    port: 8090
+});
 
 // register the api
 api.register(app, wss, "/api");
@@ -28,7 +32,9 @@ api.on("todo/mine")
     .get((event) => {
         event.send(data.todo[0]);
     })
-    .delete((event) => event.send({ deleted: true }));
+    .delete((event) => event.send({
+        deleted: true
+    }));
 
 // setup a echo for post request
 api.on("echo")
@@ -39,6 +45,11 @@ api.on("error", (event) => event.send(new Error("test error")));
 
 // just make the client timeout
 api.on("timeout", () => {});
+
+api.on("/nested/api/request")
+    .get(event => {
+        event.send(event.name);
+    });
 
 api.on("stop", (event) => {
     console.log("- - - Browser Complete - - -");
@@ -59,10 +70,11 @@ exports.stop = (callback) => {
     if (server) {
         console.log("- - - Closing Server - - -");
         server.close();
+        wss.close();
 
         if (callback) {
             callback();
         }
     }
-    process.exit(0);
+    // process.exit(0);
 };

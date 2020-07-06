@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var timeoutError_1 = require("../errors/timeoutError");
 var wsClient = /** @class */ (function () {
     function wsClient(ws, request, client) {
         this._index = 0;
@@ -139,11 +140,34 @@ var wsClient = /** @class */ (function () {
                 };
                 // send the data to the client
                 _this.WebSocket.send(JSON.stringify(data));
+                var timeout_1 = undefined;
+                if (options && options.timeout) {
+                    timeout_1 = setTimeout(function () {
+                        // reject the event if it hasn't run yet
+                        reject(new timeoutError_1.TimeoutError("Request to client timed out!"));
+                        // remove the event from the list
+                        for (var i = _this.events.length - 1; i >= 0; i--) {
+                            if (_this.events[i].id === id) {
+                                _this.events.splice(i, 1);
+                            }
+                        }
+                    }, options.timeout);
+                }
                 // register the event listener for the fetch return value
                 _this.events.push({
                     id: id,
-                    reject: reject,
-                    resolve: resolve
+                    reject: function (err) {
+                        reject(err);
+                        clearTimeout(timeout_1);
+                    },
+                    resolve: function () {
+                        var args = [];
+                        for (var _i = 0; _i < arguments.length; _i++) {
+                            args[_i] = arguments[_i];
+                        }
+                        resolve.apply(void 0, args);
+                        clearTimeout(timeout_1);
+                    }
                 });
             }
             catch (err) {

@@ -71,12 +71,16 @@ exports.Request = Request;
 
 },{}],2:[function(require,module,exports){
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var Request_1 = require("./../Request");
 var socket_1 = require("./socket");
+var stripSlashes_1 = __importDefault(require("../stripSlashes"));
 function createRequest(data) {
     var id = data.id, name = data.name, body = data.body, method = data.method;
-    var req = new Request_1.Request(id, name, body, method);
+    var req = new Request_1.Request(id, stripSlashes_1.default(name), body, method);
     req._send = function (value) {
         return socket_1.send(value);
     };
@@ -84,7 +88,7 @@ function createRequest(data) {
 }
 exports.createRequest = createRequest;
 
-},{"./../Request":1,"./socket":6}],3:[function(require,module,exports){
+},{"../stripSlashes":11,"./../Request":1,"./socket":6}],3:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -122,11 +126,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var socket_1 = require("./socket");
 var registerEvent_1 = require("./registerEvent");
 var onSnapshot_1 = require("./onSnapshot");
 var timeoutError_1 = require("../errors/timeoutError");
+var stripSlashes_1 = __importDefault(require("../stripSlashes"));
 var onSnapshot_2 = require("./onSnapshot");
 exports.onSnapshot = onSnapshot_2.onSnapshot;
 var globalFetch = function (input, init) { return __awaiter(void 0, void 0, void 0, function () {
@@ -225,6 +233,8 @@ function setup(options) {
 exports.setup = setup;
 function api(api) {
     var _this = this;
+    // remove the leading and trailing slashes from the url
+    api = stripSlashes_1.default(api);
     return {
         get: function (body, options) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -286,8 +296,10 @@ function getData(id, api, body, options) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    // remove leading and trailing slashes from request
+                    api = stripSlashes_1.default(api);
                     if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
-                    url = new URL(exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api));
+                    url = new URL(exports.setOptions.fetchUrl + "/" + id + "/" + api);
                     search = url.search;
                     if (search) {
                         // append the body to the url
@@ -342,8 +354,10 @@ function sendData(id, api, body, options) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    // remove leading and trailing slashes from request
+                    api = stripSlashes_1.default(api);
                     if (!((options && options.use === "http") || !socket_1.ready)) return [3 /*break*/, 3];
-                    url = exports.setOptions.fetchUrl + "/" + encodeURIComponent(id) + "/" + encodeURIComponent(api);
+                    url = exports.setOptions.fetchUrl + "/" + id + "/" + api;
                     return [4 /*yield*/, globalFetch(url, {
                             method: options && options.method ? options.method : "POST",
                             timeout: options && options.timeout,
@@ -457,11 +471,15 @@ function reconnect() {
 }
 exports.reconnect = reconnect;
 
-},{"../errors/timeoutError":8,"./onSnapshot":4,"./registerEvent":5,"./socket":6}],4:[function(require,module,exports){
+},{"../errors/timeoutError":8,"../stripSlashes":11,"./onSnapshot":4,"./registerEvent":5,"./socket":6}],4:[function(require,module,exports){
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var socket_1 = require("./socket");
 var _1 = require(".");
+var stripSlashes_1 = __importDefault(require("../stripSlashes"));
 /**
  * Register a new snapshot event to the server. This event will automatically re-register if the connection gets disconnected.
  *
@@ -470,6 +488,8 @@ var _1 = require(".");
  * @param callback the callback to run the the snapshot data
  */
 function onSnapshot(api, requestHead, callback) {
+    // remove leading and trailing slashes from the url
+    api = stripSlashes_1.default(api);
     // create a index number to use for all of the transactions
     var id = _1.newIndex();
     var unregister = function () { };
@@ -531,10 +551,14 @@ function onSnapshot(api, requestHead, callback) {
 }
 exports.onSnapshot = onSnapshot;
 
-},{".":3,"./socket":6}],5:[function(require,module,exports){
+},{".":3,"../stripSlashes":11,"./socket":6}],5:[function(require,module,exports){
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./../events/index");
+var stripSlashes_1 = __importDefault(require("../stripSlashes"));
 /**
  * Register a event listener for events sent from the server
  *
@@ -542,6 +566,8 @@ var index_1 = require("./../events/index");
  * @param callback the callback function
  */
 function registerEvent(name, callback) {
+    // remove the leading and trailing slashes from the url
+    name = stripSlashes_1.default(name);
     // if a callback function is given register it for each of the categories
     if (callback) {
         index_1.getEvent.on(name, callback);
@@ -572,7 +598,7 @@ function registerEvent(name, callback) {
 }
 exports.registerEvent = registerEvent;
 
-},{"./../events/index":10}],6:[function(require,module,exports){
+},{"../stripSlashes":11,"./../events/index":10}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./index");
@@ -982,5 +1008,18 @@ exports.putEvent = new event_1.Events();
 exports.delEvent = new event_1.Events();
 exports.snapshotEvent = new event_1.Events();
 
-},{"./event":9}]},{},[3])(3)
+},{"./event":9}],11:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Removes any leading or following slashes in the endpoint url
+ *
+ * @param url
+ */
+function stripUrlSlashes(url) {
+    return url.replace(/^\/|\/$/g, "");
+}
+exports.default = stripUrlSlashes;
+
+},{}]},{},[3])(3)
 });

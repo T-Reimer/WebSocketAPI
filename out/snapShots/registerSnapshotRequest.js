@@ -17,12 +17,22 @@ var Request_1 = require("../Request");
 var events_1 = require("../events");
 exports.registeredListeners = [];
 function registerSnapshotRequest(data, event, settings) {
+    var _a;
     // create a snapshot request
-    var snapshot = new SnapshotRequest(data, event);
+    var snapshot = new SnapshotRequest(data, event, settings);
     // push into the listeners list
     exports.registeredListeners.push(snapshot);
     // execute the initial event
     events_1.snapshotEvent.triggerEvent(snapshot);
+    (_a = event.WebSocket) === null || _a === void 0 ? void 0 : _a.on("close", unRegister);
+    // remove the close event listener if the snapshot gets unregistered at any point
+    snapshot.onUnregister(function () {
+        var _a;
+        (_a = event.WebSocket) === null || _a === void 0 ? void 0 : _a.removeEventListener("close", unRegister);
+    });
+    function unRegister() {
+        snapshot.unregister(true);
+    }
 }
 exports.registerSnapshotRequest = registerSnapshotRequest;
 /**
@@ -44,19 +54,42 @@ exports.unregisterSnapshotRequest = unregisterSnapshotRequest;
  */
 var SnapshotRequest = /** @class */ (function (_super) {
     __extends(SnapshotRequest, _super);
-    function SnapshotRequest(data, event) {
+    function SnapshotRequest(data, event, settings) {
         var _this = _super.call(this, data.id, data.name, data.body, "SNAPSHOT") || this;
         _this.data = data;
         _this.event = event;
+        _this.settings = settings;
         _this.client = event.client;
+        _this._onUnregister = [];
         /**
          * Any extra event data that is added on the trigger event
          */
         _this.extra = null;
         // register the send handler
         _this._send = function (value) {
-            var _a;
-            (_a = _this.client) === null || _a === void 0 ? void 0 : _a.WebSocket.send(JSON.stringify(value));
+            var _a, _b, _c, _d;
+            try {
+                // try to send the message to client
+                (_a = _this.client) === null || _a === void 0 ? void 0 : _a.WebSocket.send(JSON.stringify(value));
+            }
+            catch (err) {
+                // if failed to send check if the ready state is closed... If so then unregister anything for that client
+                if (((_b = _this.client) === null || _b === void 0 ? void 0 : _b.WebSocket.readyState) === ((_c = _this.client) === null || _c === void 0 ? void 0 : _c.WebSocket.CLOSED)) {
+                    // the client connection is closed already
+                    try {
+                        // make sure that disconnect events are called
+                        (_d = _this.client) === null || _d === void 0 ? void 0 : _d.WebSocket.terminate();
+                        //ignore any errors
+                    }
+                    catch (err) { }
+                }
+                else {
+                    // call the on error handler
+                    if (_this.settings.on.error) {
+                        _this.settings.on.error(err);
+                    }
+                }
+            }
         };
         return _this;
     }
@@ -80,6 +113,13 @@ var SnapshotRequest = /** @class */ (function (_super) {
                 unregister: true,
             });
         }
+        this._onUnregister.forEach(function (callback) { return callback(); });
+    };
+    /**
+     * Add a event listener to run when the event get's un registered
+     */
+    SnapshotRequest.prototype.onUnregister = function (callback) {
+        this._onUnregister.push(callback);
     };
     return SnapshotRequest;
 }(Request_1.Request));

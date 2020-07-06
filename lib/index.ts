@@ -9,6 +9,7 @@ import { registeredListeners } from "./snapShots/registerSnapshotRequest";
 import { SnapshotResponse } from "./RequestData";
 import AuthEventMessage from "./authRequest";
 import { wsClient } from "./ws/wsClient";
+import stripUrlSlashes from "./stripSlashes";
 
 export interface SettingsInterface {
     maxLength?: number, // the max upload length to automatically parse
@@ -18,17 +19,22 @@ export interface SettingsInterface {
      * This function can be async and if it throws an error or returns false the client will be disconnected.
      * A truthy response will register the api.
      */
-    onAuthKey: (key: AuthEventMessage["key"], client: wsClient, ws: WebSocket, req: any) => Promise<boolean>,
+    onAuthKey?: (key: AuthEventMessage["key"], client: wsClient, ws: WebSocket, req: any) => Promise<boolean>,
     on: {
-        error: Function
+        /**
+         * The error is always a instance of an error
+         * 
+         * The message is the incoming string message if failed to parse
+         */
+        error?: (err: Error, message?: string) => void
     }
 }
 
 /**
  * the default settings object
  */
-export const Settings = {
-    maxLength: 10000,
+export const Settings: SettingsInterface = {
+    maxLength: 100000,
     on: {}
 }
 
@@ -69,6 +75,9 @@ interface eventObject {
  * @example on("test", () => {\/*Always run *\/}).get(() => {\/** Get request *\/}).post(() => {\/** post request *\/})
  */
 export function on(name: string, callback?: (request: ServerRequest) => void | Promise<void>) {
+
+    // remove leading and trailing slashes in the url
+    name = stripUrlSlashes(name);
 
     // if a callback function is given register it for each of the categories
     if (callback) {
@@ -120,6 +129,9 @@ export function on(name: string, callback?: (request: ServerRequest) => void | P
  * @param extra the data to add
  */
 export function triggerSnapshot(api: string, extra: any) {
+    // remove leading and trailing slashes from url
+    api = stripUrlSlashes(api);
+
     registeredListeners.forEach(listener => {
         if (listener.name === api) {
 

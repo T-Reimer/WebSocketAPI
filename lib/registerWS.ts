@@ -7,6 +7,7 @@ import RequestData, { ResponseData } from "./RequestData";
 import { registerSnapshotRequest, unregisterSnapshotRequest } from "./snapShots/registerSnapshotRequest";
 import { convertError } from "./errors/convertError";
 import AuthEventMessage, { AuthFailedMessage } from "./authRequest";
+import stripUrlSlashes from "./stripSlashes";
 
 /**
  * Register the web wss server to use as api
@@ -29,11 +30,13 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
                     const data = <AuthEventMessage>JSON.parse(message);
 
                     if (data.event === "auth") {
-                        if (await settings.onAuthKey(data.key, client, ws, req)) {
+                        if (settings.onAuthKey && await settings.onAuthKey(data.key, client, ws, req)) {
+
                             // register the api to start receiving events
                             sendOpenMessage(ws, client, settings);
 
                             ws.removeEventListener("message", <any>onMessage);
+
                         } else {
                             // disconnect. Authentication error
                             return sendAuthFailed(ws);
@@ -60,13 +63,20 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
  */
 function sendAuthFailed(ws: WebSocket) {
     const failed: AuthFailedMessage = { event: "auth-failed" };
-    ws.send(JSON.stringify(failed));
+    try {
+        ws.send(JSON.stringify(failed));
+    } catch (err) { }
     ws.terminate();
 }
 
 function sendOpenMessage(ws: WebSocket, client: wsClient, settings: SettingsInterface) {
     // send a Open connection event to tell the api on client side to start listening
-    ws.send(JSON.stringify({ event: "connection" }));
+    try {
+        ws.send(JSON.stringify({ event: "connection" }));
+    } catch (err) {
+        // disconnect the client
+        ws.terminate();
+    }
 
     // register the on message event once the authentication is complete
     ws.on('message', function incoming(message: string) {
@@ -82,7 +92,7 @@ function sendOpenMessage(ws: WebSocket, client: wsClient, settings: SettingsInte
                 if (data.method) {
 
                     // create a event to dispatch
-                    let event = createWSRequest(client, data.id, data.name, data.body, data.method, settings);
+                    let event = createWSRequest(client, data.id, stripUrlSlashes(data.name), data.body, data.method, settings);
 
                     switch (data.method) {
                         case "GET":
@@ -102,6 +112,7 @@ function sendOpenMessage(ws: WebSocket, client: wsClient, settings: SettingsInte
                                 unregisterSnapshotRequest(data);
                             } else {
                                 registerSnapshotRequest(data, event, settings);
+
                             }
                             break;
                     }

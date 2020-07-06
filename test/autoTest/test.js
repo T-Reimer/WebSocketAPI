@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const assert = require("assert");
 const data = require("./data");
 const fetch = require("node-fetch");
@@ -9,22 +10,25 @@ const execSh = require("exec-sh");
 describe("server", () => {
 
     let server = null;
+    let api = null;
 
-    before((done) => {
+    before(function (done) {
         // start up the server so it's ready for requests
         server = require("./server");
         server.start(done);
+
+        api = require("./../../out/index");
     });
 
     // shutdown the websocket server after tests are completed
-    after(function(done) {
+    after(function (done) {
         this.timeout(30000);
         // start testing the browser
 
         if (process.argv.includes("--browser")) {
 
             open("http://localhost:3030/")
-                .then(_ => {
+                .then(() => {
                     console.log("Opened page");
 
                 });
@@ -60,7 +64,7 @@ describe("server", () => {
                 called = false;
                 ws = new WebSocket("ws://localhost:8090/api");
 
-                ws.on("message", (data) => {
+                ws.on("message", () => {
                     if (!called) {
                         done();
                     }
@@ -73,7 +77,7 @@ describe("server", () => {
                 ws.close();
             });
 
-            it("should respond with matching records", function(done) {
+            it("should respond with matching records", function (done) {
                 ws.send('{"id":1,"name":"todo/mine","method":"GET"}');
 
                 ws.on("message", (response) => {
@@ -86,7 +90,21 @@ describe("server", () => {
                 });
             });
 
-            it("should respond with status 404", function(done) {
+            it("nested api request", function (done) {
+
+                ws.send('{"id":4,"name":"nested/api/request/","method":"GET"}');
+
+                ws.on("message", (response) => {
+                    const msg = JSON.parse(response);
+
+                    if (msg.id === 4) {
+                        assert.equal("nested/api/request", msg.body);
+                        done();
+                    }
+                });
+            });
+
+            it("should respond with status 404", function (done) {
                 ws.send('{"id":2,"name":"something404","method":"GET"}');
 
                 ws.on("message", (response) => {
@@ -100,7 +118,7 @@ describe("server", () => {
 
             });
 
-            it("should respond with an error", function(done) {
+            it("should respond with an error", function (done) {
 
                 ws.send('{"id":3,"name":"error","method":"GET"}');
 
@@ -121,24 +139,40 @@ describe("server", () => {
         // test the server http response to the same api
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await fetch("http://localhost:3030/api/1/todo%2fmine", { method: "GET" });
+            it("should respond with matching records", async function () {
+                const response = await fetch("http://localhost:3030/api/1/todo%2fmine", {
+                    method: "GET"
+                });
                 const responseData = await response.json();
 
                 assert.deepEqual(data.todo[0], responseData.body);
 
             });
 
-            it("should respond with status 404", async function() {
-                const response = await fetch("http://localhost:3030/api/1/something404", { method: "GET" });
+            it("nested api request", async function () {
+                const response = await fetch("http://localhost:3030/api/1/nested/api/request/", {
+                    method: "GET"
+                });
+                const responseData = await response.json();
+
+                assert.equal("nested/api/request", responseData.body);
+
+            });
+
+            it("should respond with status 404", async function () {
+                const response = await fetch("http://localhost:3030/api/1/something404", {
+                    method: "GET"
+                });
                 const responseData = await response.json();
 
                 assert.equal(404, responseData.status);
 
             });
 
-            it("should respond with an error", async function() {
-                const response = await fetch("http://localhost:3030/api/1/error", { method: "GET" });
+            it("should respond with an error", async function () {
+                const response = await fetch("http://localhost:3030/api/1/error", {
+                    method: "GET"
+                });
                 const responseData = await response.json();
 
                 assert.deepEqual(data.errorMessage, responseData);
@@ -162,7 +196,7 @@ describe("server", () => {
                 called = false;
                 ws = new WebSocket("ws://localhost:8090/api");
 
-                ws.on("message", (data) => {
+                ws.on("message", () => {
                     if (!called) {
                         done();
                     }
@@ -175,7 +209,7 @@ describe("server", () => {
                 ws.close();
             });
 
-            it("should respond with matching records", function(done) {
+            it("should respond with matching records", function (done) {
                 ws.send(JSON.stringify({
                     id: 1,
                     method: "POST",
@@ -193,7 +227,7 @@ describe("server", () => {
                 });
             });
 
-            it("should respond with status 404", function(done) {
+            it("should respond with status 404", function (done) {
                 ws.send('{"id":2,"name":"something404","method":"POST"}');
 
                 ws.on("message", (response) => {
@@ -207,7 +241,7 @@ describe("server", () => {
 
             });
 
-            it("should respond with an error", function(done) {
+            it("should respond with an error", function (done) {
 
                 ws.send('{"id":3,"name":"error","method":"POST"}');
 
@@ -228,11 +262,13 @@ describe("server", () => {
         // test the server http response to the same api
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
+            it("should respond with matching records", async function () {
                 const response = await fetch("http://localhost:3030/api/1/echo", {
                     method: "POST",
                     body: JSON.stringify(data.todo[2]),
-                    headers: { "Content-Type": "application/json" }
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 });
                 const responseData = await response.json();
 
@@ -240,16 +276,20 @@ describe("server", () => {
 
             });
 
-            it("should respond with status 404", async function() {
-                const response = await fetch("http://localhost:3030/api/1/something404", { method: "POST" });
+            it("should respond with status 404", async function () {
+                const response = await fetch("http://localhost:3030/api/1/something404", {
+                    method: "POST"
+                });
                 const responseData = await response.json();
 
                 assert.equal(404, responseData.status);
 
             });
 
-            it("should respond with an error", async function() {
-                const response = await fetch("http://localhost:3030/api/1/error", { method: "POST" });
+            it("should respond with an error", async function () {
+                const response = await fetch("http://localhost:3030/api/1/error", {
+                    method: "POST"
+                });
                 const responseData = await response.json();
 
                 assert.deepEqual(data.errorMessage, responseData);
@@ -274,7 +314,7 @@ describe("server", () => {
                 called = false;
                 ws = new WebSocket("ws://localhost:8090/api");
 
-                ws.on("message", (data) => {
+                ws.on("message", () => {
                     if (!called) {
                         done();
                     }
@@ -287,7 +327,7 @@ describe("server", () => {
                 ws.close();
             });
 
-            it("should respond with matching records", function(done) {
+            it("should respond with matching records", function (done) {
                 ws.send(JSON.stringify({
                     id: 1,
                     method: "PUT",
@@ -305,7 +345,7 @@ describe("server", () => {
                 });
             });
 
-            it("should respond with status 404", function(done) {
+            it("should respond with status 404", function (done) {
                 ws.send('{"id":2,"name":"something404","method":"PUT"}');
 
                 ws.on("message", (response) => {
@@ -319,7 +359,7 @@ describe("server", () => {
 
             });
 
-            it("should respond with an error", function(done) {
+            it("should respond with an error", function (done) {
 
                 ws.send('{"id":3,"name":"error","method":"PUT"}');
 
@@ -340,11 +380,13 @@ describe("server", () => {
         // test the server http response to the same api
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
+            it("should respond with matching records", async function () {
                 const response = await fetch("http://localhost:3030/api/1/echo", {
                     method: "PUT",
                     body: JSON.stringify(data.todo[2]),
-                    headers: { "Content-Type": "application/json" }
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 });
                 const responseData = await response.json();
 
@@ -352,16 +394,20 @@ describe("server", () => {
 
             });
 
-            it("should respond with status 404", async function() {
-                const response = await fetch("http://localhost:3030/api/1/something404", { method: "PUT" });
+            it("should respond with status 404", async function () {
+                const response = await fetch("http://localhost:3030/api/1/something404", {
+                    method: "PUT"
+                });
                 const responseData = await response.json();
 
                 assert.equal(404, responseData.status);
 
             });
 
-            it("should respond with an error", async function() {
-                const response = await fetch("http://localhost:3030/api/1/error", { method: "PUT" });
+            it("should respond with an error", async function () {
+                const response = await fetch("http://localhost:3030/api/1/error", {
+                    method: "PUT"
+                });
                 const responseData = await response.json();
 
                 assert.deepEqual(data.errorMessage, responseData);
@@ -385,7 +431,7 @@ describe("server", () => {
                 called = false;
                 ws = new WebSocket("ws://localhost:8090/api");
 
-                ws.on("message", (data) => {
+                ws.on("message", () => {
                     if (!called) {
                         done();
                     }
@@ -398,7 +444,7 @@ describe("server", () => {
                 ws.close();
             });
 
-            it("should respond with matching records", function(done) {
+            it("should respond with matching records", function (done) {
                 ws.send('{"id":1,"name":"todo/mine","method":"DELETE"}');
 
                 ws.on("message", (response) => {
@@ -411,7 +457,7 @@ describe("server", () => {
                 });
             });
 
-            it("should respond with status 404", function(done) {
+            it("should respond with status 404", function (done) {
                 ws.send('{"id":2,"name":"something404","method":"DELETE"}');
 
                 ws.on("message", (response) => {
@@ -425,7 +471,7 @@ describe("server", () => {
 
             });
 
-            it("should respond with an error", function(done) {
+            it("should respond with an error", function (done) {
 
                 ws.send('{"id":3,"name":"error","method":"DELETE"}');
 
@@ -446,24 +492,30 @@ describe("server", () => {
         // test the server http response to the same api
         describe("http", () => {
 
-            it("should respond with matching records", async function() {
-                const response = await fetch("http://localhost:3030/api/1/todo%2fmine", { method: "DELETE" });
+            it("should respond with matching records", async function () {
+                const response = await fetch("http://localhost:3030/api/1/todo%2fmine", {
+                    method: "DELETE"
+                });
                 const responseData = await response.json();
                 // console.log(responseData);
                 assert.deepEqual(responseData, data.deleted);
 
             });
 
-            it("should respond with status 404", async function() {
-                const response = await fetch("http://localhost:3030/api/1/something404", { method: "DELETE" });
+            it("should respond with status 404", async function () {
+                const response = await fetch("http://localhost:3030/api/1/something404", {
+                    method: "DELETE"
+                });
                 const responseData = await response.json();
 
                 assert.equal(404, responseData.status);
 
             });
 
-            it("should respond with an error", async function() {
-                const response = await fetch("http://localhost:3030/api/1/error", { method: "DELETE" });
+            it("should respond with an error", async function () {
+                const response = await fetch("http://localhost:3030/api/1/error", {
+                    method: "DELETE"
+                });
                 const responseData = await response.json();
 
                 assert.deepEqual(responseData, data.errorMessage);
@@ -472,4 +524,193 @@ describe("server", () => {
         });
     });
 
+    describe("server timeout", function () {
+
+        let ws = null;
+        let called = false;
+
+        // call before each
+        beforeEach((done) => {
+            called = false;
+            ws = new WebSocket("ws://localhost:8090/api");
+
+            ws.on("message", () => {
+                if (!called) {
+                    done();
+                }
+                called = true;
+            });
+        });
+
+        afterEach(() => {
+            // console.log(ws);
+            ws.close();
+        });
+
+        it("should timeout after 250 milliseconds", function (done) {
+
+            this.slow(260);
+            this.timeout(300);
+
+            api.on("msg", (event) => {
+                event.client.fetch("timeout", {}, {
+                        timeout: 250,
+                        method: "GET"
+                    })
+                    .catch(err => {
+                        assert.equal(err.message, "Request to client timed out!");
+                        done();
+                    });
+            });
+
+            ws.send('{"id":1,"name":"msg","method":"GET"}');
+
+
+        });
+
+    });
+
+    describe("snapshots", function () {
+
+        // test the client snapshot integrations
+        describe("client", function () {
+
+            let ws = null;
+            let called = false;
+
+            before(function () {
+                api.on("/snapshot/number")
+                    .snapshot((request) => {
+                        request.send(request.body);
+                    });
+
+                api.on("/snapshot/number/2")
+                    .snapshot((request) => {
+                        request.send(request.body);
+                    });
+            });
+
+            // call before each
+            beforeEach((done) => {
+                called = false;
+                ws = new WebSocket("ws://localhost:8090/api");
+
+                ws.on("message", () => {
+                    if (!called) {
+                        done();
+                    }
+                    called = true;
+                });
+            });
+
+            afterEach(() => {
+                // console.log(ws);
+                ws.close();
+
+            });
+
+            describe("register", function () {
+
+                it("should respond with message", function (done) {
+
+                    ws.send(JSON.stringify({
+                        id: 6,
+                        name: "snapshot/number",
+                        method: "SNAPSHOT",
+                        body: 1000
+                    }));
+
+                    ws.on("message", (response) => {
+                        const msg = JSON.parse(response);
+                        if (msg.id === 6) {
+
+                            assert.equal(1000, msg.body);
+                            done();
+                        }
+                    });
+                });
+
+            });
+
+            describe("un-register", function () {
+
+                it("should not fail when triggering snapshot", function (done) {
+                    this.slow(250);
+
+                    ws.send(JSON.stringify({
+                        id: 6,
+                        name: "snapshot/number/2",
+                        method: "SNAPSHOT",
+                        body: 1000
+                    }));
+
+                    ws.on("message", (response) => {
+                        const msg = JSON.parse(response);
+
+                        if (msg.id === 6) {
+
+                            ws.send(JSON.stringify({
+                                id: 6,
+                                name: "snapshot/number/2",
+                                method: "SNAPSHOT",
+                                unregister: true,
+                            }));
+
+                            setTimeout(() => {
+                                try {
+                                    api.triggerSnapshot("snapshot/number/2", 10);
+                                } catch (err) {
+                                    done(err);
+                                }
+                            }, 1);
+
+                            setTimeout(done, 150);
+                            // done();
+                        }
+                    });
+
+                });
+
+            });
+
+            describe("un-register on disconnect", function () {
+
+                it("should unregister and not receive 2nd message", function (done) {
+                    this.slow(250);
+
+                    ws.send(JSON.stringify({
+                        id: 6,
+                        name: "snapshot/number/2",
+                        method: "SNAPSHOT",
+                        body: 1000
+                    }));
+
+                    ws.on("message", (response) => {
+                        const msg = JSON.parse(response);
+
+                        if (msg.id === 6) {
+
+                            ws.send(JSON.stringify({
+                                id: 6,
+                                name: "snapshot/number/2",
+                                method: "SNAPSHOT",
+                                unregister: true,
+                            }));
+
+                            setTimeout(() => {
+                                api.triggerSnapshot("snapshot/number/2", 10);
+                            }, 50);
+
+                            setTimeout(done, 150);
+                            // done();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
+
+    });
 });

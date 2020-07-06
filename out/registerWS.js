@@ -35,12 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./events/index");
 var createWSRequest_1 = require("./createWSRequest");
 var wsClient_1 = require("./ws/wsClient");
 var registerSnapshotRequest_1 = require("./snapShots/registerSnapshotRequest");
 var convertError_1 = require("./errors/convertError");
+var stripSlashes_1 = __importDefault(require("./stripSlashes"));
 /**
  * Register the web wss server to use as api
  *
@@ -58,16 +62,21 @@ function registerWS(wss, settings) {
         else {
             ws.on("message", function onMessage(message) {
                 return __awaiter(this, void 0, void 0, function () {
-                    var data, err_1;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
+                    var data, _a, err_1;
+                    return __generator(this, function (_b) {
+                        switch (_b.label) {
                             case 0:
-                                _a.trys.push([0, 4, , 5]);
+                                _b.trys.push([0, 5, , 6]);
                                 data = JSON.parse(message);
-                                if (!(data.event === "auth")) return [3 /*break*/, 2];
+                                if (!(data.event === "auth")) return [3 /*break*/, 3];
+                                _a = settings.onAuthKey;
+                                if (!_a) return [3 /*break*/, 2];
                                 return [4 /*yield*/, settings.onAuthKey(data.key, client, ws, req)];
                             case 1:
-                                if (_a.sent()) {
+                                _a = (_b.sent());
+                                _b.label = 2;
+                            case 2:
+                                if (_a) {
                                     // register the api to start receiving events
                                     sendOpenMessage(ws, client, settings);
                                     ws.removeEventListener("message", onMessage);
@@ -76,16 +85,16 @@ function registerWS(wss, settings) {
                                     // disconnect. Authentication error
                                     return [2 /*return*/, sendAuthFailed(ws)];
                                 }
-                                return [3 /*break*/, 3];
-                            case 2: 
+                                return [3 /*break*/, 4];
+                            case 3: 
                             // disconnect. Authentication error
                             return [2 /*return*/, sendAuthFailed(ws)];
-                            case 3: return [3 /*break*/, 5];
-                            case 4:
-                                err_1 = _a.sent();
+                            case 4: return [3 /*break*/, 6];
+                            case 5:
+                                err_1 = _b.sent();
                                 // disconnect. Authentication error
                                 return [2 /*return*/, sendAuthFailed(ws)];
-                            case 5: return [2 /*return*/];
+                            case 6: return [2 /*return*/];
                         }
                     });
                 });
@@ -101,12 +110,21 @@ exports.registerWS = registerWS;
  */
 function sendAuthFailed(ws) {
     var failed = { event: "auth-failed" };
-    ws.send(JSON.stringify(failed));
+    try {
+        ws.send(JSON.stringify(failed));
+    }
+    catch (err) { }
     ws.terminate();
 }
 function sendOpenMessage(ws, client, settings) {
     // send a Open connection event to tell the api on client side to start listening
-    ws.send(JSON.stringify({ event: "connection" }));
+    try {
+        ws.send(JSON.stringify({ event: "connection" }));
+    }
+    catch (err) {
+        // disconnect the client
+        ws.terminate();
+    }
     // register the on message event once the authentication is complete
     ws.on('message', function incoming(message) {
         var request = null;
@@ -117,7 +135,7 @@ function sendOpenMessage(ws, client, settings) {
                 request = data;
                 if (data.method) {
                     // create a event to dispatch
-                    var event_1 = createWSRequest_1.createWSRequest(client, data.id, data.name, data.body, data.method, settings);
+                    var event_1 = createWSRequest_1.createWSRequest(client, data.id, stripSlashes_1.default(data.name), data.body, data.method, settings);
                     switch (data.method) {
                         case "GET":
                             index_1.getEvent.triggerEvent(event_1);

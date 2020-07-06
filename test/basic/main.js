@@ -3,12 +3,29 @@ let logElement = null;
 window.addEventListener("load", () => {
     logElement = document.getElementById("logOutput");
 
-    let button = document.getElementById("ping");
+    const button = document.getElementById("ping");
+    const button2 = document.getElementById("ping-http");
 
     button.addEventListener("click", () => {
         console.log("- - - - - - -");
         console.log("Sending Request to Server");
-        WebSocketAPI.fetch("ping", { randomNumber: Math.random() }).then(response => {
+        WebSocketAPI.fetch("ping", {
+            randomNumber: Math.random()
+        }).then(response => {
+            console.log("Server Responded with", response);
+
+            console.log("- - - - - - -");
+        });
+    });
+
+    button2.addEventListener("click", () => {
+        console.log("- - - - - - -");
+        console.log("Sending Request to Server");
+        WebSocketAPI.fetch("ping", {
+            randomNumber: Math.random()
+        }, {
+            use: "http"
+        }).then(response => {
             console.log("Server Responded with", response);
 
             console.log("- - - - - - -");
@@ -40,12 +57,16 @@ function getDate() {
             el.innerHTML = "auto:" + response + "<br>" + el.innerHTML;
         });
 
-    WebSocketAPI.fetch("date/timestamp", null, { use: "http" })
+    WebSocketAPI.fetch("date/timestamp", null, {
+            use: "http"
+        })
         .then(response => {
             el.innerHTML = "http:" + response + "<br>" + el.innerHTML;
         });
 
-    WebSocketAPI.fetch("date/timestamp", null, { use: "ws" })
+    WebSocketAPI.fetch("date/timestamp", null, {
+            use: "ws"
+        })
         .then(response => {
             el.innerHTML = "ws:" + response + "<br>" + el.innerHTML;
         });

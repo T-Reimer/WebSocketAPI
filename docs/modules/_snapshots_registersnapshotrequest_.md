@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["snapShots/registerSnapshotRequest"](_snapshots_registersnapshotrequest_.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["snapShots/registerSnapshotRequest"](_snapshots_registersnapshotrequest_.md)
 
 # Module: "snapShots/registerSnapshotRequest"
 
@@ -19,7 +19,7 @@
 
 • **registeredListeners**: *SnapshotRequest[]* = []
 
-*Defined in [lib/snapShots/registerSnapshotRequest.ts:7](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/snapShots/registerSnapshotRequest.ts#L7)*
+*Defined in [lib/snapShots/registerSnapshotRequest.ts:7](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/snapShots/registerSnapshotRequest.ts#L7)*
 
 ## Functions
 
@@ -27,7 +27,7 @@
 
 ▸ **registerSnapshotRequest**(`data`: [RequestData](../interfaces/_requestdata_.requestdata.md), `event`: [ServerRequest](../classes/_serverrequest_.serverrequest.md), `settings`: [SettingsInterface](../interfaces/_index_.settingsinterface.md)): *void*
 
-*Defined in [lib/snapShots/registerSnapshotRequest.ts:9](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/snapShots/registerSnapshotRequest.ts#L9)*
+*Defined in [lib/snapShots/registerSnapshotRequest.ts:9](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/snapShots/registerSnapshotRequest.ts#L9)*
 
 **Parameters:**
 
@@ -45,7 +45,7 @@ ___
 
 ▸ **unregisterSnapshotRequest**(`data`: [RequestData](../interfaces/_requestdata_.requestdata.md)): *void*
 
-*Defined in [lib/snapShots/registerSnapshotRequest.ts:27](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/snapShots/registerSnapshotRequest.ts#L27)*
+*Defined in [lib/snapShots/registerSnapshotRequest.ts:27](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/snapShots/registerSnapshotRequest.ts#L27)*
 
 Un register the given snapshot listener
 

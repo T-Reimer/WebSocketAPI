@@ -1,15 +1,19 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = require("./events/index");
 var createExpressRequest_1 = require("./createExpressRequest");
 var convertError_1 = require("./errors/convertError");
+var stripSlashes_1 = __importDefault(require("./stripSlashes"));
 /**
  * Register the get and post requests from express
  *
  * @param app The express app
  */
 function registerExpress(app, route, settings) {
-    var url = "/" + route.replace(/^\/|\/$/g, "") + "/:id/:name";
+    var url = "/" + stripSlashes_1.default(route) + "/:id/*";
     // register the Express js listeners
     app.get(url, function (request, response) {
         var id = request.params.id;

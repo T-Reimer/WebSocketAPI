@@ -4,13 +4,14 @@ import { SettingsInterface } from "./index";
 import { createExpressRequest } from "./createExpressRequest";
 import { convertError } from "./errors/convertError";
 import { ResponseData } from "./RequestData";
+import stripUrlSlashes from "./stripSlashes";
 /**
  * Register the get and post requests from express
  *
  * @param app The express app
  */
 export function registerExpress(app: Application, route: string, settings: SettingsInterface) {
-    const url = `/${route.replace(/^\/|\/$/g, "")}/:id/:name`;
+    const url = `/${stripUrlSlashes(route)}/:id/*`;
 
     // register the Express js listeners
     app.get(url, (request, response) => {

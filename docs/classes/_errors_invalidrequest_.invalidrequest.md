@@ -1,4 +1,4 @@
-[WebSocketAPI - v1.1.1](../README.md) › [Globals](../globals.md) › ["errors/InvalidRequest"](../modules/_errors_invalidrequest_.md) › [InvalidRequest](_errors_invalidrequest_.invalidrequest.md)
+[WebSocketAPI - v1.1.2-3](../README.md) › [Globals](../globals.md) › ["errors/InvalidRequest"](../modules/_errors_invalidrequest_.md) › [InvalidRequest](_errors_invalidrequest_.invalidrequest.md)
 
 # Class: InvalidRequest
 
@@ -30,7 +30,7 @@ Create a new Invalid Request Error
 
 \+ **new InvalidRequest**(`message`: string): *[InvalidRequest](_errors_invalidrequest_.invalidrequest.md)*
 
-*Defined in [lib/errors/InvalidRequest.ts:5](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/errors/InvalidRequest.ts#L5)*
+*Defined in [lib/errors/InvalidRequest.ts:5](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/errors/InvalidRequest.ts#L5)*
 
 **Parameters:**
 
@@ -78,7 +78,7 @@ ___
 
 • **status**: *number*
 
-*Defined in [lib/errors/InvalidRequest.ts:5](https://github.com/T-Reimer/WebSocketAPI/blob/7bc0908/lib/errors/InvalidRequest.ts#L5)*
+*Defined in [lib/errors/InvalidRequest.ts:5](https://github.com/wallsmetalroofing/WebSocketAPI/blob/dd2bbc9/lib/errors/InvalidRequest.ts#L5)*
 
 ___
 

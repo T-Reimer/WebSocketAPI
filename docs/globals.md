@@ -1,6 +1,6 @@
-[WebSocketAPI - v1.1.1](README.md) › [Globals](globals.md)
+[WebSocketAPI - v1.1.2-3](README.md) › [Globals](globals.md)
 
-# WebSocketAPI - v1.1.1
+# WebSocketAPI - v1.1.2-3
 
 ## Index
 
@@ -9,6 +9,7 @@
 * ["Request"](modules/_request_.md)
 * ["RequestData"](modules/_requestdata_.md)
 * ["ServerRequest"](modules/_serverrequest_.md)
+* ["authRequest"](modules/_authrequest_.md)
 * ["client/createRequest"](modules/_client_createrequest_.md)
 * ["client/index"](modules/_client_index_.md)
 * ["client/onSnapshot"](modules/_client_onsnapshot_.md)
@@ -25,4 +26,5 @@
 * ["registerExpress"](modules/_registerexpress_.md)
 * ["registerWS"](modules/_registerws_.md)
 * ["snapShots/registerSnapshotRequest"](modules/_snapshots_registersnapshotrequest_.md)
+* ["stripSlashes"](modules/_stripslashes_.md)
 * ["ws/wsClient"](modules/_ws_wsclient_.md)
