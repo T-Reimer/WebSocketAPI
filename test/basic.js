@@ -26,7 +26,7 @@ api.register(app, wss, "api", {
             event.startTime = Date.now();
         },
         eventCompleted: (event) => {
-            if(event.startTime){
+            if (event.startTime) {
                 console.log(event.name, "Took:", Date.now() - event.startTime, "ms");
             }
         }
@@ -34,9 +34,9 @@ api.register(app, wss, "api", {
 });
 
 api.on("test", (event, next) => {
-        console.log(event);
-        next();
-    })
+    console.log(event);
+    next();
+})
     .get((event) => {
         event.send(`Get: ${Math.floor(Math.random() * 1000)}`);
     })
@@ -60,8 +60,8 @@ api.on("ping", (event, next) => {
         if (event.client) {
             // the client is connected with websocket
             event.client.fetch("ping", {
-                    randomNumber: Math.random()
-                })
+                randomNumber: Math.random()
+            })
                 .then(data => {
 
                     console.log("Client Responded with", data);
@@ -78,6 +78,15 @@ api.on("ping", (event, next) => {
 
 api.on("date/timestamp")
     .get((event) => event.send((new Date()).toLocaleTimeString()));
+
+// echo the same content back to the client
+api.on("echo", (event) => {
+    console.log("echo", event.body);
+
+    console.log(event.request.method, event.request.query);
+
+    event.send(event.body);
+});
 
 
 app.listen(port, () => console.log(`Express Listening on port > ${port}`));

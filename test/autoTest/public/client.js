@@ -69,8 +69,8 @@ describe("browser", () => {
             it("should throw error with 'Unknown api request.'", function (done) {
 
                 WebSocketAPI.fetch("something404", undefined, {
-                        use: "ws"
-                    })
+                    use: "ws"
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -88,8 +88,8 @@ describe("browser", () => {
             it("should throw error with 'test error'", function (done) {
 
                 WebSocketAPI.fetch("error", undefined, {
-                        use: "ws"
-                    })
+                    use: "ws"
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -107,9 +107,9 @@ describe("browser", () => {
             it("should throw timeout error with 'Timeout Error'", function (done) {
 
                 WebSocketAPI.fetch("timeout", undefined, {
-                        use: "ws",
-                        timeout: 150
-                    })
+                    use: "ws",
+                    timeout: 150
+                })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
@@ -148,8 +148,8 @@ describe("browser", () => {
             it("should throw error with 'Unknown api request.'", function (done) {
 
                 WebSocketAPI.fetch("something404", undefined, {
-                        use: "http"
-                    })
+                    use: "http"
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -167,8 +167,8 @@ describe("browser", () => {
             it("should throw error with 'test error'", function (done) {
 
                 WebSocketAPI.fetch("error", undefined, {
-                        use: "http"
-                    })
+                    use: "http"
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -186,9 +186,9 @@ describe("browser", () => {
             it("should throw timeout error with 'Timeout Error'", function (done) {
 
                 WebSocketAPI.fetch("timeout", undefined, {
-                        use: "http",
-                        timeout: 150
-                    })
+                    use: "http",
+                    timeout: 150
+                })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
@@ -203,6 +203,31 @@ describe("browser", () => {
                 this.timeout(200);
             });
 
+            // the get request's body should be readable from server and returned as a echo
+            it("Echo with the request body", async function () {
+                this.timeout(200);
+                const response = await WebSocketAPI.fetch("echo", {
+                    a: 56,
+                    b: "c",
+                    d: null,
+                    nested: {
+                        a: 10
+                    }
+                }, {
+                    use: "http",
+                    timeout: 150
+                });
+
+                // check that the response is equal
+                assert.deepEqual(response, {
+                    a: 56,
+                    b: "c",
+                    d: null,
+                    nested: {
+                        a: 10
+                    }
+                });
+            });
         });
 
     });
@@ -238,9 +263,9 @@ describe("browser", () => {
             it("should throw error with 'Unknown api request.'", function (done) {
 
                 WebSocketAPI.fetch("something404", undefined, {
-                        use: "ws",
-                        method: "POST",
-                    })
+                    use: "ws",
+                    method: "POST",
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -258,9 +283,9 @@ describe("browser", () => {
             it("should throw error with 'test error'", function (done) {
 
                 WebSocketAPI.fetch("error", postData, {
-                        use: "ws",
-                        method: "POST",
-                    })
+                    use: "ws",
+                    method: "POST",
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -278,10 +303,10 @@ describe("browser", () => {
             it("should throw timeout error with 'Timeout Error'", function (done) {
 
                 WebSocketAPI.fetch("timeout", postData, {
-                        use: "ws",
-                        timeout: 150,
-                        method: "POST",
-                    })
+                    use: "ws",
+                    timeout: 150,
+                    method: "POST",
+                })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
@@ -315,9 +340,9 @@ describe("browser", () => {
             it("should throw error with 'Unknown api request.'", function (done) {
 
                 WebSocketAPI.fetch("something404", postData, {
-                        use: "http",
-                        method: "POST",
-                    })
+                    use: "http",
+                    method: "POST",
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -335,9 +360,9 @@ describe("browser", () => {
             it("should throw error with 'test error'", function (done) {
 
                 WebSocketAPI.fetch("error", postData, {
-                        use: "http",
-                        method: "POST",
-                    })
+                    use: "http",
+                    method: "POST",
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -355,10 +380,10 @@ describe("browser", () => {
             it("should throw timeout error with 'Timeout Error'", function (done) {
 
                 WebSocketAPI.fetch("timeout", postData, {
-                        use: "http",
-                        timeout: 150,
-                        method: "POST",
-                    })
+                    use: "http",
+                    timeout: 150,
+                    method: "POST",
+                })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
@@ -408,9 +433,9 @@ describe("browser", () => {
             it("should throw error with 'Unknown api request.'", function (done) {
 
                 WebSocketAPI.fetch("something404", undefined, {
-                        use: "ws",
-                        method: "PUT",
-                    })
+                    use: "ws",
+                    method: "PUT",
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -428,9 +453,9 @@ describe("browser", () => {
             it("should throw error with 'test error'", function (done) {
 
                 WebSocketAPI.fetch("error", postData, {
-                        use: "ws",
-                        method: "PUT",
-                    })
+                    use: "ws",
+                    method: "PUT",
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -448,10 +473,10 @@ describe("browser", () => {
             it("should throw timeout error with 'Timeout Error'", function (done) {
 
                 WebSocketAPI.fetch("timeout", postData, {
-                        use: "ws",
-                        timeout: 150,
-                        method: "PUT",
-                    })
+                    use: "ws",
+                    timeout: 150,
+                    method: "PUT",
+                })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
@@ -485,9 +510,9 @@ describe("browser", () => {
             it("should throw error with 'Unknown api request.'", function (done) {
 
                 WebSocketAPI.fetch("something404", postData, {
-                        use: "http",
-                        method: "PUT",
-                    })
+                    use: "http",
+                    method: "PUT",
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -505,9 +530,9 @@ describe("browser", () => {
             it("should throw error with 'test error'", function (done) {
 
                 WebSocketAPI.fetch("error", postData, {
-                        use: "http",
-                        method: "PUT",
-                    })
+                    use: "http",
+                    method: "PUT",
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -525,10 +550,10 @@ describe("browser", () => {
             it("should throw timeout error with 'Timeout Error'", function (done) {
 
                 WebSocketAPI.fetch("timeout", postData, {
-                        use: "http",
-                        timeout: 150,
-                        method: "PUT",
-                    })
+                    use: "http",
+                    timeout: 150,
+                    method: "PUT",
+                })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
@@ -571,8 +596,8 @@ describe("browser", () => {
             it("should throw error with 'Unknown api request.'", function (done) {
 
                 WebSocketAPI.fetch("something404", undefined, {
-                        use: "ws"
-                    })
+                    use: "ws"
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -590,9 +615,9 @@ describe("browser", () => {
             it("should throw error with 'test error'", function (done) {
 
                 WebSocketAPI.fetch("error", undefined, {
-                        use: "ws",
-                        method: "DELETE"
-                    })
+                    use: "ws",
+                    method: "DELETE"
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -610,10 +635,10 @@ describe("browser", () => {
             it("should throw timeout error with 'Timeout Error'", function (done) {
 
                 WebSocketAPI.fetch("timeout", undefined, {
-                        use: "ws",
-                        timeout: 150,
-                        method: "DELETE"
-                    })
+                    use: "ws",
+                    timeout: 150,
+                    method: "DELETE"
+                })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {
@@ -649,9 +674,9 @@ describe("browser", () => {
             it("should throw error with 'Unknown api request.'", function (done) {
 
                 WebSocketAPI.fetch("something404", undefined, {
-                        use: "http",
-                        method: "DELETE"
-                    })
+                    use: "http",
+                    method: "DELETE"
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -669,9 +694,9 @@ describe("browser", () => {
             it("should throw error with 'test error'", function (done) {
 
                 WebSocketAPI.fetch("error", undefined, {
-                        use: "http",
-                        method: "DELETE"
-                    })
+                    use: "http",
+                    method: "DELETE"
+                })
                     .then(_ => done(new Error("Was supposed to throw a error.")))
                     .catch(err => {
                         try {
@@ -689,10 +714,10 @@ describe("browser", () => {
             it("should throw timeout error with 'Timeout Error'", function (done) {
 
                 WebSocketAPI.fetch("timeout", undefined, {
-                        use: "http",
-                        timeout: 150,
-                        method: "DELETE"
-                    })
+                    use: "http",
+                    timeout: 150,
+                    method: "DELETE"
+                })
                     .then(_ => done(new Error("Was supposed to throw a timeout error.")))
                     .catch(err => {
                         try {

@@ -1,6 +1,6 @@
 {
     "name": "websocketapi",
-    "version": "1.1.7",
+    "version": "1.1.8",
     "description": "",
     "main": "out/index.js",
     "types": "out/index.d.ts",

@@ -38,13 +38,14 @@ api.on("todo/mine")
 
 // setup a echo for post request
 api.on("echo")
+    .get((event) => event.send(event.body))
     .post((event) => event.send(event.body))
     .put((event) => event.send(event.body));
 
 api.on("error", (event) => event.send(new Error("test error")));
 
 // just make the client timeout
-api.on("timeout", () => {});
+api.on("timeout", () => { });
 
 api.on("/nested/api/request")
     .get(event => {

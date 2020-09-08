@@ -13,9 +13,14 @@ import stripUrlSlashes from "./stripSlashes";
 export function createExpressRequest(req: ExpressRequest, res: ExpressResponse, method: string, settings: SettingsInterface) {
 
     const name = stripUrlSlashes(req.params['0']);
-    let newRequest = new ServerRequest(req.params.id, name, req.body, method, null);
-// call the metric start function
-settings.on.eventReceived(newRequest);
+
+    // get the request body contents
+    const body = (req.method === "GET" || req.method === "DELETE") && req.query.body ? (req.query.body === "undefined" ? undefined : JSON.parse(req.query.body)) : req.body;
+
+    // create the new request
+    let newRequest = new ServerRequest(req.params.id, name, body, method, null);
+    // call the metric start function
+    settings.on.eventReceived(newRequest);
 
     newRequest.request = req;
 

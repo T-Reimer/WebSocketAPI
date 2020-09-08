@@ -13,7 +13,10 @@ var stripSlashes_1 = __importDefault(require("./stripSlashes"));
  */
 function createExpressRequest(req, res, method, settings) {
     var name = stripSlashes_1.default(req.params['0']);
-    var newRequest = new ServerRequest_1.ServerRequest(req.params.id, name, req.body, method, null);
+    // get the request body contents
+    var body = (req.method === "GET" || req.method === "DELETE") && req.query.body ? (req.query.body === "undefined" ? undefined : JSON.parse(req.query.body)) : req.body;
+    // create the new request
+    var newRequest = new ServerRequest_1.ServerRequest(req.params.id, name, body, method, null);
     // call the metric start function
     settings.on.eventReceived(newRequest);
     newRequest.request = req;
