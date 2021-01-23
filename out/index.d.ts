@@ -47,11 +47,11 @@ export declare const Settings: SettingsInterface;
  */
 export declare function register(app: Application, wss: WebSocket.Server, route: string, options: Partial<SettingsInterface>): void;
 interface eventObject {
-    get: (callback: (request: ServerRequest) => void) => void;
-    post: (callback: (request: ServerRequest) => void) => void;
-    put: (callback: (request: ServerRequest) => void) => void;
-    delete: (callback: (request: ServerRequest) => void) => void;
-    snapshot: (callback: (request: SnapshotResponse) => void) => void;
+    get: (callback: (request: ServerRequest) => void) => eventObject;
+    post: (callback: (request: ServerRequest) => void) => eventObject;
+    put: (callback: (request: ServerRequest) => void) => eventObject;
+    delete: (callback: (request: ServerRequest) => void) => eventObject;
+    snapshot: (callback: (request: SnapshotResponse) => void) => eventObject;
 }
 /**
  * Register a event listener for the name.

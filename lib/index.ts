@@ -51,8 +51,8 @@ export const Settings: SettingsInterface = {
     maxLength: 100000,// default max string length to convert into an object
     on: {
         // add noop functions to the code as a default
-        eventReceived: () => {},
-        eventCompleted: () => {},
+        eventReceived: () => { },
+        eventCompleted: () => { },
     },
 }
 
@@ -74,11 +74,11 @@ export function register(app: Application, wss: WebSocket.Server, route: string,
 }
 
 interface eventObject {
-    get: (callback: (request: ServerRequest) => void) => void;
-    post: (callback: (request: ServerRequest) => void) => void;
-    put: (callback: (request: ServerRequest) => void) => void;
-    delete: (callback: (request: ServerRequest) => void) => void;
-    snapshot: (callback: (request: SnapshotResponse) => void) => void;
+    get: (callback: (request: ServerRequest) => void) => eventObject;
+    post: (callback: (request: ServerRequest) => void) => eventObject;
+    put: (callback: (request: ServerRequest) => void) => eventObject;
+    delete: (callback: (request: ServerRequest) => void) => eventObject;
+    snapshot: (callback: (request: SnapshotResponse) => void) => eventObject;
 }
 
 
@@ -107,7 +107,7 @@ export function on(name: string, callback?: (request: ServerRequest) => void | P
 
     // return a object to register listeners for specific event types
     let obj: eventObject = {
-        get: (callback) => {
+        get: (callback): eventObject => {
             getEvent.on(name, callback);
 
             return obj;
