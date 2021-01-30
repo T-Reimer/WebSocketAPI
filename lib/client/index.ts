@@ -104,7 +104,7 @@ export const setOptions: Options = {
  * 
  * @param options the options for the client side application
  */
-export function setup(options: Options) {
+export function setup(options: Partial<Options>) {
 
     // merge the new options with the defaults
     Object.assign(setOptions, options);
