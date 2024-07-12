@@ -140,13 +140,13 @@ export class wsClient {
                         reject(err);
                         clearTimeout(timeout);
                     },
-                    resolve: (...args: any[]) => {
-                        resolve(...args);
+                    resolve: (args: any) => {
+                        resolve(args);
                         clearTimeout(timeout);
                     }
                 });
 
-            } catch (err) {
+            } catch (err: any) {
                 reject(err);
             }
         });

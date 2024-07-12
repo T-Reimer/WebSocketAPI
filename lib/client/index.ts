@@ -35,7 +35,7 @@ const globalFetch: (input: RequestInfo, init?: RequestInitOption) => Promise<Res
             clearTimeout(timeoutId);
         }
         return result;
-    } catch (err) {
+    } catch (err: any) {
         // check if it's an abort error
         if (err.name === "AbortError") {
             throw new TimeoutError("Request to server timed out!");

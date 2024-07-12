@@ -30,17 +30,17 @@ export declare const setOptions: Options;
  *
  * @param options the options for the client side application
  */
-export declare function setup(options: Options): void;
+export declare function setup(options: Partial<Options>): void;
 export interface requestOptions {
     method?: "GET" | "POST" | "PUT" | "DELETE" | "SNAPSHOT";
     use?: "ws" | "http";
     timeout?: number;
 }
 export declare function api(api: string): {
-    get: (body: any, options?: requestOptions | undefined) => Promise<any>;
-    post: (body: any, options?: requestOptions | undefined) => Promise<any>;
-    put: (body: any, options?: requestOptions | undefined) => Promise<any>;
-    delete: (body: any, options?: requestOptions | undefined) => Promise<any>;
+    get: (body: any, options?: requestOptions) => Promise<any>;
+    post: (body: any, options?: requestOptions) => Promise<any>;
+    put: (body: any, options?: requestOptions) => Promise<any>;
+    delete: (body: any, options?: requestOptions) => Promise<any>;
     snapshot: (body: any, callback: () => void) => () => void;
 };
 /**

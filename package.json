@@ -15,8 +15,7 @@
         "test:browser": "mochify test/autoTest/client.js",
         "build:client": "watchify out/client/index.js -o static/bundle.js -s WebSocketAPI",
         "build:tsc": "tsc --watch",
-        "build": "npx browserify out/client/index.js -o static/bundle.js -s WebSocketAPI && npm run uglify",
-        "uglify": "uglifyjs static/bundle.js -o static/bundle.min.js",
+        "build": "npx browserify out/client/index.js -o static/bundle.js -s WebSocketAPI",
         "docs": "npx typedoc --plugin typedoc-plugin-markdown --excludeExternals --excludeNotExported --name WebSocketAPI --includeVersion"
     },
     "keywords": [
@@ -26,24 +25,24 @@
     "author": "Trevor Reimer",
     "license": "ISC",
     "dependencies": {
-        "body-parser": "^1.19.0",
-        "express": "^4.17.1",
-        "ws": "^7.0.1"
+        "body-parser": "^1.20.2",
+        "express": "^4.19.2",
+        "ws": "^8.18.0"
     },
     "devDependencies": {
-        "@types/express": "^4.17.0",
-        "@types/ws": "^6.0.1",
-        "browserify": "^16.5.1",
-        "chai": "^4.2.0",
-        "eslint": "^6.8.0",
-        "exec-sh": "^0.3.4",
-        "mocha": "^7.1.1",
-        "mochify": "^6.6.0",
-        "node-fetch": "^2.6.0",
-        "nyc": "^15.0.1",
-        "open": "^7.0.3",
-        "typedoc": "^0.17.4",
-        "typedoc-plugin-markdown": "^2.2.17",
-        "typescript": "^3.8.3"
+        "@types/express": "^4.17.21",
+        "@types/ws": "^8.5.10",
+        "browserify": "^17.0.0",
+        "chai": "^4.4.1",
+        "eslint": "^9.6.0",
+        "exec-sh": "^0.4.0",
+        "mocha": "^10.6.0",
+        "mochify": "^9.2.0",
+        "node-fetch": "^2.7.0",
+        "nyc": "^17.0.0",
+        "open": "^10.1.0",
+        "typedoc": "^0.26.4",
+        "typedoc-plugin-markdown": "^4.2.1",
+        "typescript": "^5.5.3"
     }
 }

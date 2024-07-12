@@ -23,10 +23,10 @@ export declare class wsClient {
      * @param api The event name to send to client
      */
     api(api: string): {
-        get: (body: any, options?: requestOptions | undefined) => Promise<unknown>;
-        post: (body: any, options?: requestOptions | undefined) => Promise<unknown>;
-        put: (body: any, options?: requestOptions | undefined) => Promise<unknown>;
-        delete: (body: any, options?: requestOptions | undefined) => Promise<unknown>;
+        get: (body: any, options?: requestOptions) => Promise<unknown>;
+        post: (body: any, options?: requestOptions) => Promise<unknown>;
+        put: (body: any, options?: requestOptions) => Promise<unknown>;
+        delete: (body: any, options?: requestOptions) => Promise<unknown>;
     };
     /**
      * Send a reverse fetch to the client.

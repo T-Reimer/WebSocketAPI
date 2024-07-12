@@ -3,126 +3,126 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = require("./events/index");
-var createExpressRequest_1 = require("./createExpressRequest");
-var convertError_1 = require("./errors/convertError");
-var stripSlashes_1 = __importDefault(require("./stripSlashes"));
+exports.registerExpress = registerExpress;
+const index_1 = require("./events/index");
+const createExpressRequest_1 = require("./createExpressRequest");
+const convertError_1 = require("./errors/convertError");
+const stripSlashes_1 = __importDefault(require("./stripSlashes"));
 /**
  * Register the get and post requests from express
  *
  * @param app The express app
  */
 function registerExpress(app, route, settings) {
-    var url = "/" + stripSlashes_1.default(route) + "/:id/*";
+    const url = `/${(0, stripSlashes_1.default)(route)}/:id/*`;
     // register the Express js listeners
-    app.get(url, function (request, response) {
-        var id = request.params.id;
+    app.get(url, (request, response) => {
+        let { id } = request.params;
         try {
-            var event_1 = createExpressRequest_1.createExpressRequest(request, response, "get", settings);
-            index_1.getEvent.triggerEvent(event_1);
+            let event = (0, createExpressRequest_1.createExpressRequest)(request, response, "get", settings);
+            index_1.getEvent.triggerEvent(event);
         }
         catch (err) {
             /**
              * Set the status number for the error
              */
-            var status_1 = 500;
+            let status = 500;
             // convert the error into an object to send to client
-            var error = convertError_1.convertError(err);
+            const error = (0, convertError_1.convertError)(err);
             if (error.status) {
-                status_1 = error.status;
+                status = error.status;
             }
-            var responseData = {
-                id: id || 0,
+            const responseData = {
+                id: parseInt(id) || 0,
                 name: "",
-                error: error,
-                status: status_1
+                error,
+                status
             };
             // send the status and error
-            response.status(status_1)
+            response.status(status)
                 .send(responseData);
         }
     });
-    app.post(url, function (request, response) {
-        var id = request.params.id;
+    app.post(url, (request, response) => {
+        let { id } = request.params;
         try {
-            var event_2 = createExpressRequest_1.createExpressRequest(request, response, "post", settings);
-            index_1.postEvent.triggerEvent(event_2);
+            let event = (0, createExpressRequest_1.createExpressRequest)(request, response, "post", settings);
+            index_1.postEvent.triggerEvent(event);
         }
         catch (err) {
             /**
              * Set the status number for the error
              */
-            var status_2 = 500;
+            let status = 500;
             // convert the error into an object to send to client
-            var error = convertError_1.convertError(err);
+            const error = (0, convertError_1.convertError)(err);
             if (error.status) {
-                status_2 = error.status;
+                status = error.status;
             }
-            var responseData = {
-                id: id || 0,
+            const responseData = {
+                id: parseInt(id) || 0,
                 name: "",
-                error: error,
-                status: status_2
+                error,
+                status
             };
             // send the status and error
-            response.status(status_2)
+            response.status(status)
                 .send(responseData);
         }
     });
-    app.put(url, function (request, response) {
-        var id = request.params.id;
+    app.put(url, (request, response) => {
+        let { id } = request.params;
         try {
-            var event_3 = createExpressRequest_1.createExpressRequest(request, response, "put", settings);
-            index_1.putEvent.triggerEvent(event_3);
+            let event = (0, createExpressRequest_1.createExpressRequest)(request, response, "put", settings);
+            index_1.putEvent.triggerEvent(event);
         }
         catch (err) {
             /**
              * Set the status number for the error
              */
-            var status_3 = 500;
+            let status = 500;
             // convert the error into an object to send to client
-            var error = convertError_1.convertError(err);
+            const error = (0, convertError_1.convertError)(err);
             if (error.status) {
-                status_3 = error.status;
+                status = error.status;
             }
-            var responseData = {
-                id: id || 0,
+            const responseData = {
+                id: parseInt(id) || 0,
                 name: "",
-                error: error,
-                status: status_3
+                error,
+                status
             };
             // send the status and error
-            response.status(status_3)
+            response.status(status)
                 .send(responseData);
         }
     });
-    app.delete(url, function (request, response) {
-        var id = request.params.id;
+    app.delete(url, (request, response) => {
+        let { id } = request.params;
         try {
-            var event_4 = createExpressRequest_1.createExpressRequest(request, response, "delete", settings);
-            index_1.delEvent.triggerEvent(event_4);
+            let event = (0, createExpressRequest_1.createExpressRequest)(request, response, "delete", settings);
+            index_1.delEvent.triggerEvent(event);
         }
         catch (err) {
             /**
              * Set the status number for the error
              */
-            var status_4 = 500;
+            let status = 500;
             // convert the error into an object to send to client
-            var error = convertError_1.convertError(err);
+            const error = (0, convertError_1.convertError)(err);
             if (error.status) {
-                status_4 = error.status;
+                status = error.status;
             }
-            var responseData = {
-                id: id || 0,
+            const responseData = {
+                id: parseInt(id) || 0,
                 name: "",
-                error: error,
-                status: status_4
+                error,
+                status
             };
             // send the status and error
-            response.status(status_4)
+            response.status(status)
                 .send(responseData);
         }
     });
 }
-exports.registerExpress = registerExpress;
 //# sourceMappingURL=registerExpress.js.map

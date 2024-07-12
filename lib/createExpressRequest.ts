@@ -15,10 +15,10 @@ export function createExpressRequest(req: ExpressRequest, res: ExpressResponse, 
     const name = stripUrlSlashes(req.params['0']);
 
     // get the request body contents
-    const body = (req.method === "GET" || req.method === "DELETE") && req.query.body ? (req.query.body === "undefined" ? undefined : JSON.parse(req.query.body)) : req.body;
+    const body = (req.method === "GET" || req.method === "DELETE") && req.query.body ? (req.query.body === "undefined" ? undefined : JSON.parse(req.query.body as string)) : req.body;
 
     // create the new request
-    let newRequest = new ServerRequest(req.params.id, name, body, method, null);
+    let newRequest = new ServerRequest(parseInt(req.params.id), name, body, method, null);
     // call the metric start function
     settings.on.eventReceived(newRequest);
 

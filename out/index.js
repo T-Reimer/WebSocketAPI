@@ -3,20 +3,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = require("./events/index");
-var registerExpress_1 = require("./registerExpress");
-var registerWS_1 = require("./registerWS");
-var registerSnapshotRequest_1 = require("./snapShots/registerSnapshotRequest");
-var stripSlashes_1 = __importDefault(require("./stripSlashes"));
+exports.Settings = void 0;
+exports.register = register;
+exports.on = on;
+exports.triggerSnapshot = triggerSnapshot;
+const index_1 = require("./events/index");
+const registerExpress_1 = require("./registerExpress");
+const registerWS_1 = require("./registerWS");
+const registerSnapshotRequest_1 = require("./snapShots/registerSnapshotRequest");
+const stripSlashes_1 = __importDefault(require("./stripSlashes"));
 /**
  * the default settings object
  */
 exports.Settings = {
-    maxLength: 100000,
+    maxLength: 100000, // default max string length to convert into an object
     on: {
         // add noop functions to the code as a default
-        eventReceived: function () { },
-        eventCompleted: function () { },
+        eventReceived: () => { },
+        eventCompleted: () => { },
     },
 };
 /**
@@ -27,11 +31,10 @@ exports.Settings = {
  * @param route the default route
  */
 function register(app, wss, route, options) {
-    var settings = Object.assign({}, exports.Settings, options);
-    registerExpress_1.registerExpress(app, route, settings);
-    registerWS_1.registerWS(wss, settings);
+    let settings = Object.assign({}, exports.Settings, options);
+    (0, registerExpress_1.registerExpress)(app, route, settings);
+    (0, registerWS_1.registerWS)(wss, settings);
 }
-exports.register = register;
 /**
  * Register a event listener for the name.
  *
@@ -44,7 +47,7 @@ exports.register = register;
  */
 function on(name, callback) {
     // remove leading and trailing slashes in the url
-    name = stripSlashes_1.default(name);
+    name = (0, stripSlashes_1.default)(name);
     // if a callback function is given register it for each of the categories
     if (callback) {
         index_1.getEvent.on(name, callback);
@@ -53,31 +56,30 @@ function on(name, callback) {
         index_1.delEvent.on(name, callback);
     }
     // return a object to register listeners for specific event types
-    var obj = {
-        get: function (callback) {
+    let obj = {
+        get: (callback) => {
             index_1.getEvent.on(name, callback);
             return obj;
         },
-        post: function (callback) {
+        post: (callback) => {
             index_1.postEvent.on(name, callback);
             return obj;
         },
-        put: function (callback) {
+        put: (callback) => {
             index_1.putEvent.on(name, callback);
             return obj;
         },
-        delete: function (callback) {
+        delete: (callback) => {
             index_1.delEvent.on(name, callback);
             return obj;
         },
-        snapshot: function (callback) {
+        snapshot: (callback) => {
             index_1.snapshotEvent.on(name, callback);
             return obj;
         }
     };
     return obj;
 }
-exports.on = on;
 /**
  * Trigger a update event for any registered listeners
  *
@@ -86,8 +88,8 @@ exports.on = on;
  */
 function triggerSnapshot(api, extra) {
     // remove leading and trailing slashes from url
-    api = stripSlashes_1.default(api);
-    registerSnapshotRequest_1.registeredListeners.forEach(function (listener) {
+    api = (0, stripSlashes_1.default)(api);
+    registerSnapshotRequest_1.registeredListeners.forEach(listener => {
         if (listener.name === api) {
             // set the extra event data
             listener.extra = extra;
@@ -96,5 +98,4 @@ function triggerSnapshot(api, extra) {
         }
     });
 }
-exports.triggerSnapshot = triggerSnapshot;
 //# sourceMappingURL=index.js.map

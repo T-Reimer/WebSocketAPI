@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = stripUrlSlashes;
 /**
  * Removes any leading or following slashes in the endpoint url
  *
@@ -8,5 +9,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function stripUrlSlashes(url) {
     return url.replace(/^\/|\/$/g, "");
 }
-exports.default = stripUrlSlashes;
 //# sourceMappingURL=stripSlashes.js.map

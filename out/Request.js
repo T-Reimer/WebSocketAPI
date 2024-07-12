@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Request = void 0;
 /**
  * A simple api request
  *
  */
-var Request = /** @class */ (function () {
-    function Request(id, name, body, method) {
+class Request {
+    constructor(id, name, body, method) {
         /**
          * The event id
          */
@@ -26,23 +27,23 @@ var Request = /** @class */ (function () {
          * the main status for the request
          */
         this._status = 200;
-        this._send = function (value) { };
+        this._send = (value) => { };
     }
     /**
      * Set the request status code
      *
      * @param code The status code
      */
-    Request.prototype.status = function (code) {
+    status(code) {
         this._status = code;
         return this;
-    };
+    }
     /**
      * Send a response to the client
      *
      * @param value The value to send to client
      */
-    Request.prototype.send = function (value) {
+    send(value) {
         if (value instanceof Error) {
             this._send({
                 id: this.id,
@@ -63,8 +64,7 @@ var Request = /** @class */ (function () {
             });
         }
         return this;
-    };
-    return Request;
-}());
+    }
+}
 exports.Request = Request;
 //# sourceMappingURL=Request.js.map

@@ -46,7 +46,7 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
                         return sendAuthFailed(ws);
                     }
 
-                } catch (err) {
+                } catch (err: any) {
                     // disconnect. Authentication error
                     return sendAuthFailed(ws);
                 }
@@ -65,7 +65,7 @@ function sendAuthFailed(ws: WebSocket) {
     const failed: AuthFailedMessage = { event: "auth-failed" };
     try {
         ws.send(JSON.stringify(failed));
-    } catch (err) { }
+    } catch (err: any) { }
     ws.terminate();
 }
 
@@ -73,7 +73,7 @@ function sendOpenMessage(ws: WebSocket, client: wsClient, settings: SettingsInte
     // send a Open connection event to tell the api on client side to start listening
     try {
         ws.send(JSON.stringify({ event: "connection" }));
-    } catch (err) {
+    } catch (err: any) {
         // disconnect the client
         ws.terminate();
     }
@@ -145,7 +145,7 @@ function sendOpenMessage(ws: WebSocket, client: wsClient, settings: SettingsInte
                 }
             }
         }
-        catch (err) {
+        catch (err: any) {
             if (settings.on.error) {
                 settings.on.error(err, message);
             } else {
