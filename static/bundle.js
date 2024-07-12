@@ -257,6 +257,7 @@ async function getData(id, api, body, options) {
             // compile an error based on the data and throw it
             const error = new Error(data.error.message);
             error.name = data.error.name;
+            error.api = api;
             if (data.error.status) {
                 error.status = data.error.status;
             }
@@ -297,6 +298,7 @@ async function sendData(id, api, body, options) {
             // compile an error based on the data and throw it
             const error = new Error(data.error.message);
             error.name = data.error.name;
+            error.api = api;
             if (data.error.status) {
                 error.status = data.error.status;
             }

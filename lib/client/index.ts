@@ -208,7 +208,6 @@ export async function getData(id: number, api: string, body?: any, options?: req
             // compile an error based on the data and throw it
             const error: any = new Error(data.error.message);
             error.name = data.error.name;
-            error.api = api;
 
             if (data.error.status) {
                 error.status = data.error.status;
@@ -255,7 +254,6 @@ export async function sendData(id: number, api: string, body?: any, options?: re
             // compile an error based on the data and throw it
             const error: any = new Error(data.error.message);
             error.name = data.error.name;
-            error.api = api;
 
             if (data.error.status) {
                 error.status = data.error.status;
@@ -288,17 +286,28 @@ export async function fetch(api: string, body?: any, options?: requestOptions): 
     let id = newIndex();
 
     let method = options && options.method ? options.method : "GET";
-    switch (method) {
-        case "POST":
-            return await sendData(id, api, body, options);
-        case "PUT":
-            return await sendData(id, api, body, options);
-        case "DELETE":
-            return await getData(id, api, body, options);
-        case "GET":
-        default:
-            return await getData(id, api, body, options);
+
+    try {
+        switch (method) {
+            case "POST":
+                return await sendData(id, api, body, options);
+            case "PUT":
+                return await sendData(id, api, body, options);
+            case "DELETE":
+                return await getData(id, api, body, options);
+            case "GET":
+            default:
+                return await getData(id, api, body, options);
+        }
+    } catch(err: any){
+        if(err instanceof Error){
+            (err as any).api = api;
+        }
+
+        throw err;
     }
+
+  
 }
 
 /**
