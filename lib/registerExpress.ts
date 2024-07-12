@@ -20,7 +20,7 @@ export function registerExpress(app: Application, route: string, settings: Setti
         try {
             let event = createExpressRequest(request, response, "get", settings);
             getEvent.triggerEvent(event);
-        } catch (err) {
+        } catch (err: any) {
 
             /**
              * Set the status number for the error
@@ -33,7 +33,7 @@ export function registerExpress(app: Application, route: string, settings: Setti
             }
 
             const responseData: ResponseData = {
-                id: id || 0,
+                id: parseInt(id) || 0,
                 name: "",
                 error,
                 status
@@ -51,7 +51,7 @@ export function registerExpress(app: Application, route: string, settings: Setti
         try {
             let event = createExpressRequest(request, response, "post", settings);
             postEvent.triggerEvent(event);
-        } catch (err) {
+        } catch (err: any) {
 
             /**
              * Set the status number for the error
@@ -64,7 +64,7 @@ export function registerExpress(app: Application, route: string, settings: Setti
             }
 
             const responseData: ResponseData = {
-                id: id || 0,
+                id: parseInt(id) || 0,
                 name: "",
                 error,
                 status
@@ -82,7 +82,7 @@ export function registerExpress(app: Application, route: string, settings: Setti
         try {
             let event = createExpressRequest(request, response, "put", settings);
             putEvent.triggerEvent(event);
-        } catch (err) {
+        } catch (err: any) {
 
             /**
              * Set the status number for the error
@@ -95,7 +95,7 @@ export function registerExpress(app: Application, route: string, settings: Setti
             }
 
             const responseData: ResponseData = {
-                id: id || 0,
+                id: parseInt(id) || 0,
                 name: "",
                 error,
                 status
@@ -114,7 +114,7 @@ export function registerExpress(app: Application, route: string, settings: Setti
         try {
             let event = createExpressRequest(request, response, "delete", settings);
             delEvent.triggerEvent(event);
-        } catch (err) {
+        } catch (err: any) {
 
             /**
              * Set the status number for the error
@@ -127,7 +127,7 @@ export function registerExpress(app: Application, route: string, settings: Setti
             }
 
             const responseData: ResponseData = {
-                id: id || 0,
+                id: parseInt(id) || 0,
                 name: "",
                 error,
                 status

@@ -3,8 +3,14 @@ const assert = require("assert");
 const data = require("./data");
 const fetch = require("node-fetch");
 const WebSocket = require("ws");
-const open = require("open");
 const execSh = require("exec-sh");
+
+const open = async (...args) => {
+
+    const open = import('open');
+
+    return open(...args);
+}
 
 // Test the server framework
 describe("server", () => {

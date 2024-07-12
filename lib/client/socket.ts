@@ -105,7 +105,7 @@ function createNewConnection() {
 
                         }
 
-                    } catch (err) {
+                    } catch (err: any) {
                         // send the data to the before register event that was set in the options
                         setOptions.websocketOnMessage(event.data);
                     }
@@ -165,7 +165,7 @@ function createNewConnection() {
                         // set the socket as ready
                         ready = true;
 
-                    } catch (err) {
+                    } catch (err: any) {
                         if (setOptions.unHandledWebSocketMessage) {
                             setOptions.unHandledWebSocketMessage(err, event.data);
                         }
@@ -240,7 +240,7 @@ export function fetch(id: number, api: string, body?: any, options?: requestOpti
                 resolve
             });
 
-        } catch (err) {
+        } catch (err: any) {
             reject(err);
         }
     });

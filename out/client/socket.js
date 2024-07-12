@@ -1,17 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = require("./index");
-var createRequest_1 = require("./createRequest");
-var index_2 = require("./../events/index");
-var timeoutError_1 = require("../errors/timeoutError");
-var events = [];
+exports.ready = exports.socket = exports.stateChangeEvents = void 0;
+exports.setup = setup;
+exports.fetch = fetch;
+exports.registerSnapshot = registerSnapshot;
+exports.send = send;
+const index_1 = require("./index");
+const createRequest_1 = require("./createRequest");
+const index_2 = require("./../events/index");
+const timeoutError_1 = require("../errors/timeoutError");
+let events = [];
 exports.stateChangeEvents = [];
 exports.socket = null;
 exports.ready = false;
 function setup() {
     createNewConnection();
 }
-exports.setup = setup;
 function createNewConnection() {
     // set ready state to false
     exports.ready = false;
@@ -19,44 +23,44 @@ function createNewConnection() {
         exports.socket.close();
     }
     exports.socket = new WebSocket(index_1.setOptions.websocketUrl);
-    exports.socket.addEventListener("open", function () {
+    exports.socket.addEventListener("open", () => {
         if (exports.socket) {
             // if the auth method is set in settings then the first message to the server should be the auth token
             if (index_1.setOptions.authKey) {
                 index_1.setOptions.authKey(exports.socket)
-                    .then(function (key) {
-                    var keyData = { event: "auth", key: key };
+                    .then(key => {
+                    const keyData = { event: "auth", key };
                     exports.socket === null || exports.socket === void 0 ? void 0 : exports.socket.send(JSON.stringify(keyData));
                 })
-                    .catch(function (err) {
+                    .catch(err => {
                     // if the auth key errors then disconnect from server
                     exports.ready = false;
                     exports.socket === null || exports.socket === void 0 ? void 0 : exports.socket.close();
                     exports.socket = null;
                     console.error(err);
-                    exports.stateChangeEvents.forEach(function (callback) { return callback("ERROR"); });
+                    exports.stateChangeEvents.forEach(callback => callback("ERROR"));
                 });
             }
             /**
              * Tell if the events are registered or not
              */
-            var registered_1 = false;
-            exports.socket.addEventListener("message", function (event) {
+            let registered = false;
+            exports.socket.addEventListener("message", (event) => {
                 // listen for the main start message
-                if (!registered_1) {
+                if (!registered) {
                     try {
-                        var data = JSON.parse(event.data);
+                        let data = JSON.parse(event.data);
                         if (data && data.event && data.event === "connection") {
                             // if the connection signal is received then send the data
                             // set the registered flag
-                            registered_1 = true;
+                            registered = true;
                             // set the ready flag. After this is set then the websocket will be used for message events
                             exports.ready = true;
-                            exports.stateChangeEvents.forEach(function (callback) { return callback("READY"); });
+                            exports.stateChangeEvents.forEach(callback => callback("READY"));
                         }
                         else if (data && data.event === "auth-failed") {
                             // if authentication failed
-                            exports.stateChangeEvents.forEach(function (callback) { return callback("AUTHFAILED"); });
+                            exports.stateChangeEvents.forEach(callback => callback("AUTHFAILED"));
                             // register a listener for READY event to turn on the reconnect again
                             if (index_1.setOptions.reconnect) {
                                 exports.stateChangeEvents.push(function stateReady(state) {
@@ -64,7 +68,7 @@ function createNewConnection() {
                                         // reset the set options reconnect value
                                         index_1.setOptions.reconnect = true;
                                         // unregister this listner
-                                        for (var i = exports.stateChangeEvents.length - 1; i >= 0; i--) {
+                                        for (let i = exports.stateChangeEvents.length - 1; i >= 0; i--) {
                                             if (exports.stateChangeEvents[i] === stateReady) {
                                                 exports.stateChangeEvents.splice(i, 1);
                                             }
@@ -88,42 +92,42 @@ function createNewConnection() {
                 else {
                     //parse the message and trigger the events
                     try {
-                        var data = JSON.parse(event.data);
+                        let data = JSON.parse(event.data);
                         if (!data.id) {
                             throw new Error("Event id not found");
                         }
                         if (data.method) {
                             // if a method was received with the request then its a server side request
                             // create a event to dispatch
-                            var event_1 = createRequest_1.createRequest(data);
+                            let event = (0, createRequest_1.createRequest)(data);
                             switch (data.method) {
                                 case "GET":
-                                    index_2.getEvent.triggerEvent(event_1);
+                                    index_2.getEvent.triggerEvent(event);
                                     break;
                                 case "POST":
-                                    index_2.postEvent.triggerEvent(event_1);
+                                    index_2.postEvent.triggerEvent(event);
                                     break;
                                 case "PUT":
-                                    index_2.putEvent.triggerEvent(event_1);
+                                    index_2.putEvent.triggerEvent(event);
                                     break;
                                 case "DELETE":
-                                    index_2.delEvent.triggerEvent(event_1);
+                                    index_2.delEvent.triggerEvent(event);
                                     break;
                             }
                         }
                         else {
-                            for (var i = 0; i < events.length; i++) {
-                                var event_2 = events[i];
-                                if (event_2.id === data.id) {
+                            for (let i = 0; i < events.length; i++) {
+                                let event = events[i];
+                                if (event.id === data.id) {
                                     if (data.error) {
-                                        var error = new Error(data.error.message);
+                                        let error = new Error(data.error.message);
                                         error.name = data.error.name;
-                                        event_2.reject(error);
+                                        event.reject(error);
                                     }
                                     else {
-                                        event_2.resolve(data);
+                                        event.resolve(data);
                                     }
-                                    if (event_2.unregister) {
+                                    if (event.unregister) {
                                         // remove the event from list of waiting
                                         events.splice(i, 1);
                                     }
@@ -142,24 +146,24 @@ function createNewConnection() {
                     }
                 }
             });
-            exports.socket.addEventListener("error", function (error) {
+            exports.socket.addEventListener("error", (error) => {
                 exports.ready = false;
                 console.error(error);
-                exports.stateChangeEvents.forEach(function (callback) { return callback("ERROR"); });
+                exports.stateChangeEvents.forEach(callback => callback("ERROR"));
             });
-            exports.socket.addEventListener("close", function () {
+            exports.socket.addEventListener("close", () => {
                 exports.ready = false;
-                var timeout = typeof index_1.setOptions.reconnectTimeOut === "function" ? index_1.setOptions.reconnectTimeOut() : index_1.setOptions.reconnectTimeOut;
+                const timeout = typeof index_1.setOptions.reconnectTimeOut === "function" ? index_1.setOptions.reconnectTimeOut() : index_1.setOptions.reconnectTimeOut;
                 // wait for a little before reconnecting
                 if (index_1.setOptions.reconnect) {
                     setTimeout(createNewConnection, timeout);
                 }
                 // if the previous state wasn't auth failed then send a closed message
-                if (index_1.getCurrentState() !== "AUTHFAILED") {
-                    exports.stateChangeEvents.forEach(function (callback) { return callback("CLOSED"); });
+                if ((0, index_1.getCurrentState)() !== "AUTHFAILED") {
+                    exports.stateChangeEvents.forEach(callback => callback("CLOSED"));
                 }
             });
-            exports.stateChangeEvents.forEach(function (callback) { return callback("OPEN"); });
+            exports.stateChangeEvents.forEach(callback => callback("OPEN"));
         }
         else {
             createNewConnection();
@@ -175,17 +179,17 @@ function createNewConnection() {
  * @param options options for the request
  */
 function fetch(id, api, body, options) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         // set a timeout
         if (options === null || options === void 0 ? void 0 : options.timeout) {
-            setTimeout(function () {
+            setTimeout(() => {
                 reject(new timeoutError_1.TimeoutError("Request to server timed out!"));
             }, options.timeout);
         }
         try {
             // create the request to send to websocket server
-            var data = {
-                id: id,
+            let data = {
+                id,
                 name: api,
                 body: body,
                 method: options && options.method ? options.method : "GET"
@@ -194,10 +198,10 @@ function fetch(id, api, body, options) {
             send(data);
             // register the event listener for the fetch return value
             events.push({
-                id: id,
+                id,
                 unregister: true,
-                reject: reject,
-                resolve: resolve
+                reject,
+                resolve
             });
         }
         catch (err) {
@@ -205,7 +209,6 @@ function fetch(id, api, body, options) {
         }
     });
 }
-exports.fetch = fetch;
 /**
  * Register a event to fire each time that id gets sent
  *
@@ -217,32 +220,31 @@ exports.fetch = fetch;
  * @param callback the callback to run on each message
  */
 function registerSnapshot(id, api, body, callback) {
-    var data = {
-        id: id,
+    let data = {
+        id,
         name: api,
         body: body,
         method: "SNAPSHOT",
     };
     send(data);
-    var unregister = function () {
-        for (var i = events.length - 1; i >= 0; i--) {
+    const unregister = () => {
+        for (let i = events.length - 1; i >= 0; i--) {
             if (events[i].id === id) {
                 events.splice(i, 1);
             }
         }
     };
     events.push({
-        id: id,
+        id,
         unregister: false,
-        reject: function () { },
-        resolve: function (data) {
+        reject: () => { },
+        resolve: (data) => {
             callback(data);
         },
     });
     // return a function to unregister
     return unregister;
 }
-exports.registerSnapshot = registerSnapshot;
 /**
  * Send a payload to the server
  *
@@ -256,5 +258,4 @@ function send(body) {
         throw new Error("Could not send the data");
     }
 }
-exports.send = send;
 //# sourceMappingURL=socket.js.map

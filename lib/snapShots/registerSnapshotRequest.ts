@@ -67,7 +67,7 @@ class SnapshotRequest extends Request {
                 // try to send the message to client
                 this.client?.WebSocket.send(JSON.stringify(value));
 
-            } catch (err) {
+            } catch (err: any) {
 
                 // if failed to send check if the ready state is closed... If so then unregister anything for that client
                 if (this.client?.WebSocket.readyState === this.client?.WebSocket.CLOSED) {
@@ -76,7 +76,7 @@ class SnapshotRequest extends Request {
                         // make sure that disconnect events are called
                         this.client?.WebSocket.terminate();
                         //ignore any errors
-                    } catch (err) { }
+                    } catch (err: any) { }
                 } else {
 
                     // call the on error handler

@@ -35,7 +35,7 @@ const globalFetch: (input: RequestInfo, init?: RequestInitOption) => Promise<Res
             clearTimeout(timeoutId);
         }
         return result;
-    } catch (err) {
+    } catch (err: any) {
         // check if it's an abort error
         if (err.name === "AbortError") {
             throw new TimeoutError("Request to server timed out!");
@@ -208,6 +208,7 @@ export async function getData(id: number, api: string, body?: any, options?: req
             // compile an error based on the data and throw it
             const error: any = new Error(data.error.message);
             error.name = data.error.name;
+            error.api = api;
 
             if (data.error.status) {
                 error.status = data.error.status;
@@ -254,6 +255,7 @@ export async function sendData(id: number, api: string, body?: any, options?: re
             // compile an error based on the data and throw it
             const error: any = new Error(data.error.message);
             error.name = data.error.name;
+            error.api = api;
 
             if (data.error.status) {
                 error.status = data.error.status;

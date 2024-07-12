@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var socket_1 = require("./socket");
-var _1 = require(".");
-var stripSlashes_1 = __importDefault(require("../stripSlashes"));
+exports.onSnapshot = onSnapshot;
+const socket_1 = require("./socket");
+const _1 = require(".");
+const stripSlashes_1 = __importDefault(require("../stripSlashes"));
 /**
  * Register a new snapshot event to the server. This event will automatically re-register if the connection gets disconnected.
  *
@@ -15,40 +16,40 @@ var stripSlashes_1 = __importDefault(require("../stripSlashes"));
  */
 function onSnapshot(api, requestHead, callback) {
     // remove leading and trailing slashes from the url
-    api = stripSlashes_1.default(api);
+    api = (0, stripSlashes_1.default)(api);
     // create a index number to use for all of the transactions
-    var id = _1.newIndex();
-    var unregister = function () { };
-    var unregisterState = function (unregisterServer) {
+    let id = (0, _1.newIndex)();
+    let unregister = () => { };
+    const unregisterState = (unregisterServer) => {
         unregisterServer = typeof unregisterServer === "boolean" ? unregisterServer : true;
         unregister();
-        for (var i = socket_1.stateChangeEvents.length - 1; i >= 0; i--) {
+        for (let i = socket_1.stateChangeEvents.length - 1; i >= 0; i--) {
             if (socket_1.stateChangeEvents[i] === onStateChange) {
                 socket_1.stateChangeEvents.splice(i, 1);
             }
         }
         if (socket_1.ready && unregisterServer) {
             // unregister event server side
-            var data = {
-                id: id,
+            let data = {
+                id,
                 name: api,
                 body: null,
                 method: "SNAPSHOT",
                 unregister: true,
             };
-            socket_1.send(data);
+            (0, socket_1.send)(data);
         }
     };
     // save the previous response in a variable
-    var lastResponse = null;
-    var createSnapshot = function (response) {
+    let lastResponse = null;
+    const createSnapshot = (response) => {
         // if a unregister event is received from server then unregister the callback
         if (response.unregister) {
             unregisterState(false);
             return;
         }
         // create the snapshot response to send to callback
-        var snapshot = {
+        const snapshot = {
             last: lastResponse,
             data: response.body,
             timestamp: new Date(),
@@ -60,14 +61,14 @@ function onSnapshot(api, requestHead, callback) {
     };
     // check if the web socket is open.. If it is then register
     if (socket_1.ready) {
-        unregister = socket_1.registerSnapshot(id, api, requestHead, createSnapshot);
+        unregister = (0, socket_1.registerSnapshot)(id, api, requestHead, createSnapshot);
     }
-    var onStateChange = function (state) {
+    const onStateChange = (state) => {
         if (state === "READY") {
             // unregister the previous event listeners before registering again
             unregister();
             // register for updates from the server
-            unregister = socket_1.registerSnapshot(id, api, requestHead, createSnapshot);
+            unregister = (0, socket_1.registerSnapshot)(id, api, requestHead, createSnapshot);
         }
     };
     // add a listener for when the state of the websocket changes
@@ -75,5 +76,4 @@ function onSnapshot(api, requestHead, callback) {
     // return the function to unregister the snapshot listener
     return unregisterState;
 }
-exports.onSnapshot = onSnapshot;
 //# sourceMappingURL=onSnapshot.js.map
