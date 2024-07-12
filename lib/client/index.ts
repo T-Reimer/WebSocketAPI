@@ -208,6 +208,7 @@ export async function getData(id: number, api: string, body?: any, options?: req
             // compile an error based on the data and throw it
             const error: any = new Error(data.error.message);
             error.name = data.error.name;
+            error.api = api;
 
             if (data.error.status) {
                 error.status = data.error.status;
@@ -254,6 +255,7 @@ export async function sendData(id: number, api: string, body?: any, options?: re
             // compile an error based on the data and throw it
             const error: any = new Error(data.error.message);
             error.name = data.error.name;
+            error.api = api;
 
             if (data.error.status) {
                 error.status = data.error.status;
