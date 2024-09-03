@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { getEvent, postEvent, putEvent, delEvent, snapshotEvent } from "./events/index";
+import { getEvent, postEvent, putEvent, delEvent } from "./events/index";
 import { createWSRequest } from "./createWSRequest";
 import { SettingsInterface } from "./index";
 import { wsClient } from "./ws/wsClient";
@@ -35,7 +35,7 @@ export function registerWS(wss: WebSocket.Server, settings: SettingsInterface) {
                             // register the api to start receiving events
                             sendOpenMessage(ws, client, settings);
 
-                            ws.removeEventListener("message", <any>onMessage);
+                            ws.removeListener("message", <any>onMessage);
 
                         } else {
                             // disconnect. Authentication error
