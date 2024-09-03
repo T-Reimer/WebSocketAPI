@@ -33,7 +33,7 @@ function registerWS(wss, settings) {
                         if (settings.onAuthKey && await settings.onAuthKey(data.key, client, ws, req)) {
                             // register the api to start receiving events
                             sendOpenMessage(ws, client, settings);
-                            ws.removeEventListener("message", onMessage);
+                            ws.removeListener("message", onMessage);
                         }
                         else {
                             // disconnect. Authentication error
