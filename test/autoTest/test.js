@@ -9,11 +9,7 @@ const open = async (...args) => {
 
     const open = await import('open');
 
-    return open(...args, {
-        app: {
-            name: open.apps.chrome,
-        }
-    });
+    return open(...args);
 }
 
 // Test the server framework
@@ -45,7 +41,7 @@ describe("server", () => {
 
         } else {
 
-            execSh("npx mochify test/autoTest/client.js --web-security", {}, (err) => {
+            execSh("npx mochify test/autoTest/client.js --web-security --no-sandbox", {}, (err) => {
                 server.stop(() => {
                     if (err) {
                         done(err);

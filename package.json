@@ -41,7 +41,6 @@
         "node-fetch": "^2.7.0",
         "nyc": "^17.0.0",
         "open": "^10.1.0",
-        "puppeteer": "^24.1.1",
         "typedoc": "^0.26.4",
         "typedoc-plugin-markdown": "^4.2.1",
         "typescript": "^5.5.3"
