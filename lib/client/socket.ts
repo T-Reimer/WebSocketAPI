@@ -174,32 +174,32 @@ function createNewConnection() {
                 }
             });
 
-            socket.addEventListener("error", (error) => {
-                ready = false;
-                console.error(error);
-
-                stateChangeEvents.forEach(callback => callback("ERROR"));
-            });
-
-            socket.addEventListener("close", () => {
-                ready = false;
-                const timeout: number = typeof setOptions.reconnectTimeOut === "function" ? setOptions.reconnectTimeOut() : setOptions.reconnectTimeOut;
-
-                // wait for a little before reconnecting
-                if (setOptions.reconnect) {
-                    setTimeout(createNewConnection, timeout);
-                }
-                // if the previous state wasn't auth failed then send a closed message
-                if (getCurrentState() !== "AUTHFAILED") {
-                    stateChangeEvents.forEach(callback => callback("CLOSED"));
-                }
-            });
-
             stateChangeEvents.forEach(callback => callback("OPEN"));
         } else {
             createNewConnection();
         }
-    })
+    });
+
+    socket.addEventListener("error", (error) => {
+        ready = false;
+        console.error(error);
+
+        stateChangeEvents.forEach(callback => callback("ERROR"));
+    });
+
+    socket.addEventListener("close", () => {
+        ready = false;
+        const timeout: number = typeof setOptions.reconnectTimeOut === "function" ? setOptions.reconnectTimeOut() : setOptions.reconnectTimeOut;
+
+        // wait for a little before reconnecting
+        if (setOptions.reconnect) {
+            setTimeout(createNewConnection, timeout);
+        }
+        // if the previous state wasn't auth failed then send a closed message
+        if (getCurrentState() !== "AUTHFAILED") {
+            stateChangeEvents.forEach(callback => callback("CLOSED"));
+        }
+    });
 }
 
 /**
