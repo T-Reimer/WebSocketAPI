@@ -33,7 +33,7 @@ describe("server", () => {
 
         if (process.argv.includes("--browser")) {
 
-            open("http://localhost:3030/")
+            open("http://localhost:3030/", { arguments: ["--no-sandbox"] })
                 .then(() => {
                     console.log("Opened page");
 
