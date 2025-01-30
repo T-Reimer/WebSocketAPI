@@ -7,9 +7,13 @@ const execSh = require("exec-sh");
 
 const open = async (...args) => {
 
-    const open = import('open');
+    const open = await import('open');
 
-    return open(...args);
+    return open(...args, {
+        app: {
+            name: open.apps.chrome,
+        }
+    });
 }
 
 // Test the server framework
@@ -33,7 +37,7 @@ describe("server", () => {
 
         if (process.argv.includes("--browser")) {
 
-            open("http://localhost:3030/", { arguments: ["--no-sandbox"] })
+            open("http://localhost:3030/")
                 .then(() => {
                     console.log("Opened page");
 
