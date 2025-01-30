@@ -7,7 +7,7 @@ const execSh = require("exec-sh");
 
 const open = async (...args) => {
 
-    const open = import('open');
+    const open = await import('open');
 
     return open(...args);
 }
@@ -41,7 +41,7 @@ describe("server", () => {
 
         } else {
 
-            execSh("npx mochify test/autoTest/client.js --web-security", {}, (err) => {
+            execSh("npx mochify test/autoTest/client.js --web-security --allow-chrome-as-root", {}, (err) => {
                 server.stop(() => {
                     if (err) {
                         done(err);
