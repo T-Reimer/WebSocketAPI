@@ -41,7 +41,7 @@ describe("server", () => {
 
         } else {
 
-            execSh("npx mochify test/autoTest/client.js --web-security --no-sandbox", {}, (err) => {
+            execSh("npx mochify test/autoTest/client.js --web-security --allow-chrome-as-root", {}, (err) => {
                 server.stop(() => {
                     if (err) {
                         done(err);
