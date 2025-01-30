@@ -146,27 +146,27 @@ function createNewConnection() {
                     }
                 }
             });
-            exports.socket.addEventListener("error", (error) => {
-                exports.ready = false;
-                console.error(error);
-                exports.stateChangeEvents.forEach(callback => callback("ERROR"));
-            });
-            exports.socket.addEventListener("close", () => {
-                exports.ready = false;
-                const timeout = typeof index_1.setOptions.reconnectTimeOut === "function" ? index_1.setOptions.reconnectTimeOut() : index_1.setOptions.reconnectTimeOut;
-                // wait for a little before reconnecting
-                if (index_1.setOptions.reconnect) {
-                    setTimeout(createNewConnection, timeout);
-                }
-                // if the previous state wasn't auth failed then send a closed message
-                if ((0, index_1.getCurrentState)() !== "AUTHFAILED") {
-                    exports.stateChangeEvents.forEach(callback => callback("CLOSED"));
-                }
-            });
             exports.stateChangeEvents.forEach(callback => callback("OPEN"));
         }
         else {
             createNewConnection();
+        }
+    });
+    exports.socket.addEventListener("error", (error) => {
+        exports.ready = false;
+        console.error(error);
+        exports.stateChangeEvents.forEach(callback => callback("ERROR"));
+    });
+    exports.socket.addEventListener("close", () => {
+        exports.ready = false;
+        const timeout = typeof index_1.setOptions.reconnectTimeOut === "function" ? index_1.setOptions.reconnectTimeOut() : index_1.setOptions.reconnectTimeOut;
+        // wait for a little before reconnecting
+        if (index_1.setOptions.reconnect) {
+            setTimeout(createNewConnection, timeout);
+        }
+        // if the previous state wasn't auth failed then send a closed message
+        if ((0, index_1.getCurrentState)() !== "AUTHFAILED") {
+            exports.stateChangeEvents.forEach(callback => callback("CLOSED"));
         }
     });
 }
